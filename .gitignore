@@ -43,3 +43,4 @@ assets
 eslint.config.js
 .prettierrc
 .vscode
+*.txt
