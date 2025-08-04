@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 import { useColorScheme } from 'react-native';
 
 import { Colors } from '@/constants/Colors';
+import WorkoutButton from '@/components/WorkoutButton';
 
 export default function ExercisesScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -16,6 +17,10 @@ export default function ExercisesScreen() {
       }}
     >
       <Text>Exercise tab</Text>
+      <WorkoutButton
+        imgSource={require('@/assets/images/latpull_target_muscles.png')}
+        name="latpull"
+      />
     </View>
   );
 }
