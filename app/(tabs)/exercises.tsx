@@ -1,12 +1,31 @@
-import { Text, View } from 'react-native';
-import { useColorScheme } from 'react-native';
+import { Text, View, useColorScheme } from 'react-native';
+import { useState, useEffect } from 'react';
+import { useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
 
 import { Colors } from '@/constants/Colors';
 import WorkoutButton from '@/components/WorkoutButton';
+import { Exercise } from '@/src/database/db_interfaces';
 
 export default function ExercisesScreen() {
+  const db = useSQLiteContext();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+
+  useEffect(() => {
+    async function setup() {
+      try {
+        const result = await db.getAllAsync<Exercise>(
+          'SELECT * FROM exercises'
+        );
+        setExercises(result);
+      } catch {
+        console.error('Failed to fetch exercises:');
+      }
+    }
+    setup();
+  }, []);
+
   return (
     <View
       style={{
@@ -16,11 +35,13 @@ export default function ExercisesScreen() {
         alignItems: 'center',
       }}
     >
-      <Text>Exercise tab</Text>
-      <WorkoutButton
-        imgSource={require('@/assets/images/latpull_target_muscles.png')}
-        name="latpull"
-      />
+      {exercises.map((exercise) => (
+        <WorkoutButton
+          key={exercise.id}
+          imgSource={require('@/assets/images/latpull_target_muscles.png')}
+          name={exercise.name}
+        />
+      ))}
     </View>
   );
 }
