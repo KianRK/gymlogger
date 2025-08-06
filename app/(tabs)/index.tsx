@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 import { useColorScheme } from 'react-native';
 
+import CalendarButton from '@/components/CalendarButton';
 import { Colors } from '@/constants/Colors';
 
 export default function Index() {
@@ -15,7 +16,7 @@ export default function Index() {
         alignItems: 'center',
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <CalendarButton date="06.08.25" onPress={() => {}} />
     </View>
   );
 }
