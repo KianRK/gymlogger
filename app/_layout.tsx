@@ -18,6 +18,15 @@ export default function RootLayout() {
             INSERT OR IGNORE INTO exercises (name, target) VALUES ('lat pulldown', 'back');
             INSERT OR IGNORE INTO exercises (name, target) VALUES ('incline bench press', 'chest');
             INSERT OR IGNORE INTO exercises (name, target) VALUES ('cable flys', 'chest');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('lat prayer', 'back');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('bayesian cable curls', 'biceps');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('decline bench press', 'chest');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('preacher biceps curls', 'biceps');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('cable kickbacks', 'triceps');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('bench press', 'chest');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('leg extensions', 'legs');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('standing calves', 'legs');
+            INSERT OR IGNORE INTO exercises (name, target) VALUES ('cable crunches', 'abs');
           `);
           console.log('DB init complete.');
         } catch (error) {
