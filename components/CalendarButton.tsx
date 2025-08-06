@@ -17,10 +17,10 @@ export default function CalendarButton({ date, onPress }: Props) {
 
 const styles = StyleSheet.create({
   calendarButtonContainer: {
-    width: 128,
-    height: 84,
-    marginTop: 5,
-    marginRight: 5,
+    width: '33%',
+    height: '12%',
+    marginTop: '2%',
+    marginRight: '2%',
     marginLeft: 'auto',
     marginBottom: 'auto',
     borderWidth: 2,
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     color: 'black',
-    fontSize: 24,
+    fontSize: 26,
   },
 });
