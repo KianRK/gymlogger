@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   calendarButtonLabel: {
     flex: 1,
     textAlign: 'center',
+    textAlignVertical: 'center',
     color: 'black',
     fontSize: 24,
   },
