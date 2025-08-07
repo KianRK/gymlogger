@@ -7,6 +7,7 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 
 import CalendarButton from '@/components/CalendarButton';
+import AddButton from '@/components/AddButton';
 import { Colors } from '@/constants/Colors';
 
 export default function Index() {
@@ -42,7 +43,6 @@ export default function Index() {
           backgroundColor: colors.background,
           flex: 1,
           justifyContent: 'center',
-          alignItems: 'center',
         }}
       >
         <CalendarButton
@@ -59,6 +59,7 @@ export default function Index() {
             display="inline"
           />
         )}
+        <AddButton label="Add workout" />
       </SafeAreaView>
     </SafeAreaProvider>
   );
