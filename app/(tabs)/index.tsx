@@ -8,6 +8,7 @@ import DateTimePicker, {
 
 import CalendarButton from '@/components/CalendarButton';
 import AddButton from '@/components/AddButton';
+
 import { Colors } from '@/constants/Colors';
 
 export default function Index() {
@@ -43,6 +44,7 @@ export default function Index() {
           backgroundColor: colors.background,
           flex: 1,
           justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <CalendarButton
