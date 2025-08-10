@@ -2,7 +2,7 @@ import { StyleSheet, Text, Pressable, View } from 'react-native';
 
 type Props = {
   date: string;
-  onPress: () => void;
+  onPress?: () => void;
 };
 
 export default function CalendarButton({ date, onPress }: Props) {
