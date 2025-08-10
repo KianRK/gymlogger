@@ -1,4 +1,5 @@
 import { useColorScheme } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -12,6 +13,7 @@ import AddButton from '@/components/AddButton';
 import { Colors } from '@/constants/Colors';
 
 export default function Index() {
+  const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const today = new Date();
@@ -61,7 +63,15 @@ export default function Index() {
             display="inline"
           />
         )}
-        <AddButton label="Add workout" />
+        <AddButton
+          label="Add workout"
+          onPress={() =>
+            router.push({
+              pathname: './workouts/workout',
+              params: { date: isCurrentDateToday() ? 'Today' : dateString },
+            })
+          }
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
