@@ -1,7 +1,9 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme, Modal, View } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+
+import ExerciseCard from '@/components/ExerciseCard';
 
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -17,6 +19,7 @@ export default function Workouts() {
   const { date } = useLocalSearchParams<{ date: string }>();
   const colors = Colors[colorScheme];
   const router = useRouter();
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <SafeAreaProvider>
@@ -29,7 +32,27 @@ export default function Workouts() {
         }}
       >
         <CalendarButton date={date} />
-        <AddButton label="Add Exercise" onPress={() => router.back()} />
+        <Modal
+          style={{ alignSelf: 'center' }}
+          visible={modalVisible}
+          animationType="fade"
+          transparent={true}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <ExerciseCard name="Exercise" />
+          </View>
+        </Modal>
+        <AddButton
+          label="Add Exercise"
+          onPress={() => {
+            setModalVisible(true);
+          }}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
