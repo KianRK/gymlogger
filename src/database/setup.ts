@@ -51,19 +51,6 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       FOREIGN KEY (workout_id) REFERENCES workouts(id) ON DELETE CASCADE,
       UNIQUE(workout_id, order_index)
       );
-      CREATE TRIGGER IF NOT EXISTS set_workout_exercise_order_index
-      BEFORE INSERT ON workout_exercises
-      FOR EACH ROW
-      WHEN NEW.order_index IS NULL
-      BEGIN
-        SELECT
-          NEW.order_index = COALESCE(
-            (SELECT MAX(order_index) + 1
-             FROM workout_exercises
-             WHERE workout_id = NEW.workout_id),
-            1
-          );
-      END;
       INSERT OR IGNORE INTO workout_exercises (id, workout_id, name, order_index) VALUES (1, 1, 'lat pull', 1);
       INSERT OR IGNORE INTO workout_exercises (id, workout_id, name, order_index) VALUES (2, 1, 'incline bench press', 2);
       INSERT OR IGNORE INTO workout_exercises (id, workout_id, name, order_index) VALUES (3, 2, 'lat pull', 1);
@@ -81,19 +68,6 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       FOREIGN KEY (exercise_id) REFERENCES workout_exercises(id) ON DELETE CASCADE,
       UNIQUE(exercise_id, order_index)
       );
-      CREATE TRIGGER IF NOT EXISTS set_sets_order_index
-      BEFORE INSERT ON sets
-      FOR EACH ROW
-      WHEN NEW.order_index IS NULL
-      BEGIN
-        SELECT
-          NEW.order_index = COALESCE(
-            (SELECT MAX(order_index) + 1
-             FROM sets
-             WHERE exercise_id = NEW.exercise_id),
-            1
-          );
-      END;
       INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (1, 1, 10, 50);
       INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (1, 2, 10, 40);
       INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (2, 1, 10, 40);
