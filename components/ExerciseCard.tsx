@@ -11,9 +11,15 @@ type Props = {
   name: string;
   exercise_id: string;
   editable: boolean;
+  onConfirm?: () => void;
 };
 
-export default function ExerciseCard({ name, exercise_id, editable }: Props) {
+export default function ExerciseCard({
+  name,
+  exercise_id,
+  editable,
+  onConfirm,
+}: Props) {
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
@@ -24,10 +30,17 @@ export default function ExerciseCard({ name, exercise_id, editable }: Props) {
       console.log('reps:', editedSet[0]);
       console.log('weight:', editedSet[1]);
       try {
-        const result = db.runSync(
+        const changes = db.runSync(
           'INSERT INTO sets (exercise_id, reps, weight) VALUES (?, ?, ?)',
           [exercise_id, editedSet[0], editedSet[1]]
         );
+        let result = db.getAllSync<Set>(
+          'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
+          [exercise_id]
+        );
+        setSets(result);
+        console.log('New Sets:\n');
+        console.log(sets);
       } catch (error) {
         console.error('Could not insert into sets: ', error);
       }
@@ -36,12 +49,22 @@ export default function ExerciseCard({ name, exercise_id, editable }: Props) {
   };
   const handleConfirmSet = () => {
     setEditing(false);
-    const result = db.runSync(
-      'INSERT INTO sets (exercise_id, reps, weight) VALUES (?, ?, ?)',
-      [exercise_id, sets.length + 1, editedSet[0], editedSet[1]]
-    );
-    console.log('Added into DB:\n');
-    console.log(result);
+    try {
+      let changes = db.runSync(
+        'INSERT INTO sets (exercise_id, reps, weight) VALUES (?, ?, ?)',
+        [exercise_id, sets.length + 1, editedSet[0], editedSet[1]]
+      );
+      let result = db.getAllSync<Set>(
+        'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
+        [exercise_id]
+      );
+      setSets(result);
+      console.log('New Sets:\n');
+      console.log(result);
+      onConfirm?.();
+    } catch (error) {
+      console.error('Could not insert into sets: ', error);
+    }
   };
 
   const handleChangeText = (text: string, fieldIndex: number) => {
