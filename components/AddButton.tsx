@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   addButtonContainer: {
     width: 50,
     height: 50,
+    borderWidth: 2,
     borderRadius: 25,
     marginTop: 10,
     alignSelf: 'center',
