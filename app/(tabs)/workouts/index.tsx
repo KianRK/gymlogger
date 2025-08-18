@@ -72,8 +72,6 @@ export default function Index() {
             'SELECT * FROM workouts WHERE date = ? ORDER BY id',
             [dateName]
           );
-          console.log('DateName: ', dateName);
-          console.log('Query result:', result);
           setWorkouts(result);
         } catch (error) {
           console.error('Failed to fetch exercises:', error);
