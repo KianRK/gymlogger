@@ -37,6 +37,8 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       date TEXT NOT NULL,
       notes TEXT
       );
+      INSERT OR IGNORE INTO workouts (id, date) VALUES (1, 1182025);
+      INSERT OR IGNORE INTO workouts (id, date) VALUES (2, 1282025);
       `
     );
     db.execSync(
@@ -46,8 +48,13 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       workout_id INTEGER NOT NULL,
       name TEXT NOT NULL,
       order_index INTEGER NOT NULL,
-      FOREIGN KEY (workout_id) REFERENCES workouts(id) ON DELETE CASCADE
+      FOREIGN KEY (workout_id) REFERENCES workouts(id) ON DELETE CASCADE,
+      UNIQUE(workout_id, order_index)
       );
+      INSERT OR IGNORE INTO workout_exercises (id, workout_id, name, order_index) VALUES (1, 1, 'lat pull', 1);
+      INSERT OR IGNORE INTO workout_exercises (id, workout_id, name, order_index) VALUES (2, 1, 'incline bench press', 2);
+      INSERT OR IGNORE INTO workout_exercises (id, workout_id, name, order_index) VALUES (3, 2, 'lat pull', 1);
+      INSERT OR IGNORE INTO workout_exercises (id, workout_id, name, order_index) VALUES (4, 2, 'incline bench press', 2);
       `
     );
     db.execSync(
@@ -58,8 +65,18 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       order_index INTEGER NOT NULL,
       reps INTEGER NOT NULL,
       weight REAL NOT NULL,
-      FOREIGN KEY (exercise_id) REFERENCES exercise(id) ON DELETE CASCADE
+      FOREIGN KEY (exercise_id) REFERENCES workout_exercises(id) ON DELETE CASCADE,
+      UNIQUE(exercise_id, order_index)
       );
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (1, 1, 10, 50);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (1, 2, 10, 40);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (2, 1, 10, 40);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (2, 2, 10, 30);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (2, 3, 10, 25);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (3, 1, 12, 50);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (3, 2, 10, 40);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (4, 1, 10, 40);
+      INSERT OR IGNORE INTO sets (exercise_id, order_index, reps, weight) VALUES (4, 2, 10, 40);
       `
     );
     console.log('DB init complete.');
