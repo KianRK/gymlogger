@@ -66,9 +66,9 @@ export default function Index() {
 
   useFocusEffect(
     useCallback(() => {
-      async function setup() {
+      function setup() {
         try {
-          const result = await db.getAllAsync<Workout>(
+          const result = db.getAllSync<Workout>(
             'SELECT * FROM workouts WHERE date = ? ORDER BY id',
             [dateName]
           );
