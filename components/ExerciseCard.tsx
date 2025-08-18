@@ -23,6 +23,7 @@ export default function ExerciseCard({
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
+  const [orderIndex, setOrderIndex] = useState(0);
 
   const handleAddSet = () => {
     if (editing) {
@@ -31,9 +32,10 @@ export default function ExerciseCard({
       console.log('weight:', editedSet[1]);
       try {
         const changes = db.runSync(
-          'INSERT INTO sets (exercise_id, reps, weight) VALUES (?, ?, ?)',
-          [exercise_id, editedSet[0], editedSet[1]]
+          'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
+          [exercise_id, editedSet[0], editedSet[1], orderIndex + 1]
         );
+        setOrderIndex(orderIndex + 1);
         let result = db.getAllSync<Set>(
           'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
           [exercise_id]
@@ -51,9 +53,10 @@ export default function ExerciseCard({
     setEditing(false);
     try {
       let changes = db.runSync(
-        'INSERT INTO sets (exercise_id, reps, weight) VALUES (?, ?, ?)',
-        [exercise_id, sets.length + 1, editedSet[0], editedSet[1]]
+        'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
+        [exercise_id, editedSet[0], editedSet[1], orderIndex + 1]
       );
+      setOrderIndex(orderIndex + 1);
       let result = db.getAllSync<Set>(
         'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
         [exercise_id]
@@ -75,19 +78,32 @@ export default function ExerciseCard({
 
   useEffect(() => {
     function setup() {
-      try {
-        const result = db.getAllSync<Set>(
-          'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
+      if (!editable) {
+        try {
+          const result = db.getAllSync<Set>(
+            'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
+            [exercise_id]
+          );
+          setSets(result);
+          console.log('SETS: ', result);
+        } catch (error) {
+          console.error('Failed to fetch sets', error);
+        }
+      } else {
+        const result = db.getFirstSync<Set>(
+          `SELECT IFNULL(MAX(order_index), 0) AS max_order_index
+   FROM sets
+   WHERE exercise_id = ?`,
           [exercise_id]
         );
-        setSets(result);
-      } catch (error) {
-        console.error('Failed to fetch sets', error);
+        let order_index = result?.order_index;
+        if (order_index) {
+          setOrderIndex(order_index);
+        }
       }
     }
-    if (!editable) {
-      setup();
-    }
+
+    setup();
   }, []);
 
   return (

@@ -21,6 +21,7 @@ export default function Workouts() {
     workout_id: string;
   }>();
   const colors = Colors[colorScheme];
+  const [orderIndex, setOrderIndex] = useState(0);
   const [exercises, setExercises] = useState<WorkoutExercise[]>([]);
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
@@ -30,14 +31,30 @@ export default function Workouts() {
   // Wenn keine Exercise angelegt wird lösche Eintrag wieder
 
   const handleAddExercise = () => {
-    let exercise_name = 'TestExercise';
-    const result = db.runSync(
-      'INSERT INTO workout_exercises (workout_id, name) VALUES (?, ?)',
-      [parseInt(workout_id), exercise_name]
-    );
-    setExerciseId(result.lastInsertRowId.toString());
-    setModalVisible(true);
+    if (!modalVisible) {
+      let exercise_name = 'TestExercise';
+      const result = db.runSync(
+        'INSERT INTO workout_exercises (workout_id, name, order_index) VALUES (?, ?, ?)',
+        [parseInt(workout_id), exercise_name, orderIndex + 1]
+      );
+      setOrderIndex(orderIndex + 1);
+      setExerciseId(result.lastInsertRowId.toString());
+      setModalVisible(true);
+    }
   };
+
+  useEffect(() => {
+    const result = db.getFirstSync<WorkoutExercise>(
+      `SELECT IFNULL(MAX(order_index), 0) AS max_order_index
+       FROM workout_exercises
+       WHERE workout_id = ?`,
+      [workout_id]
+    );
+    let order_index = result?.order_index;
+    if (order_index) {
+      setOrderIndex(order_index);
+    }
+  });
 
   return (
     <SafeAreaProvider>
