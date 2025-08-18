@@ -22,6 +22,7 @@ export default function WorkoutCard({ workout_id }: Props) {
           'SELECT * FROM workout_exercises WHERE workout_id = ? order by order_index',
           [workout_id]
         );
+        console.log('WORKOUT EXERCISES: ', result);
         setWorkoutExercises(result);
       } catch (error) {
         console.error('Failed to fetch workout exercises', error);
