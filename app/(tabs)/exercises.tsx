@@ -1,29 +1,29 @@
 import { Text, View, useColorScheme, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
-import { useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
 
 import { Colors } from '@/constants/Colors';
 import WorkoutButton from '@/components/WorkoutButton';
 import { Exercise } from '@/src/database/db_interfaces';
+import { db } from '@/src/database';
 
 const colorScheme = useColorScheme() ?? 'light';
 const colors = Colors[colorScheme];
 
 export default function ExercisesScreen() {
-  const db = useSQLiteContext();
-
   const [exercises, setExercises] = useState<Exercise[]>([]);
 
+  // Bei Workouts die Workouts zum Tag anzeigen (Testeinträge)
+  // Bei Add Workout wird Workout erst angelegt, wenn erste Exercise bestätigt wird. Wenn letztes Exercise gelöscht wird
+  // wird auch Workout gelöscht
+
   useEffect(() => {
-    async function setup() {
+    function setup() {
       try {
-        const result = await db.getAllAsync<Exercise>(
-          'SELECT * FROM exercises'
-        );
+        const result = db.getAllSync<Exercise>('SELECT * FROM exercises');
         setExercises(result);
-      } catch {
-        console.error('Failed to fetch exercises:');
+      } catch (error) {
+        console.error('Failed to fetch exercises', error);
       }
     }
     setup();

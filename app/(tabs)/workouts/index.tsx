@@ -1,6 +1,7 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 import DateTimePicker, {
@@ -9,19 +10,24 @@ import DateTimePicker, {
 
 import CalendarButton from '@/components/CalendarButton';
 import AddButton from '@/components/AddButton';
-
 import { Colors } from '@/constants/Colors';
+import WorkoutCard from '@/components/WorkoutCard';
+
+import { db } from '@/src/database';
+import { Workout } from '@/src/database/db_interfaces';
 
 export default function Index() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const today = new Date();
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   //Month is zero indexed therefore needs to be increased by 1
   const dateString =
     date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
+  const dateName = dateString.replaceAll('.', '');
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
@@ -38,6 +44,44 @@ export default function Index() {
       today.getFullYear() === date.getFullYear()
     );
   }
+
+  const handleAddWorkout = () => {
+    try {
+      const result = db.runSync('INSERT INTO workouts (date) VALUES (?)', [
+        dateName,
+      ]);
+      let workout_id = result.lastInsertRowId.toString();
+      router.push({
+        pathname: './workouts/workout',
+        params: {
+          date: isCurrentDateToday() ? 'Today' : dateString,
+          dateName,
+          workout_id,
+        },
+      });
+    } catch (error) {
+      console.error('Inserting and rerouting did not work: ', error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      async function setup() {
+        try {
+          const result = await db.getAllAsync<Workout>(
+            'SELECT * FROM workouts WHERE date = ? ORDER BY id',
+            [dateName]
+          );
+          console.log('DateName: ', dateName);
+          console.log('Query result:', result);
+          setWorkouts(result);
+        } catch (error) {
+          console.error('Failed to fetch exercises:', error);
+        }
+      }
+      setup();
+    }, [dateName])
+  );
 
   return (
     <SafeAreaProvider>
@@ -63,15 +107,14 @@ export default function Index() {
             display="inline"
           />
         )}
-        <AddButton
-          label="Add workout"
-          onPress={() =>
-            router.push({
-              pathname: './workouts/workout',
-              params: { date: isCurrentDateToday() ? 'Today' : dateString },
-            })
-          }
-        />
+        {workouts.map((workout, index) => (
+          <View key={workout.id}>
+            <Text>Workout {index + 1}</Text>
+            <WorkoutCard workout_id={workout.id.toString()} />
+          </View>
+        ))}
+        {/* RENDERS ALL WORKOUTCARDS IN ID ORDER AND PASSES WORKOUT ID TO WORKOUTCARD*/}
+        <AddButton label="Add workout" onPress={handleAddWorkout} />
       </SafeAreaView>
     </SafeAreaProvider>
   );

@@ -1,17 +1,72 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
+
+import AddButton from './AddButton';
+import ConfirmButton from './ConfirmButton';
+
+import { db } from '@/src/database';
+import { Set } from '@/src/database/db_interfaces';
 
 type Props = {
   name: string;
+  exercise_id: string;
+  editable: boolean;
 };
 
-export default function ExerciseCard({ name }: Props) {
-  const [sets, setSets] = useState([
-    [1, 10, 30],
-    [2, 9, 25],
-  ]);
+export default function ExerciseCard({ name, exercise_id, editable }: Props) {
+  const [editing, setEditing] = useState(false);
+  const [sets, setSets] = useState<Set[]>([]);
+  const [editedSet, setEditedSet] = useState(['0', '0']);
 
-  // CHANGE KEY OF MAP TO UID WHEN READING FROM DB
+  const handleAddSet = () => {
+    if (editing) {
+      console.log('Exercise ID:', exercise_id);
+      console.log('reps:', editedSet[0]);
+      console.log('weight:', editedSet[1]);
+      try {
+        const result = db.runSync(
+          'INSERT INTO sets (exercise_id, reps, weight) VALUES (?, ?, ?)',
+          [exercise_id, editedSet[0], editedSet[1]]
+        );
+      } catch (error) {
+        console.error('Could not insert into sets: ', error);
+      }
+    }
+    setEditing(true);
+  };
+  const handleConfirmSet = () => {
+    setEditing(false);
+    const result = db.runSync(
+      'INSERT INTO sets (exercise_id, reps, weight) VALUES (?, ?, ?)',
+      [exercise_id, sets.length + 1, editedSet[0], editedSet[1]]
+    );
+    console.log('Added into DB:\n');
+    console.log(result);
+  };
+
+  const handleChangeText = (text: string, fieldIndex: number) => {
+    let updatedEditedSet = editedSet;
+    updatedEditedSet[fieldIndex] = text;
+    setEditedSet(updatedEditedSet);
+  };
+
+  useEffect(() => {
+    function setup() {
+      try {
+        const result = db.getAllSync<Set>(
+          'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
+          [exercise_id]
+        );
+        setSets(result);
+      } catch (error) {
+        console.error('Failed to fetch sets', error);
+      }
+    }
+    if (!editable) {
+      setup();
+    }
+  }, []);
+
   return (
     <View style={styles.exerciseCardContainer}>
       <Text style={styles.exerciseCardHeader}>{name}</Text>
@@ -20,13 +75,36 @@ export default function ExerciseCard({ name }: Props) {
         <Text style={styles.setText}>Reps</Text>
         <Text style={styles.setText}>Weight</Text>
       </View>
-      {sets.map((set, index) => (
-        <View key={index} style={styles.setContainer}>
-          <Text style={styles.setText}>{set[0]}</Text>
-          <Text style={styles.setText}>{set[1]}</Text>
-          <Text style={styles.setText}>{set[2]}</Text>
+      <ScrollView>
+        {sets.map((set) => (
+          <View key={set.id} style={styles.setContainer}>
+            <Text style={styles.setText}>{set.order_index}</Text>
+            <Text style={styles.setText}>{set.reps}</Text>
+            <Text style={styles.setText}>{set.weight}</Text>
+          </View>
+        ))}
+        {editing && (
+          <View style={styles.setContainer}>
+            <Text style={styles.setText}>{sets.length + 1}</Text>
+            <TextInput
+              onChangeText={(text) => handleChangeText(text, 0)}
+              keyboardType="numeric"
+              style={styles.setText}
+            ></TextInput>
+            <TextInput
+              onChangeText={(text) => handleChangeText(text, 1)}
+              keyboardType="numeric"
+              style={styles.setText}
+            ></TextInput>
+          </View>
+        )}
+      </ScrollView>
+      {editable && (
+        <View style={styles.buttonContainer}>
+          <ConfirmButton label="Confirm" onPress={handleConfirmSet} />
+          <AddButton label="Add set" onPress={handleAddSet} />
         </View>
-      ))}
+      )}
     </View>
   );
 }
@@ -51,6 +129,13 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   setText: {
+    borderWidth: 1,
     fontSize: 26,
+    width: '30%',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
 });
