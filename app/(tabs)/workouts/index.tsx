@@ -1,4 +1,11 @@
-import { useColorScheme, View, Text } from 'react-native';
+import {
+  useColorScheme,
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useEffect, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
@@ -105,15 +112,30 @@ export default function Index() {
             display="inline"
           />
         )}
-        {workouts.map((workout, index) => (
-          <View key={workout.id}>
-            <Text>Workout {index + 1}</Text>
-            <WorkoutCard workout_id={workout.id.toString()} />
-          </View>
-        ))}
+        <ScrollView
+          style={styles.scrollViewContainer}
+          {...(Platform.OS === 'android' ? { fadingEdgeLength: 75 } : {})}
+        >
+          {workouts.map((workout, index) => (
+            <View key={workout.id} style={styles.workoutContainer}>
+              <Text>Workout {index + 1}</Text>
+              <WorkoutCard workout_id={workout.id.toString()} />
+            </View>
+          ))}
+        </ScrollView>
         {/* RENDERS ALL WORKOUTCARDS IN ID ORDER AND PASSES WORKOUT ID TO WORKOUTCARD*/}
         <AddButton label="Add workout" onPress={handleAddWorkout} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollViewContainer: {
+    width: '100%',
+    margin: 8,
+  },
+  workoutContainer: {
+    alignItems: 'center',
+  },
+});
