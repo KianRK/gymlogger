@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
-
-import ExerciseCard from './ExerciseCard';
+import { View, Text, StyleSheet } from 'react-native';
 
 import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/database/db_interfaces';
 
 type Props = {
   workout_id: string;
+  number: number;
 };
 
-export default function WorkoutCard({ workout_id }: Props) {
+export default function WorkoutCard({ workout_id, number }: Props) {
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
@@ -31,16 +30,51 @@ export default function WorkoutCard({ workout_id }: Props) {
     setup();
   }, []);
 
+  function countSets(exercise_id: number) {
+    const result = db.getFirstSync<{ count: number }>(
+      'SELECT COUNT(*) as count FROM sets WHERE exercise_id = ?;',
+      [exercise_id]
+    );
+    return result?.count ?? 0;
+  }
+
   return (
-    <>
+    <View style={styles.WorkoutCardContainer}>
+      <Text style={styles.workoutCardHeader}>Workout {number}</Text>
       {workoutExercises.map((exercise) => (
-        <ExerciseCard
-          key={exercise.order_index}
-          name={exercise.name}
-          exercise_id={exercise.id.toString()}
-          editable={false}
-        />
+        <View key={exercise.id} style={styles.workoutCardExerciseContainer}>
+          <Text style={styles.workoutCardExerciseName}>{exercise.name}</Text>
+          <Text style={styles.workoutCardExerciseSets}>
+            Sets: {countSets(exercise.id)}
+          </Text>
+        </View>
       ))}
-    </>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  WorkoutCardContainer: {
+    width: '75%',
+    alignItems: 'center',
+    borderColor: 'black',
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderRadius: 10,
+    padding: 5,
+  },
+  workoutCardHeader: {
+    textAlign: 'center',
+    width: '100%',
+    borderWidth: 2,
+  },
+  workoutCardExerciseContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'space-between',
+    borderWidth: 1,
+  },
+  workoutCardExerciseName: {},
+  workoutCardExerciseSets: {},
+});
