@@ -12,6 +12,7 @@ type Props = {
   exercise_id: string;
   editable: boolean;
   onConfirm?: () => void;
+  refreshKey?: number;
 };
 
 export default function ExerciseCard({
@@ -19,6 +20,7 @@ export default function ExerciseCard({
   exercise_id,
   editable,
   onConfirm,
+  refreshKey,
 }: Props) {
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
@@ -50,7 +52,6 @@ export default function ExerciseCard({
     setEditing(true);
   };
   const handleConfirmSet = () => {
-    setEditing(false);
     try {
       let changes = db.runSync(
         'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
@@ -62,6 +63,7 @@ export default function ExerciseCard({
         [exercise_id]
       );
       setSets(result);
+      setEditing(false);
       console.log('New Sets:\n');
       console.log(result);
       onConfirm?.();
@@ -84,7 +86,7 @@ export default function ExerciseCard({
             'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
             [exercise_id]
           );
-          setSets(result);
+          setSets((r) => result);
           console.log('SETS: ', result);
         } catch (error) {
           console.error('Failed to fetch sets', error);
@@ -102,9 +104,8 @@ export default function ExerciseCard({
         }
       }
     }
-
     setup();
-  }, []);
+  }, [refreshKey]);
 
   return (
     <View style={styles.exerciseCardContainer}>

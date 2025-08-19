@@ -22,10 +22,28 @@ export default function Workouts() {
   }>();
   const colors = Colors[colorScheme];
   const [orderIndex, setOrderIndex] = useState(0);
-  const [exercises, setExercises] = useState<WorkoutExercise[]>([]);
-  const router = useRouter();
+  const [refreshKey, setRefreshKey] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
+    []
+  );
   const [exerciseId, setExerciseId] = useState('0');
+
+  useEffect(() => {
+    function setup() {
+      try {
+        const result = db.getAllSync<WorkoutExercise>(
+          'SELECT * FROM workout_exercises WHERE workout_id = ? order by order_index',
+          [workout_id]
+        );
+        console.log('WORKOUT EXERCISES: ', result);
+        setWorkoutExercises(result);
+      } catch (error) {
+        console.error('Failed to fetch workout exercises', error);
+      }
+    }
+    setup();
+  }, [modalVisible]);
 
   //Lege Workout an. Gebe Exercise die Workout ID.
   // Wenn keine Exercise angelegt wird lösche Eintrag wieder
@@ -54,7 +72,7 @@ export default function Workouts() {
     if (order_index) {
       setOrderIndex(order_index);
     }
-  });
+  }, []);
 
   return (
     <SafeAreaProvider>
@@ -67,6 +85,17 @@ export default function Workouts() {
         }}
       >
         <CalendarButton date={date} />
+        <View>
+          {workoutExercises.map((exercise) => (
+            <ExerciseCard
+              key={exercise.order_index}
+              name={exercise.name}
+              exercise_id={exercise.id.toString()}
+              editable={false}
+              refreshKey={refreshKey}
+            />
+          ))}
+        </View>
         <Modal
           style={{ alignSelf: 'center' }}
           visible={modalVisible}
@@ -83,7 +112,10 @@ export default function Workouts() {
               name="Exercise"
               exercise_id={exerciseId}
               editable={true}
-              onConfirm={() => setModalVisible(false)}
+              onConfirm={() => {
+                setModalVisible(false);
+                setRefreshKey((prev) => prev + 1);
+              }}
             />
           </View>
         </Modal>
