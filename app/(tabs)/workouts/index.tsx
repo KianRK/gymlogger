@@ -118,8 +118,10 @@ export default function Index() {
         >
           {workouts.map((workout, index) => (
             <View key={workout.id} style={styles.workoutContainer}>
-              <Text>Workout {index + 1}</Text>
-              <WorkoutCard workout_id={workout.id.toString()} />
+              <WorkoutCard
+                workout_id={workout.id.toString()}
+                number={index + 1}
+              />
             </View>
           ))}
         </ScrollView>
