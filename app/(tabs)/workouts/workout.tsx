@@ -83,6 +83,7 @@ export default function Workouts() {
               name="Exercise"
               exercise_id={exerciseId}
               editable={true}
+              onConfirm={() => setModalVisible(false)}
             />
           </View>
         </Modal>
