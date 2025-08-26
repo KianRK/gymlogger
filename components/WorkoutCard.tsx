@@ -21,7 +21,6 @@ export default function WorkoutCard({ workout_id, number }: Props) {
           'SELECT * FROM workout_exercises WHERE workout_id = ? order by order_index',
           [workout_id]
         );
-        console.log('WORKOUT EXERCISES: ', result);
         setWorkoutExercises(result);
       } catch (error) {
         console.error('Failed to fetch workout exercises', error);
@@ -62,10 +61,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
+    margin: 3,
   },
   workoutCardHeader: {
     textAlign: 'center',
     width: '100%',
+    fontSize: 20,
     borderWidth: 2,
   },
   workoutCardExerciseContainer: {
@@ -75,6 +76,10 @@ const styles = StyleSheet.create({
     alignContent: 'space-between',
     borderWidth: 1,
   },
-  workoutCardExerciseName: {},
-  workoutCardExerciseSets: {},
+  workoutCardExerciseName: {
+    fontSize: 16,
+  },
+  workoutCardExerciseSets: {
+    fontSize: 16,
+  },
 });
