@@ -6,9 +6,9 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import ExerciseCard from '@/components/ExerciseCard';
 import CalendarButton from '@/components/CalendarButton';
 import AddButton from '@/components/AddButton';
+import SelectExerciseCard from '@/components/SelectExerciseCard';
 
 import { db } from '@/src/database';
-import { Workout } from '@/src/database/db_interfaces';
 import { WorkoutExercise } from '@/src/database/db_interfaces';
 
 import { Colors } from '@/constants/Colors';
@@ -23,7 +23,9 @@ export default function Workouts() {
   const colors = Colors[colorScheme];
   const [orderIndex, setOrderIndex] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
+  const [selectionModalVisible, setSelectionModalVisible] = useState(false);
+  const [exerciseName, setExerciseName] = useState('Placeholder');
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
@@ -43,21 +45,32 @@ export default function Workouts() {
       }
     }
     setup();
-  }, [modalVisible]);
+  }, [exerciseModalVisible]);
 
   //Lege Workout an. Gebe Exercise die Workout ID.
   // Wenn keine Exercise angelegt wird lösche Eintrag wieder
 
   const handleAddExercise = () => {
-    if (!modalVisible) {
-      let exercise_name = 'TestExercise';
+    if (!selectionModalVisible) {
+      setSelectionModalVisible(true);
+    }
+  };
+
+  const updateExerciseName = (name: string) => {
+    setExerciseName(name);
+  };
+
+  const handleConfirmExercise = () => {
+    setSelectionModalVisible(false);
+    if (!exerciseModalVisible) {
+      let exercise_name = exerciseName;
       const result = db.runSync(
         'INSERT INTO workout_exercises (workout_id, name, order_index) VALUES (?, ?, ?)',
         [parseInt(workout_id), exercise_name, orderIndex + 1]
       );
       setOrderIndex(orderIndex + 1);
       setExerciseId(result.lastInsertRowId.toString());
-      setModalVisible(true);
+      setExerciseModalVisible(true);
     }
   };
 
@@ -98,22 +111,40 @@ export default function Workouts() {
         </View>
         <Modal
           style={{ alignSelf: 'center' }}
-          visible={modalVisible}
+          visible={selectionModalVisible}
           animationType="fade"
           transparent={true}
           onRequestClose={() => {
-            setModalVisible(!modalVisible);
+            setSelectionModalVisible(!selectionModalVisible);
+          }}
+        >
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <SelectExerciseCard
+              updateExerciseName={updateExerciseName}
+              onConfirm={handleConfirmExercise}
+            />
+          </View>
+        </Modal>
+        <Modal
+          style={{ alignSelf: 'center' }}
+          visible={exerciseModalVisible}
+          animationType="fade"
+          transparent={true}
+          onRequestClose={() => {
+            setExerciseModalVisible(!exerciseModalVisible);
           }}
         >
           <View
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
           >
             <ExerciseCard
-              name="Exercise"
+              name={exerciseName}
               exercise_id={exerciseId}
               editable={true}
               onConfirm={() => {
-                setModalVisible(false);
+                setExerciseModalVisible(false);
                 setRefreshKey((prev) => prev + 1);
               }}
             />
