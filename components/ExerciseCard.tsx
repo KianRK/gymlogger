@@ -29,9 +29,6 @@ export default function ExerciseCard({
 
   const handleAddSet = () => {
     if (editing) {
-      console.log('Exercise ID:', exercise_id);
-      console.log('reps:', editedSet[0]);
-      console.log('weight:', editedSet[1]);
       try {
         const changes = db.runSync(
           'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
@@ -43,8 +40,6 @@ export default function ExerciseCard({
           [exercise_id]
         );
         setSets(result);
-        console.log('New Sets:\n');
-        console.log(sets);
       } catch (error) {
         console.error('Could not insert into sets: ', error);
       }
@@ -52,23 +47,26 @@ export default function ExerciseCard({
     setEditing(true);
   };
   const handleConfirmSet = () => {
-    try {
-      let changes = db.runSync(
-        'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
-        [exercise_id, editedSet[0], editedSet[1], orderIndex + 1]
-      );
-      setOrderIndex(orderIndex + 1);
-      let result = db.getAllSync<Set>(
-        'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
-        [exercise_id]
-      );
-      setSets(result);
+    if (sets.length > 0) {
+      try {
+        let changes = db.runSync(
+          'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
+          [exercise_id, editedSet[0], editedSet[1], orderIndex + 1]
+        );
+        setOrderIndex(orderIndex + 1);
+        let result = db.getAllSync<Set>(
+          'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
+          [exercise_id]
+        );
+        setSets(result);
+        setEditing(false);
+        onConfirm?.();
+      } catch (error) {
+        console.error('Could not insert into sets: ', error);
+      }
+    } else {
       setEditing(false);
-      console.log('New Sets:\n');
-      console.log(result);
       onConfirm?.();
-    } catch (error) {
-      console.error('Could not insert into sets: ', error);
     }
   };
 
@@ -87,7 +85,6 @@ export default function ExerciseCard({
             [exercise_id]
           );
           setSets((r) => result);
-          console.log('SETS: ', result);
         } catch (error) {
           console.error('Failed to fetch sets', error);
         }
@@ -128,12 +125,12 @@ export default function ExerciseCard({
             <Text style={styles.setText}>{sets.length + 1}</Text>
             <TextInput
               onChangeText={(text) => handleChangeText(text, 0)}
-              keyboardType="numeric"
+              inputMode="numeric"
               style={styles.setText}
             ></TextInput>
             <TextInput
               onChangeText={(text) => handleChangeText(text, 1)}
-              keyboardType="numeric"
+              inputMode="numeric"
               style={styles.setText}
             ></TextInput>
           </View>
