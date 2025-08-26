@@ -25,7 +25,7 @@ export default function Workouts() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
   const [selectionModalVisible, setSelectionModalVisible] = useState(false);
-  const [exerciseName, setExerciseName] = useState('Placeholder');
+  const [exerciseName, setExerciseName] = useState('');
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
@@ -38,7 +38,6 @@ export default function Workouts() {
           'SELECT * FROM workout_exercises WHERE workout_id = ? order by order_index',
           [workout_id]
         );
-        console.log('WORKOUT EXERCISES: ', result);
         setWorkoutExercises(result);
       } catch (error) {
         console.error('Failed to fetch workout exercises', error);
@@ -56,13 +55,9 @@ export default function Workouts() {
     }
   };
 
-  const updateExerciseName = (name: string) => {
-    setExerciseName(name);
-  };
-
   const handleConfirmExercise = () => {
     setSelectionModalVisible(false);
-    if (!exerciseModalVisible) {
+    if (!exerciseModalVisible && exerciseName) {
       let exercise_name = exerciseName;
       const result = db.runSync(
         'INSERT INTO workout_exercises (workout_id, name, order_index) VALUES (?, ?, ?)',
@@ -122,7 +117,7 @@ export default function Workouts() {
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
           >
             <SelectExerciseCard
-              updateExerciseName={updateExerciseName}
+              updateExerciseName={setExerciseName}
               onConfirm={handleConfirmExercise}
             />
           </View>
