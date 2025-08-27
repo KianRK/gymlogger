@@ -24,7 +24,7 @@ export default function SelectExerciseCard({
 }: Props) {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [text, setText] = useState('');
-  const [typing, setTyping] = useState(true);
+  const [typing, setTyping] = useState(false);
 
   const handleConfirm = () => {
     onConfirm();
@@ -59,6 +59,7 @@ export default function SelectExerciseCard({
         <FlatList
           data={filteredExercises}
           style={styles.flatListContainer}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
@@ -80,6 +81,7 @@ export default function SelectExerciseCard({
 const styles = StyleSheet.create({
   selectExerciseCardContainer: {
     width: '75%',
+    position: 'relative',
     borderColor: 'black',
     backgroundColor: 'white',
     borderWidth: 2,
@@ -90,8 +92,13 @@ const styles = StyleSheet.create({
   },
   flatListContainer: {
     width: '75%',
+    top: 60,
+    backgroundColor: 'white',
+    position: 'absolute',
+    maxHeight: 150,
     borderWidth: 1,
     borderColor: 'black',
+    zIndex: 100,
   },
   inputText: {
     borderWidth: 1,
