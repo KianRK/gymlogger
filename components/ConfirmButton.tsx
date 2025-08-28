@@ -1,18 +1,38 @@
-import { Pressable, Text, View, StyleSheet } from 'react-native';
+import {
+  Pressable,
+  Text,
+  View,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
   label?: string;
   onPress?: () => void;
+  componentStyle?: ViewStyle;
+  buttonStyle?: ViewStyle;
+  labelStyle?: TextStyle;
+  iconSize?: number;
 };
 
-export default function ConfirmButton({ label, onPress }: Props) {
+export default function ConfirmButton({
+  label,
+  onPress,
+  componentStyle,
+  buttonStyle,
+  labelStyle,
+  iconSize = 35,
+}: Props) {
   return (
-    <View style={styles.componentContainer}>
-      <Text style={styles.addButtonLabel}>{label}</Text>
-      <View style={styles.addButtonContainer}>
+    <View style={[styles.componentContainer, componentStyle]}>
+      {label && (
+        <Text style={[styles.addButtonLabel, labelStyle]}>{label}</Text>
+      )}
+      <View style={[styles.addButtonContainer, buttonStyle]}>
         <Pressable style={styles.addButton} onPress={onPress}>
-          <Ionicons name="checkmark-outline" size={40} color={'black'} />
+          <Ionicons name="checkmark-outline" size={iconSize} color={'black'} />
         </Pressable>
       </View>
     </View>
