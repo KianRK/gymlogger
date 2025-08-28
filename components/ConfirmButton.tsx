@@ -42,18 +42,14 @@ export default function ConfirmButton({
 const styles = StyleSheet.create({
   componentContainer: {
     position: 'relative',
-    marginTop: 'auto',
-    marginLeft: 'auto',
-    marginBottom: '10%',
-    marginRight: '10%',
     alignContent: 'center',
+    justifyContent: 'center',
   },
   addButtonContainer: {
     width: 50,
     height: 50,
     borderWidth: 2,
     borderRadius: 25,
-    marginTop: 10,
     alignSelf: 'center',
     justifyContent: 'center',
     alignContent: 'center',

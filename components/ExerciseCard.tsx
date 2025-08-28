@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 import AddButton from './AddButton';
 import ConfirmButton from './ConfirmButton';
+import DeleteButton from './DeleteButton';
 
 import { db } from '@/src/database';
 import { Set } from '@/src/database/db_interfaces';
@@ -111,6 +112,7 @@ export default function ExerciseCard({
         <Text style={styles.setText}>Set</Text>
         <Text style={styles.setText}>Reps</Text>
         <Text style={styles.setText}>Weight</Text>
+        <Text style={{ flex: 1 }}></Text>
       </View>
       <ScrollView>
         {sets.map((set) => (
@@ -118,6 +120,7 @@ export default function ExerciseCard({
             <Text style={styles.setText}>{set.order_index}</Text>
             <Text style={styles.setText}>{set.reps}</Text>
             <Text style={styles.setText}>{set.weight}</Text>
+            <DeleteButton label="HI" />
           </View>
         ))}
         {editing && (
@@ -138,7 +141,11 @@ export default function ExerciseCard({
       </ScrollView>
       {editable && (
         <View style={styles.buttonContainer}>
-          <ConfirmButton label="Confirm" onPress={handleConfirmSet} />
+          <ConfirmButton
+            label="Confirm"
+            componentStyle={styles.confirmButtonComponent}
+            onPress={handleConfirmSet}
+          />
           <AddButton label="Add set" onPress={handleAddSet} />
         </View>
       )}
@@ -158,7 +165,8 @@ const styles = StyleSheet.create({
   setContainer: {
     borderWidth: 2,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   exerciseCardHeader: {
     alignSelf: 'center',
@@ -167,8 +175,15 @@ const styles = StyleSheet.create({
   },
   setText: {
     borderWidth: 1,
+    flex: 2,
     fontSize: 26,
     width: '30%',
+  },
+  confirmButtonComponent: {
+    marginTop: 'auto',
+    marginLeft: 'auto',
+    marginBottom: '10%',
+    marginRight: '10%',
   },
   buttonContainer: {
     flexDirection: 'row',

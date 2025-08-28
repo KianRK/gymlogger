@@ -48,32 +48,39 @@ export default function SelectExerciseCard({
 
   return (
     <View style={styles.selectExerciseCardContainer}>
-      <TextInput
-        style={styles.inputText}
-        onChangeText={(text) => setText(text)}
-        placeholder="Enter Exercise"
-        value={text}
-        onPress={() => setTyping(true)}
-      ></TextInput>
-      {typing && (
-        <FlatList
-          data={filteredExercises}
-          style={styles.flatListContainer}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => {
-                setText(item.name);
-                updateExerciseName(item.name);
-                setTyping(false);
-              }}
-            >
-              <Text style={styles.listItems}>{item.name}</Text>
-            </Pressable>
-          )}
-        />
-      )}
-      <ConfirmButton onPress={handleConfirm} />
+      <View style={styles.selectionContainer}>
+        <TextInput
+          style={styles.inputText}
+          onChangeText={(text) => setText(text)}
+          placeholder="Enter Exercise"
+          value={text}
+          onPress={() => setTyping(true)}
+        ></TextInput>
+        {typing && (
+          <FlatList
+            data={filteredExercises}
+            style={styles.flatListContainer}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => {
+                  setText(item.name);
+                  updateExerciseName(item.name);
+                  setTyping(false);
+                }}
+              >
+                <Text style={styles.listItems}>{item.name}</Text>
+              </Pressable>
+            )}
+          />
+        )}
+      </View>
+      <ConfirmButton
+        onPress={handleConfirm}
+        componentStyle={styles.confirmButtonContainer}
+        buttonStyle={styles.confirmButton}
+        labelStyle={styles.confirmButtonLabel}
+      />
     </View>
   );
 }
@@ -83,15 +90,18 @@ const styles = StyleSheet.create({
     width: '75%',
     position: 'relative',
     borderColor: 'black',
+    flexDirection: 'row',
+    maxHeight: 120,
     backgroundColor: 'white',
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignContent: 'space-between',
   },
+  selectionContainer: { width: '75%' },
   flatListContainer: {
-    width: '75%',
+    width: '100%',
     top: 60,
     backgroundColor: 'white',
     position: 'absolute',
@@ -102,7 +112,7 @@ const styles = StyleSheet.create({
   },
   inputText: {
     borderWidth: 1,
-    width: '75%',
+    width: '100%',
     fontSize: 26,
     textAlign: 'center',
   },
@@ -110,4 +120,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     fontSize: 18,
   },
+  confirmButton: { width: 40, height: 40 },
+  confirmButtonContainer: {
+    marginRight: '5%',
+  },
+  confirmButtonLabel: {},
 });
