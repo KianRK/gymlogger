@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
+    margin: 3,
   },
   setContainer: {
     borderWidth: 2,
