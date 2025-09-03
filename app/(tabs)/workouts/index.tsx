@@ -1,13 +1,12 @@
 import {
   useColorScheme,
   View,
-  Text,
   ScrollView,
   StyleSheet,
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
