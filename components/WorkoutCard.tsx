@@ -30,10 +30,15 @@ export default function WorkoutCard({ workout_id, number }: Props) {
   }, []);
 
   function countSets(exercise_id: number) {
-    const result = db.getFirstSync<{ count: number }>(
-      'SELECT COUNT(*) as count FROM sets WHERE exercise_id = ?;',
-      [exercise_id]
-    );
+    let result;
+    try {
+      result = db.getFirstSync<{ count: number }>(
+        'SELECT COUNT(*) as count FROM sets WHERE exercise_id = ?;',
+        [exercise_id]
+      );
+    } catch (error) {
+      console.error('Failed to fetch sets with exercise_id', error);
+    }
     return result?.count ?? 0;
   }
 
