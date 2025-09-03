@@ -1,7 +1,14 @@
-import { useColorScheme, Modal, View } from 'react-native';
+import {
+  useColorScheme,
+  Modal,
+  View,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 import ExerciseCard from '@/components/ExerciseCard';
 import CalendarButton from '@/components/CalendarButton';
@@ -93,17 +100,24 @@ export default function Workouts() {
         }}
       >
         <CalendarButton date={date} />
-        <View>
+        <ScrollView
+          style={styles.scrollViewContainer}
+          {...(Platform.OS === 'android' ? { fadingEdgeLength: 75 } : {})}
+        >
           {workoutExercises.map((exercise) => (
-            <ExerciseCard
+            <View
+              style={styles.exerciseCardContainer}
               key={exercise.order_index}
-              name={exercise.name}
-              exercise_id={exercise.id.toString()}
-              editable={false}
-              refreshKey={refreshKey}
-            />
+            >
+              <ExerciseCard
+                name={exercise.name}
+                exercise_id={exercise.id.toString()}
+                editable={false}
+                refreshKey={refreshKey}
+              />
+            </View>
           ))}
-        </View>
+        </ScrollView>
         <Modal
           style={{ alignSelf: 'center' }}
           visible={selectionModalVisible}
@@ -150,3 +164,13 @@ export default function Workouts() {
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollViewContainer: {
+    width: '100%',
+    margin: 8,
+  },
+  exerciseCardContainer: {
+    alignItems: 'center',
+  },
+});
