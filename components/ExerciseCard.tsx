@@ -43,16 +43,12 @@ export default function ExerciseCard({
     setSetList((prev) => [...prev, [editedSet[0], editedSet[1]]]);
     if (setList.length > 0) {
       try {
-        console.log('workout_id', workout_id);
-        console.log('name', name);
-        console.log('orderIndex', orderIndex);
         let result = db.runSync(
           'INSERT INTO workout_exercises (workout_id, name, order_index) VALUES (?, ?, ?)',
           [workout_id, name, orderIndex]
         );
         let id = result.lastInsertRowId.toString();
         setOrderIndex(orderIndex + 1);
-        console.log('ID', id);
         setList.map((set, index) => {
           const result = db.runSync(
             'INSERT INTO sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
@@ -81,11 +77,8 @@ export default function ExerciseCard({
       [workout_id]
     );
     let order_index = result?.max_order_index;
-    console.log('WORKOUT ID:', workout_id);
-    console.log('MAX ORDER:', order_index);
     if (order_index != null) {
       setOrderIndex(order_index + 1);
-      console.log('Order Index after set', orderIndex);
     }
   }, []);
 
@@ -122,7 +115,6 @@ export default function ExerciseCard({
               <Text style={styles.setText}>{index + 1}</Text>
               <Text style={styles.setText}>{set.reps}</Text>
               <Text style={styles.setText}>{set.weight}</Text>
-              <DeleteButton label="HI" />
             </View>
           ))}
         {editable &&
@@ -131,7 +123,9 @@ export default function ExerciseCard({
               <Text style={styles.setText}>{index + 1}</Text>
               <Text style={styles.setText}>{set[0]}</Text>
               <Text style={styles.setText}>{set[1]}</Text>
-              <DeleteButton label="HI" />
+              <DeleteButton
+                onPress={() => setSetList(setList.toSpliced(index, 1))}
+              />
             </View>
           ))}
         {editing && (
