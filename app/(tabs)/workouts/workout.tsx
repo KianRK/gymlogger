@@ -65,13 +65,6 @@ export default function Workouts() {
   const handleConfirmExercise = () => {
     setSelectionModalVisible(false);
     if (!exerciseModalVisible && exerciseName) {
-      let exercise_name = exerciseName;
-      const result = db.runSync(
-        'INSERT INTO workout_exercises (workout_id, name, order_index) VALUES (?, ?, ?)',
-        [parseInt(workout_id), exercise_name, orderIndex + 1]
-      );
-      setOrderIndex(orderIndex + 1);
-      setExerciseId(result.lastInsertRowId.toString());
       setExerciseModalVisible(true);
     }
   };
@@ -113,6 +106,7 @@ export default function Workouts() {
                 name={exercise.name}
                 exercise_id={exercise.id.toString()}
                 editable={false}
+                workout_id={workout_id}
                 refreshKey={refreshKey}
               />
             </View>
@@ -152,6 +146,7 @@ export default function Workouts() {
               name={exerciseName}
               exercise_id={exerciseId}
               editable={true}
+              workout_id={workout_id}
               onConfirm={() => {
                 setExerciseModalVisible(false);
                 setRefreshKey((prev) => prev + 1);
