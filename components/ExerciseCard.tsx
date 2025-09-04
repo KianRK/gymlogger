@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import AddButton from './AddButton';
 import ConfirmButton from './ConfirmButton';
 import DeleteButton from './DeleteButton';
+import { WorkoutExercise } from '@/src/database/db_interfaces';
 
 import { db } from '@/src/database';
 import { Set } from '@/src/database/db_interfaces';
@@ -12,6 +13,7 @@ type Props = {
   name: string;
   exercise_id: string;
   editable: boolean;
+  workout_id: string;
   onConfirm?: () => void;
   refreshKey?: number;
 };
@@ -20,6 +22,7 @@ export default function ExerciseCard({
   name,
   exercise_id,
   editable,
+  workout_id,
   onConfirm,
   refreshKey,
 }: Props) {
@@ -27,48 +30,41 @@ export default function ExerciseCard({
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
   const [orderIndex, setOrderIndex] = useState(0);
+  const [setList, setSetList] = useState<string[][]>([]);
 
   const handleAddSet = () => {
     if (editing) {
-      try {
-        const changes = db.runSync(
-          'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
-          [exercise_id, editedSet[0], editedSet[1], orderIndex + 1]
-        );
-        setOrderIndex(orderIndex + 1);
-        let result = db.getAllSync<Set>(
-          'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
-          [exercise_id]
-        );
-        setSets(result);
-      } catch (error) {
-        console.error('Could not insert into sets: ', error);
-      }
+      setSetList((prev) => [...prev, [editedSet[0], editedSet[1]]]);
     }
     setEditing(true);
   };
+
   const handleConfirmSet = () => {
-    if (sets.length > 0) {
+    setSetList((prev) => [...prev, [editedSet[0], editedSet[1]]]);
+    if (setList.length > 0) {
       try {
-        let changes = db.runSync(
-          'INSERT INTO sets (exercise_id, reps, weight, order_index) VALUES (?, ?, ?, ?)',
-          [exercise_id, editedSet[0], editedSet[1], orderIndex + 1]
+        console.log('workout_id', workout_id);
+        console.log('name', name);
+        console.log('orderIndex', orderIndex);
+        let result = db.runSync(
+          'INSERT INTO workout_exercises (workout_id, name, order_index) VALUES (?, ?, ?)',
+          [workout_id, name, orderIndex]
         );
+        let id = result.lastInsertRowId.toString();
         setOrderIndex(orderIndex + 1);
-        let result = db.getAllSync<Set>(
-          'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
-          [exercise_id]
-        );
-        setSets(result);
-        setEditing(false);
-        onConfirm?.();
+        console.log('ID', id);
+        setList.map((set, index) => {
+          const result = db.runSync(
+            'INSERT INTO sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
+            [id, index + 1, set[0], set[1]]
+          );
+        });
       } catch (error) {
-        console.error('Could not insert into sets: ', error);
+        console.error('Could not insert exercise and/or sets', error);
       }
-    } else {
-      setEditing(false);
-      onConfirm?.();
     }
+    setEditing(false);
+    onConfirm?.();
   };
 
   const handleChangeText = (text: string, fieldIndex: number) => {
@@ -76,6 +72,22 @@ export default function ExerciseCard({
     updatedEditedSet[fieldIndex] = text;
     setEditedSet(updatedEditedSet);
   };
+
+  useEffect(() => {
+    const result = db.getFirstSync<{ max_order_index: number }>(
+      `SELECT IFNULL(MAX(order_index), 0) AS max_order_index
+       FROM workout_exercises
+       WHERE workout_id = ?`,
+      [workout_id]
+    );
+    let order_index = result?.max_order_index;
+    console.log('WORKOUT ID:', workout_id);
+    console.log('MAX ORDER:', order_index);
+    if (order_index != null) {
+      setOrderIndex(order_index + 1);
+      console.log('Order Index after set', orderIndex);
+    }
+  }, []);
 
   useEffect(() => {
     function setup() {
@@ -89,21 +101,10 @@ export default function ExerciseCard({
         } catch (error) {
           console.error('Failed to fetch sets', error);
         }
-      } else {
-        const result = db.getFirstSync<Set>(
-          `SELECT IFNULL(MAX(order_index), 0) AS max_order_index
-   FROM sets
-   WHERE exercise_id = ?`,
-          [exercise_id]
-        );
-        let order_index = result?.order_index;
-        if (order_index) {
-          setOrderIndex(order_index);
-        }
       }
     }
     setup();
-  }, [refreshKey]);
+  }, []);
 
   return (
     <View style={styles.exerciseCardContainer}>
@@ -115,14 +116,24 @@ export default function ExerciseCard({
         <Text style={{ flex: 1 }}></Text>
       </View>
       <ScrollView>
-        {sets.map((set) => (
-          <View key={set.id} style={styles.setContainer}>
-            <Text style={styles.setText}>{set.order_index}</Text>
-            <Text style={styles.setText}>{set.reps}</Text>
-            <Text style={styles.setText}>{set.weight}</Text>
-            <DeleteButton label="HI" />
-          </View>
-        ))}
+        {!editable &&
+          sets.map((set, index) => (
+            <View key={set.id} style={styles.setContainer}>
+              <Text style={styles.setText}>{index + 1}</Text>
+              <Text style={styles.setText}>{set.reps}</Text>
+              <Text style={styles.setText}>{set.weight}</Text>
+              <DeleteButton label="HI" />
+            </View>
+          ))}
+        {editable &&
+          setList.map((set, index) => (
+            <View key={index} style={styles.setContainer}>
+              <Text style={styles.setText}>{index + 1}</Text>
+              <Text style={styles.setText}>{set[0]}</Text>
+              <Text style={styles.setText}>{set[1]}</Text>
+              <DeleteButton label="HI" />
+            </View>
+          ))}
         {editing && (
           <View style={styles.setContainer}>
             <Text style={styles.setText}>{sets.length + 1}</Text>
