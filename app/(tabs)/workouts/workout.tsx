@@ -6,9 +6,9 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 import ExerciseCard from '@/components/ExerciseCard';
 import CalendarButton from '@/components/CalendarButton';
@@ -37,6 +37,29 @@ export default function Workouts() {
     []
   );
   const [exerciseId, setExerciseId] = useState('0');
+
+  useFocusEffect(
+    useCallback(() => {
+      // If no exercise has been inserted the corresponding workout will be deleted again from db
+      return () => {
+        let result;
+        try {
+          result = db.getFirstSync<{ exist_check: number }>(
+            'SELECT EXISTS(SELECT 1 FROM workout_exercises WHERE workout_id = ?) AS exist_check',
+            [workout_id]
+          );
+        } catch (error) {
+          console.error('Exist check did not run:', error);
+        }
+        let hasExercises = result?.exist_check;
+        if (!hasExercises) {
+          let result = db.runSync('DELETE FROM workouts WHERE id = ?', [
+            parseInt(workout_id),
+          ]);
+        }
+      };
+    }, [])
+  );
 
   useEffect(() => {
     function setup() {
