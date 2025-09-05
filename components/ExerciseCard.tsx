@@ -123,14 +123,16 @@ export default function ExerciseCard({
               <Text style={styles.setText}>{index + 1}</Text>
               <Text style={styles.setText}>{set[0]}</Text>
               <Text style={styles.setText}>{set[1]}</Text>
+
               <DeleteButton
+                componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
                 onPress={() => setSetList(setList.toSpliced(index, 1))}
               />
             </View>
           ))}
         {editing && (
           <View style={styles.setContainer}>
-            <Text style={styles.setText}>{sets.length + 1}</Text>
+            <Text style={styles.setText}>{setList.length + 1}</Text>
             <TextInput
               onChangeText={(text) => handleChangeText(text, 0)}
               inputMode="numeric"
@@ -148,10 +150,14 @@ export default function ExerciseCard({
         <View style={styles.buttonContainer}>
           <ConfirmButton
             label="Confirm"
-            componentStyle={styles.confirmButtonComponent}
+            componentStyle={styles.buttonComponent}
             onPress={handleConfirmSet}
           />
-          <AddButton label="Add set" onPress={handleAddSet} />
+          <AddButton
+            label="Add set"
+            componentStyle={styles.buttonComponent}
+            onPress={handleAddSet}
+          />
         </View>
       )}
     </View>
@@ -163,16 +169,16 @@ const styles = StyleSheet.create({
     width: '75%',
     borderColor: 'black',
     backgroundColor: 'white',
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 10,
     padding: 5,
     margin: 3,
   },
   setContainer: {
-    borderWidth: 2,
+    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   exerciseCardHeader: {
     alignSelf: 'center',
@@ -180,12 +186,13 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   setText: {
+    textAlign: 'center',
+    minHeight: 35,
     borderWidth: 1,
-    flex: 2,
-    fontSize: 26,
-    width: '30%',
+    fontSize: 22,
+    width: '25%',
   },
-  confirmButtonComponent: {
+  buttonComponent: {
     marginTop: 'auto',
     marginLeft: 'auto',
     marginBottom: '10%',

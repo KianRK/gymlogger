@@ -28,10 +28,10 @@ export default function ConfirmButton({
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
-        <Text style={[styles.addButtonLabel, labelStyle]}>{label}</Text>
+        <Text style={[styles.confirmButtonLabel, labelStyle]}>{label}</Text>
       )}
-      <View style={[styles.addButtonContainer, buttonStyle]}>
-        <Pressable style={styles.addButton} onPress={onPress}>
+      <View style={[styles.confirmButtonContainer, buttonStyle]}>
+        <Pressable style={styles.confirmButton} onPress={onPress}>
           <Ionicons name="checkmark-outline" size={iconSize} color={'black'} />
         </Pressable>
       </View>
@@ -42,10 +42,10 @@ export default function ConfirmButton({
 const styles = StyleSheet.create({
   componentContainer: {
     position: 'relative',
-    alignContent: 'center',
     justifyContent: 'center',
+    alignContent: 'center',
   },
-  addButtonContainer: {
+  confirmButtonContainer: {
     width: 50,
     height: 50,
     borderWidth: 2,
@@ -55,11 +55,10 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     backgroundColor: 'white',
   },
-
-  addButton: {
-    alignSelf: 'center',
+  confirmButton: {
+    alignItems: 'center',
   },
-  addButtonLabel: {
+  confirmButtonLabel: {
     width: 140,
     textAlign: 'center',
     color: 'black',

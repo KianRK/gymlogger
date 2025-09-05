@@ -1,18 +1,36 @@
-import { Pressable, Text, View, StyleSheet } from 'react-native';
+import {
+  Pressable,
+  Text,
+  View,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
-  label: string;
+  label?: string;
   onPress?: () => void;
+  componentStyle?: ViewStyle;
+  buttonStyle?: ViewStyle;
+  labelStyle?: TextStyle;
+  iconSize?: number;
 };
 
-export default function AddButton({ label, onPress }: Props) {
+export default function AddButton({
+  label,
+  onPress,
+  componentStyle,
+  buttonStyle,
+  labelStyle,
+  iconSize = 35,
+}: Props) {
   return (
-    <View style={styles.componentContainer}>
-      <Text style={styles.addButtonLabel}>{label}</Text>
-      <View style={styles.addButtonContainer}>
+    <View style={[styles.componentContainer, componentStyle]}>
+      <Text style={[styles.addButtonLabel, labelStyle]}>{label}</Text>
+      <View style={[styles.addButtonContainer, buttonStyle]}>
         <Pressable style={styles.addButton} onPress={onPress}>
-          <Ionicons name="add-sharp" size={40} color={'black'} />
+          <Ionicons name="add-sharp" size={iconSize} color={'black'} />
         </Pressable>
       </View>
     </View>
@@ -22,10 +40,7 @@ export default function AddButton({ label, onPress }: Props) {
 const styles = StyleSheet.create({
   componentContainer: {
     position: 'relative',
-    marginTop: 'auto',
-    marginLeft: 'auto',
-    marginBottom: '10%',
-    marginRight: '10%',
+    justifyContent: 'center',
     alignContent: 'center',
   },
   addButtonContainer: {
@@ -33,16 +48,13 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 2,
     borderRadius: 25,
-    marginTop: 10,
     alignSelf: 'center',
     justifyContent: 'center',
     alignContent: 'center',
     backgroundColor: 'white',
   },
 
-  addButton: {
-    alignSelf: 'center',
-  },
+  addButton: { alignItems: 'center' },
   addButtonLabel: {
     width: 140,
     textAlign: 'center',

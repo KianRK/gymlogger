@@ -125,7 +125,11 @@ export default function Index() {
           ))}
         </ScrollView>
         {/* RENDERS ALL WORKOUTCARDS IN ID ORDER AND PASSES WORKOUT ID TO WORKOUTCARD*/}
-        <AddButton label="Add workout" onPress={handleAddWorkout} />
+        <AddButton
+          label="Add workout"
+          componentStyle={styles.buttonComponent}
+          onPress={handleAddWorkout}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -138,5 +142,11 @@ const styles = StyleSheet.create({
   },
   workoutContainer: {
     alignItems: 'center',
+  },
+  buttonComponent: {
+    marginTop: 'auto',
+    marginLeft: 'auto',
+    marginBottom: '10%',
+    marginRight: '10%',
   },
 });

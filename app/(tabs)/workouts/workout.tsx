@@ -177,7 +177,11 @@ export default function Workouts() {
             />
           </View>
         </Modal>
-        <AddButton label="Add Exercise" onPress={handleAddExercise} />
+        <AddButton
+          label="Add Exercise"
+          componentStyle={styles.buttonComponent}
+          onPress={handleAddExercise}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -190,5 +194,11 @@ const styles = StyleSheet.create({
   },
   exerciseCardContainer: {
     alignItems: 'center',
+  },
+  buttonComponent: {
+    marginTop: 'auto',
+    marginLeft: 'auto',
+    marginBottom: '10%',
+    marginRight: '10%',
   },
 });
