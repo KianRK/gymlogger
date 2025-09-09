@@ -4,12 +4,19 @@ import { View, Text, StyleSheet } from 'react-native';
 import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/database/db_interfaces';
 
+import DeleteButton from './DeleteButton';
+
 type Props = {
   workout_id: string;
-  number: number;
+  workout_number: number;
+  refreshTrigger: () => void;
 };
 
-export default function WorkoutCard({ workout_id, number }: Props) {
+export default function WorkoutCard({
+  workout_id,
+  workout_number,
+  refreshTrigger,
+}: Props) {
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
@@ -33,7 +40,7 @@ export default function WorkoutCard({ workout_id, number }: Props) {
     let result;
     try {
       result = db.getFirstSync<{ count: number }>(
-        'SELECT COUNT(*) as count FROM sets WHERE exercise_id = ?;',
+        'SELECT COUNT(*) as count FROM sets WHERE exercise_id = ?',
         [exercise_id]
       );
     } catch (error) {
@@ -42,9 +49,25 @@ export default function WorkoutCard({ workout_id, number }: Props) {
     return result?.count ?? 0;
   }
 
+  function deleteWorkout(workout_id: string) {
+    try {
+      db.runSync('DELETE FROM workouts WHERE id = ?', [workout_id]);
+      refreshTrigger();
+    } catch (error) {
+      console.log('Could not delete workout', error);
+    }
+  }
+
   return (
     <View style={styles.WorkoutCardContainer}>
-      <Text style={styles.workoutCardHeader}>Workout {number}</Text>
+      <View style={styles.workoutCardHeaderContainer}>
+        <Text style={styles.workoutCardLabel}>Workout {workout_number}</Text>
+        <DeleteButton
+          componentStyle={styles.deletebuttonComponent}
+          iconSize={20}
+          onPress={() => deleteWorkout(workout_id)}
+        />
+      </View>
       {workoutExercises.map((exercise) => (
         <View key={exercise.id} style={styles.workoutCardExerciseContainer}>
           <Text style={styles.workoutCardExerciseName}>{exercise.name}</Text>
@@ -68,11 +91,21 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 3,
   },
-  workoutCardHeader: {
-    textAlign: 'center',
+  workoutCardHeaderContainer: {
     width: '100%',
-    fontSize: 20,
+    flexDirection: 'row',
     borderWidth: 2,
+    justifyContent: 'center',
+    padding: 3,
+  },
+  workoutCardLabel: {
+    textAlign: 'center',
+    fontSize: 22,
+    marginLeft: 3,
+  },
+  deletebuttonComponent: {
+    marginLeft: 'auto',
+    marginRight: 3,
   },
   workoutCardExerciseContainer: {
     width: '100%',
@@ -80,11 +113,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignContent: 'space-between',
     borderWidth: 1,
+    padding: 2,
   },
   workoutCardExerciseName: {
+    marginLeft: 3,
     fontSize: 16,
   },
   workoutCardExerciseSets: {
+    marginRight: 3,
     fontSize: 16,
   },
 });

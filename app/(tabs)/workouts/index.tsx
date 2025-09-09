@@ -28,6 +28,7 @@ export default function Index() {
   const colors = Colors[colorScheme];
   const today = new Date();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   //Month is zero indexed therefore needs to be increased by 1
@@ -72,7 +73,7 @@ export default function Index() {
 
   useFocusEffect(
     useCallback(() => {
-      function setup() {
+      function fetchWorkouts() {
         try {
           const result = db.getAllSync<Workout>(
             'SELECT * FROM workouts WHERE date = ? ORDER BY id',
@@ -80,11 +81,11 @@ export default function Index() {
           );
           setWorkouts(result);
         } catch (error) {
-          console.error('Failed to fetch exercises:', error);
+          console.error('Failed to fetch workouts:', error);
         }
       }
-      setup();
-    }, [dateName])
+      fetchWorkouts();
+    }, [dateName, refreshKey])
   );
 
   return (
@@ -119,7 +120,8 @@ export default function Index() {
             <View key={workout.id} style={styles.workoutContainer}>
               <WorkoutCard
                 workout_id={workout.id.toString()}
-                number={index + 1}
+                workout_number={index + 1}
+                refreshTrigger={() => setRefreshKey(refreshKey + 1)}
               />
             </View>
           ))}
