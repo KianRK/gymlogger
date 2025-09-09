@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import AddButton from './AddButton';
 import ConfirmButton from './ConfirmButton';
 import DeleteButton from './DeleteButton';
-import { WorkoutExercise } from '@/src/database/db_interfaces';
 
 import { db } from '@/src/database';
 import { Set } from '@/src/database/db_interfaces';
@@ -15,7 +14,7 @@ type Props = {
   editable: boolean;
   workout_id: string;
   onConfirm?: () => void;
-  refreshKey?: number;
+  refreshTrigger?: () => void;
 };
 
 export default function ExerciseCard({
@@ -24,13 +23,22 @@ export default function ExerciseCard({
   editable,
   workout_id,
   onConfirm,
-  refreshKey,
+  refreshTrigger,
 }: Props) {
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
   const [orderIndex, setOrderIndex] = useState(0);
   const [setList, setSetList] = useState<string[][]>([]);
+
+  function deleteExercise(exercise_id: string) {
+    try {
+      db.runSync('DELETE FROM workout_exercises WHERE id = ?', [exercise_id]);
+      refreshTrigger?.();
+    } catch (error) {
+      console.log('Could not delete workout_exercise', error);
+    }
+  }
 
   const handleAddSet = () => {
     if (editing) {
@@ -101,20 +109,31 @@ export default function ExerciseCard({
 
   return (
     <View style={styles.exerciseCardContainer}>
-      <Text style={styles.exerciseCardHeader}>{name}</Text>
       {editable && (
-        <View style={styles.setContainer}>
-          <Text style={styles.setTextEditable}>Set</Text>
-          <Text style={styles.setTextEditable}>Reps</Text>
-          <Text style={styles.setTextEditable}>Weight</Text>
-          <Text style={{ flex: 1 }}></Text>
+        <View>
+          <Text style={styles.exerciseCardHeader}>{name}</Text>
+          <View style={styles.setContainer}>
+            <Text style={styles.setTextEditable}>Set</Text>
+            <Text style={styles.setTextEditable}>Reps</Text>
+            <Text style={styles.setTextEditable}>Weight</Text>
+            <Text style={{ flex: 1 }}></Text>
+          </View>
         </View>
       )}
       {!editable && (
-        <View style={styles.setContainer}>
-          <Text style={styles.setText}>Set</Text>
-          <Text style={styles.setText}>Reps</Text>
-          <Text style={styles.setText}>Weight</Text>
+        <View>
+          <View style={styles.exerciseCardHeaderContainer}>
+            <Text style={styles.exerciseCardHeader}>{name}</Text>
+            <DeleteButton
+              componentStyle={styles.deleteButtonComponent}
+              onPress={() => deleteExercise(exercise_id)}
+            />
+          </View>
+          <View style={styles.setContainer}>
+            <Text style={styles.setText}>Set</Text>
+            <Text style={styles.setText}>Reps</Text>
+            <Text style={styles.setText}>Weight</Text>
+          </View>
         </View>
       )}
       <ScrollView>
@@ -194,6 +213,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 28,
   },
+  exerciseCardHeaderContainer: { flexDirection: 'row' },
+  deleteButtonComponent: { marginLeft: 'auto', marginRight: '3%' },
   setText: {
     textAlign: 'center',
     minHeight: 35,

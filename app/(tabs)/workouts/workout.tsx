@@ -62,7 +62,7 @@ export default function Workouts() {
   );
 
   useEffect(() => {
-    function setup() {
+    function fetchWorkoutExercises() {
       try {
         const result = db.getAllSync<WorkoutExercise>(
           'SELECT * FROM workout_exercises WHERE workout_id = ? order by order_index',
@@ -73,8 +73,8 @@ export default function Workouts() {
         console.error('Failed to fetch workout exercises', error);
       }
     }
-    setup();
-  }, [exerciseModalVisible]);
+    fetchWorkoutExercises();
+  }, [exerciseModalVisible, refreshKey]);
 
   //Lege Workout an. Gebe Exercise die Workout ID.
   // Wenn keine Exercise angelegt wird lösche Eintrag wieder
@@ -130,7 +130,7 @@ export default function Workouts() {
                 exercise_id={exercise.id.toString()}
                 editable={false}
                 workout_id={workout_id}
-                refreshKey={refreshKey}
+                refreshTrigger={() => setRefreshKey(refreshKey + 1)}
               />
             </View>
           ))}
