@@ -102,13 +102,35 @@ export default function ExerciseCard({
   return (
     <View style={styles.exerciseCardContainer}>
       <Text style={styles.exerciseCardHeader}>{name}</Text>
-      <View style={styles.setContainer}>
-        <Text style={styles.setText}>Set</Text>
-        <Text style={styles.setText}>Reps</Text>
-        <Text style={styles.setText}>Weight</Text>
-        <Text style={{ flex: 1 }}></Text>
-      </View>
+      {editable && (
+        <View style={styles.setContainer}>
+          <Text style={styles.setTextEditable}>Set</Text>
+          <Text style={styles.setTextEditable}>Reps</Text>
+          <Text style={styles.setTextEditable}>Weight</Text>
+          <Text style={{ flex: 1 }}></Text>
+        </View>
+      )}
+      {!editable && (
+        <View style={styles.setContainer}>
+          <Text style={styles.setText}>Set</Text>
+          <Text style={styles.setText}>Reps</Text>
+          <Text style={styles.setText}>Weight</Text>
+        </View>
+      )}
       <ScrollView>
+        {editable &&
+          setList.map((set, index) => (
+            <View key={index} style={styles.setContainer}>
+              <Text style={styles.setTextEditable}>{index + 1}</Text>
+              <Text style={styles.setTextEditable}>{set[0]}</Text>
+              <Text style={styles.setTextEditable}>{set[1]}</Text>
+
+              <DeleteButton
+                componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
+                onPress={() => setSetList(setList.toSpliced(index, 1))}
+              />
+            </View>
+          ))}
         {!editable &&
           sets.map((set, index) => (
             <View key={set.id} style={styles.setContainer}>
@@ -117,31 +139,18 @@ export default function ExerciseCard({
               <Text style={styles.setText}>{set.weight}</Text>
             </View>
           ))}
-        {editable &&
-          setList.map((set, index) => (
-            <View key={index} style={styles.setContainer}>
-              <Text style={styles.setText}>{index + 1}</Text>
-              <Text style={styles.setText}>{set[0]}</Text>
-              <Text style={styles.setText}>{set[1]}</Text>
-
-              <DeleteButton
-                componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
-                onPress={() => setSetList(setList.toSpliced(index, 1))}
-              />
-            </View>
-          ))}
         {editing && (
           <View style={styles.setContainer}>
-            <Text style={styles.setText}>{setList.length + 1}</Text>
+            <Text style={styles.setTextEditable}>{setList.length + 1}</Text>
             <TextInput
               onChangeText={(text) => handleChangeText(text, 0)}
               inputMode="numeric"
-              style={styles.setText}
+              style={styles.setTextEditable}
             ></TextInput>
             <TextInput
               onChangeText={(text) => handleChangeText(text, 1)}
               inputMode="numeric"
-              style={styles.setText}
+              style={styles.setTextEditable}
             ></TextInput>
           </View>
         )}
@@ -186,6 +195,13 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   setText: {
+    textAlign: 'center',
+    minHeight: 35,
+    borderWidth: 1,
+    fontSize: 22,
+    width: '33.3%',
+  },
+  setTextEditable: {
     textAlign: 'center',
     minHeight: 35,
     borderWidth: 1,
