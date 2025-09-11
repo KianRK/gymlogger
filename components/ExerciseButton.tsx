@@ -12,7 +12,7 @@ type Props = {
   name: string;
 };
 
-export default function WorkoutButton({ imgSource, name }: Props) {
+export default function ExerciseButton({ imgSource, name }: Props) {
   return (
     <View style={styles.workoutButtonContainer}>
       <Pressable style={styles.workoutButton}>

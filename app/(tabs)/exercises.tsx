@@ -3,7 +3,7 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
 
 import { Colors } from '@/constants/Colors';
-import WorkoutButton from '@/components/WorkoutButton';
+import ExerciseButton from '@/components/ExerciseButton';
 import { Exercise } from '@/src/database/db_interfaces';
 import { db } from '@/src/database';
 
@@ -35,7 +35,7 @@ export default function ExercisesScreen() {
         <FlatList
           data={exercises}
           renderItem={({ item }) => (
-            <WorkoutButton
+            <ExerciseButton
               name={item.name}
               imgSource={require('@/assets/images/latpull_target_muscles.png')}
             />

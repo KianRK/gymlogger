@@ -16,6 +16,7 @@ import DateTimePicker, {
 
 import CalendarButton from '@/components/CalendarButton';
 import AddButton from '@/components/AddButton';
+import EditButton from '@/components/EditButton';
 import { Colors } from '@/constants/Colors';
 import WorkoutCard from '@/components/WorkoutCard';
 
@@ -62,7 +63,6 @@ export default function Index() {
         pathname: './workouts/workout',
         params: {
           date: isCurrentDateToday() ? 'Today' : dateString,
-          dateName,
           workout_id,
         },
       });

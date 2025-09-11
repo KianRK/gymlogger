@@ -22,7 +22,7 @@ import { Colors } from '@/constants/Colors';
 
 export default function Workouts() {
   const colorScheme = useColorScheme() ?? 'light';
-  const { date, dateName, workout_id } = useLocalSearchParams<{
+  const { date, workout_id } = useLocalSearchParams<{
     date: string;
     dateName: string;
     workout_id: string;
