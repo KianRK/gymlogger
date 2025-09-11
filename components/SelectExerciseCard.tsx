@@ -25,7 +25,7 @@ export default function SelectExerciseCard({
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
-
+  const [fontSize, setFontSize] = useState(26);
   const handleConfirm = () => {
     onConfirm();
   };
@@ -33,6 +33,19 @@ export default function SelectExerciseCard({
   const filteredExercises = exercises.filter((item) =>
     item.name.toLowerCase().includes(text.toLowerCase())
   );
+  const handleChange = (text: string) => {
+    console.log(text);
+    console.log('Length:', text.length);
+    if (text.length > 18) {
+      let adjustedFontSize = 26 - (text.length - 16);
+      if (adjustedFontSize <= 16) {
+        setFontSize(16);
+      } else {
+        setFontSize(adjustedFontSize);
+      }
+    }
+    setText(text);
+  };
 
   useEffect(() => {
     function setup() {
@@ -50,8 +63,8 @@ export default function SelectExerciseCard({
     <View style={styles.selectExerciseCardContainer}>
       <View style={styles.selectionContainer}>
         <TextInput
-          style={styles.inputText}
-          onChangeText={(text) => setText(text)}
+          style={[styles.inputText, { fontSize: fontSize }]}
+          onChangeText={handleChange}
           placeholder="Enter Exercise"
           value={text}
           onPress={() => setTyping(true)}
@@ -64,7 +77,7 @@ export default function SelectExerciseCard({
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => {
-                  setText(item.name);
+                  handleChange(item.name);
                   updateExerciseName(item.name);
                   setTyping(false);
                 }}
