@@ -10,12 +10,13 @@ import { Image } from 'expo-image';
 type Props = {
   imgSource: ImageSourcePropType;
   name: string;
+  onPress?: () => void;
 };
 
-export default function ExerciseButton({ imgSource, name }: Props) {
+export default function ExerciseButton({ imgSource, name, onPress }: Props) {
   return (
     <View style={styles.workoutButtonContainer}>
-      <Pressable style={styles.workoutButton}>
+      <Pressable style={styles.workoutButton} onPress={onPress}>
         <Text style={styles.workoutButtonLabel}>{name}</Text>
         <Image source={imgSource} style={styles.workoutButtonImage}></Image>
       </Pressable>

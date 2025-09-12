@@ -1,6 +1,7 @@
 import { Text, View, useColorScheme, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
 
 import { Colors } from '@/constants/Colors';
 import ExerciseButton from '@/components/ExerciseButton';
@@ -11,7 +12,17 @@ const colorScheme = useColorScheme() ?? 'light';
 const colors = Colors[colorScheme];
 
 export default function ExercisesScreen() {
+  const router = useRouter();
   const [exercises, setExercises] = useState<Exercise[]>([]);
+
+  const goToDetailPage = (id: number) => {
+    router.push({
+      pathname: '/exercises/[id]',
+      params: {
+        id: id,
+      },
+    });
+  };
 
   // Bei Workouts die Workouts zum Tag anzeigen (Testeinträge)
   // Bei Add Workout wird Workout erst angelegt, wenn erste Exercise bestätigt wird. Wenn letztes Exercise gelöscht wird
@@ -36,8 +47,9 @@ export default function ExercisesScreen() {
           data={exercises}
           renderItem={({ item }) => (
             <ExerciseButton
-              name={item.name}
               imgSource={require('@/assets/images/latpull_target_muscles.png')}
+              name={item.name}
+              onPress={() => goToDetailPage(item.id)}
             />
           )}
         />
