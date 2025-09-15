@@ -22,7 +22,7 @@ import { Colors } from '@/constants/Colors';
 
 export default function Workouts() {
   const colorScheme = useColorScheme() ?? 'light';
-  const { date, workout_id } = useLocalSearchParams<{
+  const { date, dateName, workout_id } = useLocalSearchParams<{
     date: string;
     dateName: string;
     workout_id: string;
@@ -130,6 +130,7 @@ export default function Workouts() {
                 exercise_id={exercise.id.toString()}
                 editable={false}
                 workout_id={workout_id}
+                dateName={dateName}
                 refreshTrigger={() => setRefreshKey(refreshKey + 1)}
               />
             </View>
@@ -170,6 +171,7 @@ export default function Workouts() {
               exercise_id={exerciseId}
               editable={true}
               workout_id={workout_id}
+              dateName={dateName}
               onConfirm={() => {
                 setExerciseModalVisible(false);
                 setRefreshKey((prev) => prev + 1);

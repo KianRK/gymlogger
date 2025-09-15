@@ -63,6 +63,7 @@ export default function Index() {
         pathname: './workouts/workout',
         params: {
           date: isCurrentDateToday() ? 'Today' : dateString,
+          dateName: dateName,
           workout_id,
         },
       });

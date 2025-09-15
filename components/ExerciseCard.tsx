@@ -13,6 +13,7 @@ type Props = {
   exercise_id: string;
   editable: boolean;
   workout_id: string;
+  dateName: string;
   onConfirm?: () => void;
   refreshTrigger?: () => void;
 };
@@ -22,6 +23,7 @@ export default function ExerciseCard({
   exercise_id,
   editable,
   workout_id,
+  dateName,
   onConfirm,
   refreshTrigger,
 }: Props) {
@@ -52,8 +54,8 @@ export default function ExerciseCard({
     if (setList.length > 0) {
       try {
         let result = db.runSync(
-          'INSERT INTO workout_exercises (workout_id, name, order_index) VALUES (?, ?, ?)',
-          [workout_id, name, orderIndex]
+          'INSERT INTO workout_exercises (workout_id, name, date, order_index) VALUES (?, ?, ?, ?)',
+          [workout_id, name, dateName, orderIndex]
         );
         let id = result.lastInsertRowId.toString();
         setOrderIndex(orderIndex + 1);

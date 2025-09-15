@@ -14,6 +14,7 @@ export interface WorkoutExercise {
   id: number;
   workout_id: number;
   name: string;
+  date: string;
   order_index: number;
 }
 
