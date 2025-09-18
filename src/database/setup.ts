@@ -14,20 +14,21 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       CREATE TABLE IF NOT EXISTS exercises (
       id INTEGER PRIMARY KEY,
       name TEXT NOT NULL UNIQUE,
-      target TEXT NOT NULL
+      primary_target TEXT NOT NULL,
+      secondary_target TEXT,
+      region TEXT NOT NULL
       );
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('lat pulldown', 'back');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('incline bench press', 'chest');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('cable flys', 'chest');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('lat prayer', 'back');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('bayesian cable curls', 'biceps');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('decline bench press', 'chest');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('preacher biceps curls', 'biceps');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('cable kickbacks', 'triceps');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('bench press', 'chest');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('leg extensions', 'legs');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('standing calves', 'legs');
-      INSERT OR IGNORE INTO exercises (name, target) VALUES ('cable crunches', 'abs');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Lat Pulldown', 'Lats', '["Biceps"]', 'Back');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Incline Bench Press', 'Chest', '["Triceps", "Front Deltoid"]', 'Chest');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cable Fly', 'Chest', '["Front Deltoid"]', 'Chest');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Lat Prayer', 'Lats', '["Posterior Deltoid", "Triceps"]', 'Back');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Bayesian Cable Curl', 'Biceps', '["Forearm Flexor"]', 'Biceps');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Decline Bench Press', 'Chest', '["Triceps", "Front Deltoid"]', 'Chest');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Dumbbell Preacher Curl', 'Biceps', '["Forearm Flexor"]', 'Biceps');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Bench Press', 'Chest', '["Front Deltoid", "Triceps"]', 'Chest');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Leg Extensions', 'Quads', NULL, 'Legs');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Standing Calf Raise', 'Calves', NULL, 'Legs');
+      INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cable Crunch', 'Abs', '["Obliques"]', 'Abs');
       `
     );
     db.execSync(
