@@ -34,8 +34,6 @@ export default function SelectExerciseCard({
     item.name.toLowerCase().includes(text.toLowerCase())
   );
   const handleChange = (text: string) => {
-    console.log(text);
-    console.log('Length:', text.length);
     if (text.length > 18) {
       let adjustedFontSize = 26 - (text.length - 16);
       if (adjustedFontSize <= 16) {
