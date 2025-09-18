@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import AddButton from './AddButton';
 import ConfirmButton from './ConfirmButton';
@@ -32,13 +32,14 @@ export default function ExerciseCard({
   const [editedSet, setEditedSet] = useState(['0', '0']);
   const [orderIndex, setOrderIndex] = useState(0);
   const [setList, setSetList] = useState<string[][]>([]);
+  const setListRef = useRef<string[]>([]);
 
   function deleteExercise(exercise_id: string) {
     try {
       db.runSync('DELETE FROM workout_exercises WHERE id = ?', [exercise_id]);
       refreshTrigger?.();
     } catch (error) {
-      console.log('Could not delete workout_exercise', error);
+      console.error('Could not delete workout_exercise', error);
     }
   }
 
@@ -51,7 +52,11 @@ export default function ExerciseCard({
 
   const handleConfirmSet = () => {
     setSetList((prev) => [...prev, [editedSet[0], editedSet[1]]]);
-    if (setList.length > 0) {
+    let insertSets = [
+      ...setList,
+      [setListRef.current[0], setListRef.current[1]],
+    ];
+    if (insertSets.length > 0) {
       try {
         let result = db.runSync(
           'INSERT INTO workout_exercises (workout_id, name, date, order_index) VALUES (?, ?, ?, ?)',
@@ -59,7 +64,7 @@ export default function ExerciseCard({
         );
         let id = result.lastInsertRowId.toString();
         setOrderIndex(orderIndex + 1);
-        setList.map((set, index) => {
+        insertSets.map((set, index) => {
           const result = db.runSync(
             'INSERT INTO sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
             [id, index + 1, set[0], set[1]]
@@ -76,6 +81,7 @@ export default function ExerciseCard({
   const handleChangeText = (text: string, fieldIndex: number) => {
     let updatedEditedSet = editedSet;
     updatedEditedSet[fieldIndex] = text;
+    setListRef.current = updatedEditedSet;
     setEditedSet(updatedEditedSet);
   };
 
