@@ -153,6 +153,7 @@ export default function ExerciseCard({
             <DeleteButton
               componentStyle={styles.deleteButtonComponent}
               onPress={() => deleteExercise(exercise_id)}
+              iconSize={23}
             />
           </View>
           <View style={styles.setContainer}>
@@ -173,6 +174,7 @@ export default function ExerciseCard({
               <DeleteButton
                 componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
                 onPress={() => setSetList(setList.toSpliced(index, 1))}
+                iconSize={23}
               />
             </View>
           ))}

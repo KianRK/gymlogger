@@ -64,7 +64,7 @@ export default function WorkoutCard({
         <Text style={styles.workoutCardLabel}>Workout {workout_number}</Text>
         <DeleteButton
           componentStyle={styles.deletebuttonComponent}
-          iconSize={20}
+          iconSize={23}
           onPress={() => deleteWorkout(workout_id)}
         />
       </View>
