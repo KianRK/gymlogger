@@ -32,7 +32,8 @@ export default function ExerciseCard({
   const [editedSet, setEditedSet] = useState(['0', '0']);
   const [orderIndex, setOrderIndex] = useState(0);
   const [setList, setSetList] = useState<string[][]>([]);
-  const setListRef = useRef<string[]>([]);
+  const [fontSize, setFontSize] = useState<number>(26);
+  const setListRef = useRef<string[]>(['0', '0']);
 
   function deleteExercise(exercise_id: string) {
     try {
@@ -115,6 +116,21 @@ export default function ExerciseCard({
     setup();
   }, []);
 
+  useEffect(() => {
+    function adjustFontSize() {
+      if (name.length > 18) {
+        let adjustedFontSize = 28 - (name.length - 18);
+
+        if (adjustedFontSize <= 18) {
+          setFontSize(18);
+        } else {
+          setFontSize(adjustedFontSize);
+        }
+      }
+    }
+    adjustFontSize();
+    refreshTrigger?.();
+  }, []);
   return (
     <View style={styles.exerciseCardContainer}>
       {editable && (
@@ -131,7 +147,9 @@ export default function ExerciseCard({
       {!editable && (
         <View>
           <View style={styles.exerciseCardHeaderContainer}>
-            <Text style={styles.exerciseCardHeader}>{name}</Text>
+            <Text style={[styles.exerciseCardHeader, { fontSize: fontSize }]}>
+              {name}
+            </Text>
             <DeleteButton
               componentStyle={styles.deleteButtonComponent}
               onPress={() => deleteExercise(exercise_id)}
