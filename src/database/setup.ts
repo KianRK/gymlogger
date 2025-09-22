@@ -22,7 +22,6 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Band-Assisted Bench Press', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Bar Dip', '["Chest", "Front Deltoid", "Triceps"]', NULL, 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Bench Press', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('None', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Board Press', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cable Chest Press', '["Chest"]', '["Front Deltoid", "Triceps"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Clap Push-Up', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
