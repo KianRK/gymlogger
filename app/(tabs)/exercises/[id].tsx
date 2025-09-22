@@ -111,42 +111,51 @@ export default function ExerciseId() {
     let sd = Object.values(dDict).map((data) => data.sets);
     let rd = Object.values(dDict).map((data) => data.reps);
 
-    setVolumeChartData({
-      labels: dl,
-      datasets: [
-        {
-          data: vd,
-          strokeWidth: 2,
-        },
-      ],
-    });
-    setDailyMaxChartData({
-      labels: dl,
-      datasets: [
-        {
-          data: dmd,
-          strokeWidth: 2,
-        },
-      ],
-    });
-    setSetsChartData({
-      labels: dl,
-      datasets: [
-        {
-          data: sd,
-          strokeWidth: 2,
-        },
-      ],
-    });
-    setRepsChartData({
-      labels: dl,
-      datasets: [
-        {
-          data: rd,
-          strokeWidth: 2,
-        },
-      ],
-    });
+    if (vd.length > 0) {
+      setVolumeChartData({
+        labels: dl,
+        datasets: [
+          {
+            data: vd,
+            strokeWidth: 2,
+          },
+        ],
+      });
+    }
+
+    if (dmd.length > 0) {
+      setDailyMaxChartData({
+        labels: dl,
+        datasets: [
+          {
+            data: dmd,
+            strokeWidth: 2,
+          },
+        ],
+      });
+    }
+    if (sd.length > 0) {
+      setSetsChartData({
+        labels: dl,
+        datasets: [
+          {
+            data: sd,
+            strokeWidth: 2,
+          },
+        ],
+      });
+    }
+    if (rd.length > 0) {
+      setRepsChartData({
+        labels: dl,
+        datasets: [
+          {
+            data: rd,
+            strokeWidth: 2,
+          },
+        ],
+      });
+    }
   }
 
   useEffect(() => {
