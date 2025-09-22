@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     padding: 3,
   },
   workoutCardLabel: {
+    fontFamily: 'SyneMono-Regular',
     textAlign: 'center',
     fontSize: 22,
     marginLeft: 3,
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   workoutCardExerciseName: {
+    fontFamily: 'SyneMono-Regular',
     marginLeft: 3,
     fontSize: 16,
   },

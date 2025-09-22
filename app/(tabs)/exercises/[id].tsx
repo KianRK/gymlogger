@@ -24,12 +24,6 @@ export default function ExerciseId() {
   const [setsChartData, setSetsChartData] = useState<any>(null);
   const [repsChartData, setRepsChartData] = useState<any>(null);
 
-  const [dateLabels, setDateLabels] = useState<string[]>([]);
-  const [volumeData, setVolumeData] = useState<number[]>([]);
-  const [dailyMaxData, setDailyMaxData] = useState<number[]>([]);
-  const [setsData, setSetsData] = useState<number[]>([]);
-  const [repsData, setRepsData] = useState<number[]>([]);
-
   function fetchExercise() {
     let result;
     try {

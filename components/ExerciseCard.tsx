@@ -251,6 +251,7 @@ const styles = StyleSheet.create({
     width: '33.3%',
   },
   setTextEditable: {
+    fontFamily: 'SyneMono-Regular',
     textAlign: 'center',
     minHeight: 35,
     borderWidth: 1,

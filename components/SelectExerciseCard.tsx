@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '100%',
     fontSize: 26,
+    fontFamily: 'SyneMono-Regular',
     textAlign: 'center',
   },
   listItems: {
@@ -135,5 +136,5 @@ const styles = StyleSheet.create({
   confirmButtonContainer: {
     marginRight: '5%',
   },
-  confirmButtonLabel: {},
+  confirmButtonLabel: { fontFamily: 'SyneMono-Regular' },
 });
