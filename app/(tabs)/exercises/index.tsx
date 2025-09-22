@@ -24,10 +24,6 @@ export default function ExercisesScreen() {
     });
   };
 
-  // Bei Workouts die Workouts zum Tag anzeigen (Testeinträge)
-  // Bei Add Workout wird Workout erst angelegt, wenn erste Exercise bestätigt wird. Wenn letztes Exercise gelöscht wird
-  // wird auch Workout gelöscht
-
   useEffect(() => {
     function setup() {
       try {
