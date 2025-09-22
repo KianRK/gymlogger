@@ -53,7 +53,7 @@ export default function Workouts() {
         }
         let hasExercises = result?.exist_check;
         if (!hasExercises) {
-          let result = db.runSync('DELETE FROM workouts WHERE id = ?', [
+          db.runSync('DELETE FROM workouts WHERE id = ?', [
             parseInt(workout_id),
           ]);
         }

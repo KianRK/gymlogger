@@ -107,7 +107,7 @@ export default function ExerciseCard({
             'SELECT * FROM sets WHERE exercise_id = (?) ORDER BY order_index',
             [exercise_id]
           );
-          setSets((r) => result);
+          setSets(result);
         } catch (error) {
           console.error('Failed to fetch sets', error);
         }
