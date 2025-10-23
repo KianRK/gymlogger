@@ -2,6 +2,7 @@ import { Text, View, useColorScheme, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { Colors } from '@/constants/Colors';
 import ExerciseButton from '@/components/ExerciseButton';
@@ -39,16 +40,23 @@ export default function ExercisesScreen() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeViewContainer}>
-        <FlatList
-          data={exercises}
-          renderItem={({ item }) => (
-            <ExerciseButton
-              imgSource={require('@/assets/images/latpull_target_muscles.png')}
-              name={item.name}
-              onPress={() => goToDetailPage(item.id)}
-            />
-          )}
-        />
+        <LinearGradient
+          start={{ x: 0.5, y: 0.5 }}
+          end={{ x: 1, y: 1 }}
+          colors={['#ddeaf6ff', '#b3cbe4ff']}
+          style={StyleSheet.absoluteFillObject}
+        >
+          <FlatList
+            data={exercises}
+            renderItem={({ item }) => (
+              <ExerciseButton
+                imgSource={require('@/assets/images/latpull_target_muscles.png')}
+                name={item.name}
+                onPress={() => goToDetailPage(item.id)}
+              />
+            )}
+          />
+        </LinearGradient>
       </SafeAreaView>
     </SafeAreaProvider>
   );

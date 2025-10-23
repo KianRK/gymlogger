@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
-import { useColorScheme } from 'react-native';
+import { View, useColorScheme, StyleSheet } from 'react-native';
+
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { Colors } from '@/constants/Colors';
 import CustomText from '@/components/CustomText';
@@ -8,17 +9,21 @@ export default function TemplatesScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   return (
-    <View
-      style={{
-        backgroundColor: colors.background,
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+    <LinearGradient
+      start={{ x: 0.5, y: 0.5 }}
+      end={{ x: 1, y: 1 }}
+      colors={['#ddeaf6ff', '#b3cbe4ff']}
+      style={StyleSheet.absoluteFillObject}
     >
-      <Text style={{ fontFamily: 'Outfit-VariableFont_wght' }}>
-        Templates tab
-      </Text>
-    </View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <CustomText>Templates tab</CustomText>
+      </View>
+    </LinearGradient>
   );
 }

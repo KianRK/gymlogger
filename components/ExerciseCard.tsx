@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { View, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import AddButton from './AddButton';
 import ConfirmButton from './ConfirmButton';
 import DeleteButton from './DeleteButton';
+import CustomText from './CustomText';
 
 import { db } from '@/src/database';
 import { Set } from '@/src/database/db_interfaces';
@@ -34,6 +36,9 @@ export default function ExerciseCard({
   const [setList, setSetList] = useState<string[][]>([]);
   const [fontSize, setFontSize] = useState<number>(26);
   const setListRef = useRef<string[]>(['0', '0']);
+  const colorOne = '#b3cbe4ff';
+  const colorOneAlpha = '#b3cbe490';
+  const colorTwo = '#ddeaf6ff';
 
   function deleteExercise(exercise_id: string) {
     try {
@@ -133,89 +138,100 @@ export default function ExerciseCard({
   }, []);
   return (
     <View style={styles.exerciseCardContainer}>
-      {editable && (
-        <View>
-          <Text style={styles.exerciseCardHeader}>{name}</Text>
-          <View style={styles.setContainer}>
-            <Text style={styles.setTextEditable}>Set</Text>
-            <Text style={styles.setTextEditable}>Reps</Text>
-            <Text style={styles.setTextEditable}>Weight</Text>
-            <Text style={{ flex: 1 }}></Text>
+      <LinearGradient
+        start={{ x: 0.375, y: 0.375 }}
+        end={{ x: 0.75, y: 0.75 }}
+        colors={[colorOneAlpha, colorTwo, colorOne]}
+      >
+        {editable && (
+          <View>
+            <CustomText style={styles.exerciseCardHeader}>{name}</CustomText>
+            <View style={styles.setContainer}>
+              <CustomText style={styles.setTextEditable}>Set</CustomText>
+              <CustomText style={styles.setTextEditable}>Reps</CustomText>
+              <CustomText style={styles.setTextEditable}>Weight</CustomText>
+              <CustomText style={{ flex: 1 }}></CustomText>
+            </View>
           </View>
-        </View>
-      )}
-      {!editable && (
-        <View>
-          <View style={styles.exerciseCardHeaderContainer}>
-            <Text style={[styles.exerciseCardHeader, { fontSize: fontSize }]}>
-              {name}
-            </Text>
-            <DeleteButton
-              componentStyle={styles.deleteButtonComponent}
-              onPress={() => deleteExercise(exercise_id)}
-              iconSize={23}
-            />
-          </View>
-          <View style={styles.setContainer}>
-            <Text style={styles.setText}>Set</Text>
-            <Text style={styles.setText}>Reps</Text>
-            <Text style={styles.setText}>Weight</Text>
-          </View>
-        </View>
-      )}
-      <ScrollView>
-        {editable &&
-          setList.map((set, index) => (
-            <View key={index} style={styles.setContainer}>
-              <Text style={styles.setTextEditable}>{index + 1}</Text>
-              <Text style={styles.setTextEditable}>{set[0]}</Text>
-              <Text style={styles.setTextEditable}>{set[1]}</Text>
-
+        )}
+        {!editable && (
+          <View>
+            <View style={styles.exerciseCardHeaderContainer}>
+              <CustomText
+                style={[styles.exerciseCardHeader, { fontSize: fontSize }]}
+              >
+                {name}
+              </CustomText>
               <DeleteButton
-                componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
-                onPress={() => setSetList(setList.toSpliced(index, 1))}
+                componentStyle={styles.deleteButtonComponent}
+                onPress={() => deleteExercise(exercise_id)}
                 iconSize={23}
               />
             </View>
-          ))}
-        {!editable &&
-          sets.map((set, index) => (
-            <View key={set.id} style={styles.setContainer}>
-              <Text style={styles.setText}>{index + 1}</Text>
-              <Text style={styles.setText}>{set.reps}</Text>
-              <Text style={styles.setText}>{set.weight}</Text>
+            <View style={styles.setContainer}>
+              <CustomText style={styles.setText}>Set</CustomText>
+              <CustomText style={styles.setText}>Reps</CustomText>
+              <CustomText style={styles.setText}>Weight</CustomText>
             </View>
-          ))}
-        {editing && (
-          <View style={styles.setContainer}>
-            <Text style={styles.setTextEditable}>{setList.length + 1}</Text>
-            <TextInput
-              onChangeText={(text) => handleChangeText(text, 0)}
-              inputMode="numeric"
-              style={styles.setTextEditable}
-            ></TextInput>
-            <TextInput
-              onChangeText={(text) => handleChangeText(text, 1)}
-              inputMode="numeric"
-              style={styles.setTextEditable}
-            ></TextInput>
           </View>
         )}
-      </ScrollView>
-      {editable && (
-        <View style={styles.buttonContainer}>
-          <ConfirmButton
-            label="Confirm"
-            componentStyle={styles.buttonComponent}
-            onPress={handleConfirmSet}
-          />
-          <AddButton
-            label="Add set"
-            componentStyle={styles.buttonComponent}
-            onPress={handleAddSet}
-          />
-        </View>
-      )}
+        <ScrollView>
+          {editable &&
+            setList.map((set, index) => (
+              <View key={index} style={styles.setContainer}>
+                <CustomText style={styles.setTextEditable}>
+                  {index + 1}
+                </CustomText>
+                <CustomText style={styles.setTextEditable}>{set[0]}</CustomText>
+                <CustomText style={styles.setTextEditable}>{set[1]}</CustomText>
+                <DeleteButton
+                  componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
+                  onPress={() => setSetList(setList.toSpliced(index, 1))}
+                  iconSize={23}
+                />
+              </View>
+            ))}
+          {!editable &&
+            sets.map((set, index) => (
+              <View key={set.id} style={styles.setContainer}>
+                <CustomText style={styles.setText}>{index + 1}</CustomText>
+                <CustomText style={styles.setText}>{set.reps}</CustomText>
+                <CustomText style={styles.setText}>{set.weight}</CustomText>
+              </View>
+            ))}
+          {editing && (
+            <View style={styles.setContainer}>
+              <CustomText style={styles.setTextEditable}>
+                {setList.length + 1}
+              </CustomText>
+              <TextInput
+                onChangeText={(text) => handleChangeText(text, 0)}
+                inputMode="numeric"
+                style={styles.setTextEditable}
+              ></TextInput>
+              <TextInput
+                onChangeText={(text) => handleChangeText(text, 1)}
+                inputMode="numeric"
+                style={styles.setTextEditable}
+              ></TextInput>
+            </View>
+          )}
+        </ScrollView>
+        {editable && (
+          <View style={styles.buttonContainer}>
+            <ConfirmButton
+              label="Confirm"
+              componentStyle={styles.buttonComponent}
+              onPress={handleConfirmSet}
+            />
+            <AddButton
+              label="Add set"
+              componentStyle={styles.buttonComponent}
+              onPress={handleAddSet}
+            />
+          </View>
+        )}
+      </LinearGradient>
     </View>
   );
 }
@@ -224,7 +240,6 @@ const styles = StyleSheet.create({
   exerciseCardContainer: {
     width: '75%',
     borderColor: 'black',
-    backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 10,
     padding: 5,
@@ -251,7 +266,7 @@ const styles = StyleSheet.create({
     width: '33.3%',
   },
   setTextEditable: {
-    fontFamily: 'SyneMono-Regular',
+    fontFamily: 'Outfit-Regular',
     textAlign: 'center',
     minHeight: 35,
     borderWidth: 1,

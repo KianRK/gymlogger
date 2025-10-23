@@ -1,4 +1,7 @@
 import { StyleSheet, Text, Pressable, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import CustomText from './CustomText';
 
 type Props = {
   date: string;
@@ -6,28 +9,41 @@ type Props = {
 };
 
 export default function CalendarButton({ date, onPress }: Props) {
+  const colorOne = '#b3cbe4ff';
+  const colorOneAlpha = '#b3cbe490';
+  const colorTwo = '#ddeaf6ff';
+
   return (
-    <View style={styles.calendarButtonContainer}>
-      <Pressable style={styles.calendarButton} onPress={onPress}>
-        <Text style={styles.calendarButtonLabel}>{date}</Text>
-      </Pressable>
-    </View>
+    <LinearGradient
+      start={{ x: 0.375, y: 0.375 }}
+      end={{ x: 0.75, y: 0.75 }}
+      colors={[colorOneAlpha, colorTwo, colorOne]}
+      style={{
+        height: '12%',
+        borderRadius: 8,
+        marginTop: '5%',
+        marginRight: '5%',
+        marginLeft: 'auto',
+        marginBottom: 'auto',
+        justifyContent: 'center',
+      }}
+    >
+      <View style={styles.calendarButtonContainer}>
+        <Pressable style={styles.calendarButton} onPress={onPress}>
+          <CustomText style={styles.calendarButtonLabel}>{date}</CustomText>
+        </Pressable>
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   calendarButtonContainer: {
+    width: '100%',
+    height: '100%',
     minWidth: 180,
-    height: '12%',
-    marginTop: '2%',
-    marginRight: '2%',
-    marginLeft: 'auto',
-    marginBottom: 'auto',
-    borderWidth: 2,
-    borderRadius: 10,
-    padding: 3,
+    borderRadius: 8,
     justifyContent: 'center',
-    backgroundColor: 'white',
   },
   calendarButton: {
     padding: 10,

@@ -7,8 +7,10 @@ import {
   Pressable,
 } from 'react-native';
 import { useEffect, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import ConfirmButton from './ConfirmButton';
+import CustomText from './CustomText';
 
 import { db } from '@/src/database';
 import { Exercise } from '@/src/database/db_interfaces';
@@ -29,6 +31,9 @@ export default function SelectExerciseCard({
   const handleConfirm = () => {
     onConfirm();
   };
+  const colorOne = '#b3cbe4ff';
+  const colorOneAlpha = '#b3cbe490';
+  const colorTwo = '#ddeaf6ff';
 
   const filteredExercises = exercises.filter((item) =>
     item.name.toLowerCase().includes(text.toLowerCase())
@@ -58,41 +63,48 @@ export default function SelectExerciseCard({
   }, []);
 
   return (
-    <View style={styles.selectExerciseCardContainer}>
-      <View style={styles.selectionContainer}>
-        <TextInput
-          style={[styles.inputText, { fontSize: fontSize }]}
-          onChangeText={handleChange}
-          placeholder="Enter Exercise"
-          value={text}
-          onPress={() => setTyping(true)}
-        ></TextInput>
-        {typing && (
-          <FlatList
-            data={filteredExercises}
-            style={styles.flatListContainer}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <Pressable
-                onPress={() => {
-                  handleChange(item.name);
-                  updateExerciseName(item.name);
-                  setTyping(false);
-                }}
-              >
-                <Text style={styles.listItems}>{item.name}</Text>
-              </Pressable>
-            )}
-          />
-        )}
+    <LinearGradient
+      start={{ x: 0.375, y: 0.375 }}
+      end={{ x: 0.75, y: 0.75 }}
+      colors={[colorOneAlpha, colorTwo, colorOne]}
+      style={{ borderRadius: 8 }}
+    >
+      <View style={styles.selectExerciseCardContainer}>
+        <View style={styles.selectionContainer}>
+          <TextInput
+            style={[styles.inputText, { fontSize: fontSize }]}
+            onChangeText={handleChange}
+            placeholder="Enter Exercise"
+            value={text}
+            onPress={() => setTyping(true)}
+          ></TextInput>
+          {typing && (
+            <FlatList
+              data={filteredExercises}
+              style={styles.flatListContainer}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => {
+                    handleChange(item.name);
+                    updateExerciseName(item.name);
+                    setTyping(false);
+                  }}
+                >
+                  <CustomText style={styles.listItems}>{item.name}</CustomText>
+                </Pressable>
+              )}
+            />
+          )}
+        </View>
+        <ConfirmButton
+          onPress={handleConfirm}
+          componentStyle={styles.confirmButtonContainer}
+          buttonStyle={styles.confirmButton}
+          labelStyle={styles.confirmButtonLabel}
+        />
       </View>
-      <ConfirmButton
-        onPress={handleConfirm}
-        componentStyle={styles.confirmButtonContainer}
-        buttonStyle={styles.confirmButton}
-        labelStyle={styles.confirmButtonLabel}
-      />
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -103,7 +115,6 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     flexDirection: 'row',
     maxHeight: 120,
-    backgroundColor: 'white',
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
@@ -114,7 +125,6 @@ const styles = StyleSheet.create({
   flatListContainer: {
     width: '100%',
     top: 60,
-    backgroundColor: 'white',
     position: 'absolute',
     maxHeight: 150,
     borderWidth: 1,
@@ -125,7 +135,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '100%',
     fontSize: 26,
-    fontFamily: 'SyneMono-Regular',
+    fontFamily: 'Outfit-Regular',
     textAlign: 'center',
   },
   listItems: {
@@ -136,5 +146,5 @@ const styles = StyleSheet.create({
   confirmButtonContainer: {
     marginRight: '5%',
   },
-  confirmButtonLabel: { fontFamily: 'SyneMono-Regular' },
+  confirmButtonLabel: { fontFamily: 'Outfit-Regular' },
 });

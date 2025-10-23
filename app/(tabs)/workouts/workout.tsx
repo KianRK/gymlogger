@@ -9,6 +9,7 @@ import {
 import { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import ExerciseCard from '@/components/ExerciseCard';
 import CalendarButton from '@/components/CalendarButton';
@@ -109,12 +110,18 @@ export default function Workouts() {
     <SafeAreaProvider>
       <SafeAreaView
         style={{
-          backgroundColor: colors.background,
+          backgroundColor: 'white',
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
+        <LinearGradient
+          start={{ x: 0.5, y: 0.5 }}
+          end={{ x: 1, y: 1 }}
+          colors={['#ddeaf6ff', '#b3cbe4ff']}
+          style={StyleSheet.absoluteFillObject}
+        />
         <CalendarButton date={date} />
         <ScrollView
           style={styles.scrollViewContainer}

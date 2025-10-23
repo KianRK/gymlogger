@@ -6,9 +6,11 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Font from 'expo-font';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -93,12 +95,17 @@ export default function Index() {
     <SafeAreaProvider>
       <SafeAreaView
         style={{
-          backgroundColor: colors.background,
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
+        <LinearGradient
+          start={{ x: 0.5, y: 0.5 }}
+          end={{ x: 1, y: 1 }}
+          colors={['#ddeaf6ff', '#b3cbe4ff']}
+          style={StyleSheet.absoluteFillObject}
+        />
         <CalendarButton
           date={isCurrentDateToday() ? 'Today' : dateString}
           onPress={() => {
@@ -115,7 +122,7 @@ export default function Index() {
         )}
         <ScrollView
           style={styles.scrollViewContainer}
-          {...(Platform.OS === 'android' ? { fadingEdgeLength: 75 } : {})}
+          {...(Platform.OS === 'android' ? { fadingEdgeLength: 10 } : {})}
         >
           {workouts.map((workout, index) => (
             <View key={workout.id} style={styles.workoutContainer}>
@@ -140,11 +147,13 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
+    marginTop: '10%',
     width: '100%',
     margin: 8,
   },
   workoutContainer: {
     alignItems: 'center',
+    margin: 6,
   },
   buttonComponent: {
     marginTop: 'auto',

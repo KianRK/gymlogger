@@ -25,6 +25,10 @@ export default function WorkoutCard({
   );
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
+  const colorOne = '#b3cbe4ff';
+  const colorOneAlpha = '#b3cbe490';
+  const colorTwo = '#ddeaf6ff';
+  const colorTwoAlpha = '#ddeaf633';
 
   useEffect(() => {
     function setup() {
@@ -65,12 +69,15 @@ export default function WorkoutCard({
 
   return (
     <LinearGradient
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      colors={[colors.tabBarBackgroundOne, colors.tabBarBackgroundTwo]}
+      start={{ x: 0.375, y: 0.375 }}
+      end={{ x: 0.75, y: 0.75 }}
+      colors={[colorOneAlpha, colorTwo, colorOne]}
+      style={{ borderRadius: 8 }}
     >
       <View style={styles.WorkoutCardContainer}>
         <View style={styles.workoutCardHeaderContainer}>
+          {/* First view just a hack to center the CustomText component */}
+          <View style={{ width: 24 }}></View>
           <CustomText style={styles.workoutCardLabel}>
             Workout {workout_number}
           </CustomText>
@@ -97,28 +104,28 @@ export default function WorkoutCard({
 
 const styles = StyleSheet.create({
   WorkoutCardContainer: {
-    width: '75%',
+    width: '95%',
     alignItems: 'center',
     borderColor: 'black',
-    borderWidth: 2,
-    borderRadius: 10,
+    borderRadius: 8,
     padding: 5,
-    margin: 3,
+    margin: 5,
   },
   workoutCardHeaderContainer: {
     width: '100%',
     flexDirection: 'row',
-    borderWidth: 2,
     justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
     padding: 3,
   },
   workoutCardLabel: {
     textAlign: 'center',
     fontSize: 22,
-    marginLeft: 3,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   deletebuttonComponent: {
-    marginLeft: 'auto',
     marginRight: 3,
   },
   workoutCardExerciseContainer: {
@@ -126,7 +133,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignContent: 'space-between',
-    borderWidth: 1,
     padding: 2,
   },
   workoutCardExerciseName: {

@@ -1,7 +1,7 @@
 import { Text, TextProps } from 'react-native';
 
 interface CustomTextProps extends TextProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   fontFamily?: string;
 }
 
