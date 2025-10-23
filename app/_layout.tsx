@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import DatabaseProvider from '@/src/providers/DatabaseProvider';
@@ -8,11 +8,13 @@ import DatabaseProvider from '@/src/providers/DatabaseProvider';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    'SyneMono-Regular': require('@/assets/fonts/SyneMono-Regular.ttf'),
+  const [loaded, error] = Font.useFonts({
+    'Outfit-VariableFont_wght': require('@/assets/fonts/Outfit-VariableFont_wght.ttf'),
   });
   useEffect(() => {
     if (loaded || error) {
+      let loadedFonts = Font.getLoadedFonts();
+      console.log('Loaded Fonts:', loadedFonts);
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);

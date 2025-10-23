@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 
+import CustomText from './CustomText';
+
 type Props = {
   imgSource: ImageSourcePropType;
   name: string;
@@ -17,7 +19,7 @@ export default function ExerciseButton({ imgSource, name, onPress }: Props) {
   return (
     <View style={styles.workoutButtonContainer}>
       <Pressable style={styles.workoutButton} onPress={onPress}>
-        <Text style={styles.workoutButtonLabel}>{name}</Text>
+        <CustomText style={styles.workoutButtonLabel}>{name}</CustomText>
         <Image source={imgSource} style={styles.workoutButtonImage}></Image>
       </Pressable>
     </View>
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     color: 'black',
-    fontSize: 24,
+    fontSize: 16,
   },
   workoutButtonImage: {
     flex: 1,

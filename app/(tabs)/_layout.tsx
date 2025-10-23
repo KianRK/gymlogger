@@ -1,7 +1,8 @@
 import { Tabs } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, StyleSheet } from 'react-native';
 
 import { Colors } from '@/constants/Colors';
 
@@ -12,14 +13,28 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.tabIconSelected,
-        headerStyle: {
-          backgroundColor: colors.barColor,
-        },
         headerShadowVisible: false,
         headerTintColor: colors.text,
+        headerBackground: () => (
+          <LinearGradient
+            style={StyleSheet.absoluteFill}
+            start={{ x: 0.5, y: 1 }}
+            end={{ x: 0.5, y: 0 }}
+            colors={[colors.tabBarBackgroundOne, colors.tabBarBackgroundTwo]}
+          />
+        ),
         tabBarStyle: {
-          backgroundColor: colors.barColor,
+          backgroundColor: 'transparent',
+          elevation: 0,
         },
+        tabBarBackground: () => (
+          <LinearGradient
+            style={StyleSheet.absoluteFill}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            colors={[colors.tabBarBackgroundOne, colors.tabBarBackgroundTwo]}
+          />
+        ),
       }}
     >
       <Tabs.Screen

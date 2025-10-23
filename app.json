@@ -35,7 +35,12 @@
         }
       ],
       "expo-sqlite",
-      "expo-font"
+      [
+        "expo-font",
+        {
+          "fontFamily": "./assets/fonts/Outfit-VariableFont_wght.ttf"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

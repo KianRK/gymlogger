@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 import { useColorScheme } from 'react-native';
 
 import { Colors } from '@/constants/Colors';
+import CustomText from '@/components/CustomText';
 
 export default function CalendarScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -15,7 +16,7 @@ export default function CalendarScreen() {
         alignItems: 'center',
       }}
     >
-      <Text>Calendar Tab</Text>
+      <CustomText>Calendar Tab</CustomText>
     </View>
   );
 }

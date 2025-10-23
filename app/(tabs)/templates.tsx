@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 import { useColorScheme } from 'react-native';
 
 import { Colors } from '@/constants/Colors';
+import CustomText from '@/components/CustomText';
 
 export default function TemplatesScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -15,7 +16,9 @@ export default function TemplatesScreen() {
         alignItems: 'center',
       }}
     >
-      <Text>Templates tab</Text>
+      <Text style={{ fontFamily: 'Outfit-VariableFont_wght' }}>
+        Templates tab
+      </Text>
     </View>
   );
 }

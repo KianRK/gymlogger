@@ -7,6 +7,7 @@ import {
   TextStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import CustomText from './CustomText';
 
 type Props = {
   label?: string;
@@ -27,7 +28,9 @@ export default function AddButton({
 }: Props) {
   return (
     <View style={[styles.componentContainer, componentStyle]}>
-      <Text style={[styles.addButtonLabel, labelStyle]}>{label}</Text>
+      <CustomText style={[styles.addButtonLabel, labelStyle]}>
+        {label}
+      </CustomText>
       <View style={[styles.addButtonContainer, buttonStyle]}>
         <Pressable style={styles.addButton} onPress={onPress}>
           <Ionicons name="add-sharp" size={iconSize} color={'black'} />

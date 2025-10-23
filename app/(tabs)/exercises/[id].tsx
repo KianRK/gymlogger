@@ -8,6 +8,7 @@ import { db } from '@/src/database';
 import { Exercise, WorkoutExercise } from '@/src/database/db_interfaces';
 
 import { DateDictionary } from '@/constants/DataTypes';
+import CustomText from '@/components/CustomText';
 
 export default function ExerciseId() {
   const screenWidth = Dimensions.get('window').width;
@@ -177,7 +178,9 @@ export default function ExerciseId() {
           alignItems: 'center',
         }}
       >
-        <Text style={{ color: 'black', fontSize: 32 }}>{exercise?.name}</Text>
+        <CustomText style={{ color: 'black', fontSize: 32 }}>
+          {exercise?.name}
+        </CustomText>
       </View>
       <View style={{ flexDirection: 'row' }}>
         <View style={styles.imageContainer}>
