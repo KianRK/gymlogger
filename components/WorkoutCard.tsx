@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/database/db_interfaces';
+import { Colors } from '@/constants/Colors';
+import CustomText from './CustomText';
 
 import DeleteButton from './DeleteButton';
 
@@ -20,6 +23,8 @@ export default function WorkoutCard({
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
+  const colorScheme = useColorScheme() ?? 'light';
+  const colors = Colors[colorScheme];
 
   useEffect(() => {
     function setup() {
@@ -59,24 +64,34 @@ export default function WorkoutCard({
   }
 
   return (
-    <View style={styles.WorkoutCardContainer}>
-      <View style={styles.workoutCardHeaderContainer}>
-        <Text style={styles.workoutCardLabel}>Workout {workout_number}</Text>
-        <DeleteButton
-          componentStyle={styles.deletebuttonComponent}
-          iconSize={23}
-          onPress={() => deleteWorkout(workout_id)}
-        />
-      </View>
-      {workoutExercises.map((exercise) => (
-        <View key={exercise.id} style={styles.workoutCardExerciseContainer}>
-          <Text style={styles.workoutCardExerciseName}>{exercise.name}</Text>
-          <Text style={styles.workoutCardExerciseSets}>
-            Sets: {countSets(exercise.id)}
-          </Text>
+    <LinearGradient
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      colors={[colors.tabBarBackgroundOne, colors.tabBarBackgroundTwo]}
+    >
+      <View style={styles.WorkoutCardContainer}>
+        <View style={styles.workoutCardHeaderContainer}>
+          <CustomText style={styles.workoutCardLabel}>
+            Workout {workout_number}
+          </CustomText>
+          <DeleteButton
+            componentStyle={styles.deletebuttonComponent}
+            iconSize={23}
+            onPress={() => deleteWorkout(workout_id)}
+          />
         </View>
-      ))}
-    </View>
+        {workoutExercises.map((exercise) => (
+          <View key={exercise.id} style={styles.workoutCardExerciseContainer}>
+            <CustomText style={styles.workoutCardExerciseName}>
+              {exercise.name}
+            </CustomText>
+            <CustomText style={styles.workoutCardExerciseSets}>
+              Sets: {countSets(exercise.id)}
+            </CustomText>
+          </View>
+        ))}
+      </View>
+    </LinearGradient>
   );
 }
 
@@ -85,7 +100,6 @@ const styles = StyleSheet.create({
     width: '75%',
     alignItems: 'center',
     borderColor: 'black',
-    backgroundColor: 'white',
     borderWidth: 2,
     borderRadius: 10,
     padding: 5,
@@ -99,7 +113,6 @@ const styles = StyleSheet.create({
     padding: 3,
   },
   workoutCardLabel: {
-    fontFamily: 'SyneMono-Regular',
     textAlign: 'center',
     fontSize: 22,
     marginLeft: 3,
@@ -117,7 +130,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   workoutCardExerciseName: {
-    fontFamily: 'SyneMono-Regular',
+    fontWeight: 600,
     marginLeft: 3,
     fontSize: 16,
   },

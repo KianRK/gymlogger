@@ -2,12 +2,21 @@ import { Text, TextProps } from 'react-native';
 
 interface CustomTextProps extends TextProps {
   children: React.ReactNode;
+  fontFamily?: string;
 }
 
-const CustomText = ({ children, style, ...otherProps }: CustomTextProps) => {
+const CustomText = ({
+  children,
+  fontFamily,
+  style,
+  ...otherProps
+}: CustomTextProps) => {
   return (
     <Text
-      style={[{ fontFamily: 'Outfit-VariableFont_wght' }, style]}
+      style={[
+        { fontFamily: fontFamily ? fontFamily : 'Outfit-Regular' },
+        style,
+      ]}
       {...otherProps}
     >
       {children}
