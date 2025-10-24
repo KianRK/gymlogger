@@ -11,9 +11,9 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import ExerciseCard from '@/components/ExerciseCard';
-import CalendarButton from '@/components/CalendarButton';
-import AddButton from '@/components/AddButton';
+import WorkoutExerciseCard from '@/components/WorkoutExerciseCard';
+import CalendarButton from '@/components/Buttons/CalendarButton';
+import AddButton from '@/components/Buttons/AddButton';
 import SelectExerciseCard from '@/components/SelectExerciseCard';
 
 import { db } from '@/src/database';
@@ -132,7 +132,7 @@ export default function Workouts() {
               style={styles.exerciseCardContainer}
               key={exercise.order_index}
             >
-              <ExerciseCard
+              <WorkoutExerciseCard
                 name={exercise.name}
                 exercise_id={exercise.id.toString()}
                 editable={false}
@@ -173,7 +173,7 @@ export default function Workouts() {
           <View
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
           >
-            <ExerciseCard
+            <WorkoutExerciseCard
               name={exerciseName}
               exercise_id={exerciseId}
               editable={true}

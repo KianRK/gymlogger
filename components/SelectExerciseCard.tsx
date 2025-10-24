@@ -1,15 +1,8 @@
-import {
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-  FlatList,
-  Pressable,
-} from 'react-native';
+import { TextInput, View, StyleSheet, FlatList, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import ConfirmButton from './ConfirmButton';
+import ConfirmButton from './Buttons/ConfirmButton';
 import CustomText from './CustomText';
 
 import { db } from '@/src/database';

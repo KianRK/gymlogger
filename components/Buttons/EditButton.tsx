@@ -6,8 +6,9 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import CustomText from './CustomText';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+import CustomText from '../CustomText';
 
 type Props = {
   label?: string;
@@ -18,7 +19,7 @@ type Props = {
   iconSize?: number;
 };
 
-export default function AddButton({
+export default function EditButton({
   label,
   onPress,
   componentStyle,
@@ -28,12 +29,18 @@ export default function AddButton({
 }: Props) {
   return (
     <View style={[styles.componentContainer, componentStyle]}>
-      <CustomText style={[styles.addButtonLabel, labelStyle]}>
-        {label}
-      </CustomText>
-      <View style={[styles.addButtonContainer, buttonStyle]}>
-        <Pressable style={styles.addButton} onPress={onPress}>
-          <Ionicons name="add-sharp" size={iconSize} color={'black'} />
+      {label && (
+        <CustomText style={[styles.editButtonLabel, labelStyle]}>
+          {label}
+        </CustomText>
+      )}
+      <View style={[styles.editButtonContainer, buttonStyle]}>
+        <Pressable style={styles.editButton} onPress={onPress}>
+          <MaterialCommunityIcons
+            name="circle-edit-outline"
+            size={iconSize}
+            color={'black'}
+          />
         </Pressable>
       </View>
     </View>
@@ -46,19 +53,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
   },
-  addButtonContainer: {
-    width: 50,
-    height: 50,
+  editButtonContainer: {
+    width: 30,
+    height: 30,
+    position: 'relative',
     borderWidth: 2,
     borderRadius: 25,
     alignSelf: 'center',
     justifyContent: 'center',
     alignContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
   },
 
-  addButton: { alignItems: 'center' },
-  addButtonLabel: {
+  editButton: { alignItems: 'center' },
+  editButtonLabel: {
     width: 140,
     textAlign: 'center',
     color: 'black',

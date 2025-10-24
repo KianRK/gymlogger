@@ -7,7 +7,7 @@ import { WorkoutExercise } from '@/src/database/db_interfaces';
 import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
 
-import DeleteButton from './DeleteButton';
+import DeleteButton from './Buttons/DeleteButton';
 
 type Props = {
   workout_id: string;

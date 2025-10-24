@@ -7,6 +7,7 @@ import {
   TextStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import CustomText from '../CustomText';
 
 type Props = {
   label?: string;
@@ -17,7 +18,7 @@ type Props = {
   iconSize?: number;
 };
 
-export default function DeleteButton({
+export default function AddButton({
   label,
   onPress,
   componentStyle,
@@ -28,11 +29,13 @@ export default function DeleteButton({
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
-        <Text style={[styles.deleteButtonLabel, labelStyle]}>{label}</Text>
+        <CustomText style={[styles.addButtonLabel, labelStyle]}>
+          {label}
+        </CustomText>
       )}
-      <View style={[styles.deleteButtonContainer, buttonStyle]}>
-        <Pressable onPress={onPress}>
-          <Ionicons name="trash-outline" size={iconSize} color={'black'} />
+      <View style={[styles.addButtonContainer, buttonStyle]}>
+        <Pressable style={styles.addButton} onPress={onPress}>
+          <Ionicons name="add-sharp" size={iconSize} color={'black'} />
         </Pressable>
       </View>
     </View>
@@ -45,20 +48,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
   },
-  deleteButtonContainer: {
-    width: 30,
-    height: 30,
-    position: 'relative',
+  addButtonContainer: {
+    width: 50,
+    height: 50,
     borderWidth: 2,
     borderRadius: 25,
     alignSelf: 'center',
     justifyContent: 'center',
     alignContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'white',
   },
-  deleteButton: { alignItems: 'center' },
-  deleteButtonLabel: {
+
+  addButton: { alignItems: 'center' },
+  addButtonLabel: {
     width: 140,
     textAlign: 'center',
     color: 'black',

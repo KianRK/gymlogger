@@ -1,7 +1,7 @@
 import { StyleSheet, Text, Pressable, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import CustomText from './CustomText';
+import CustomText from '../CustomText';
 
 type Props = {
   date: string;

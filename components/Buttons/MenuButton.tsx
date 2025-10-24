@@ -17,7 +17,7 @@ type Props = {
   iconSize?: number;
 };
 
-export default function EditButton({
+export default function MenuButton({
   label,
   onPress,
   componentStyle,
@@ -28,10 +28,10 @@ export default function EditButton({
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
-        <Text style={[styles.editButtonLabel, labelStyle]}>{label}</Text>
+        <Text style={[styles.menuButtonLabel, labelStyle]}>{label}</Text>
       )}
-      <View style={[styles.editButtonContainer, buttonStyle]}>
-        <Pressable style={styles.editButton} onPress={onPress}>
+      <View style={[styles.menuButtonContainer, buttonStyle]}>
+        <Pressable style={styles.menuButton} onPress={onPress}>
           <Ionicons name="menu-outline" size={iconSize} color={'black'} />
         </Pressable>
       </View>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
   },
-  editButtonContainer: {
+  menuButtonContainer: {
     width: 50,
     height: 50,
     borderWidth: 2,
@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 
-  editButton: { alignSelf: 'center' },
-  editButtonLabel: {
+  menuButton: { alignSelf: 'center' },
+  menuButtonLabel: {
     width: 140,
     textAlign: 'center',
     color: 'black',

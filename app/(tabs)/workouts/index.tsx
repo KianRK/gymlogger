@@ -16,9 +16,9 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 
-import CalendarButton from '@/components/CalendarButton';
-import AddButton from '@/components/AddButton';
-import EditButton from '@/components/EditButton';
+import CalendarButton from '@/components/Buttons/CalendarButton';
+import AddButton from '@/components/Buttons/AddButton';
+import MenuButton from '@/components/Buttons/MenuButton';
 import { Colors } from '@/constants/Colors';
 import WorkoutCard from '@/components/WorkoutCard';
 
