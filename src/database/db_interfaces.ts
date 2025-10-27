@@ -1,7 +1,10 @@
 export interface Exercise {
   id: number;
   name: string;
-  target: string;
+  primary_target: Array<string>;
+  secondary_target: Array<string>;
+  region: string;
+  favorite: number;
 }
 
 export interface Workout {
