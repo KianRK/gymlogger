@@ -102,8 +102,11 @@ export default function ExercisesScreen() {
             data={exercises}
             renderItem={({ item }) => (
               <ExerciseCard
-                imgSource={require('@/assets/images/latpull_target_muscles.png')}
                 name={item.name}
+                is_favorite={false}
+                region="Chest"
+                primary="Upper Chest"
+                secondary="Triceps"
                 onPress={() => goToDetailPage(item.id)}
               />
             )}
