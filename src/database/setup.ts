@@ -16,7 +16,8 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       name TEXT NOT NULL UNIQUE,
       primary_target TEXT NOT NULL,
       secondary_target TEXT,
-      region TEXT NOT NULL
+      region TEXT NOT NULL,
+      favorite INTEGER DEFAULT 0
       );
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Assisted Dip', '["Chest", "Front Deltoid", "Triceps"]', NULL, 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Band-Assisted Bench Press', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
@@ -71,7 +72,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cable Front Raise', '["Front Deltoid"]', '["Lateral Deltoid"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cable Lateral Raise', '["Lateral Deltoid"]', '["Front Deltoid"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cable Rear Delt Row', '["Rear Deltoid", "Rotator Cuff"]', '["Trapezius", "Biceps"]', 'Shoulder');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cuban Press', '["Front Deltoid"]', '["Lateral Deltoid", "Read Deltoid", "Trapezius", "Triceps"]', 'Shoulder');
+    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cuban Press', '["Front Deltoid"]', '["Lateral Deltoid", "Rear Deltoid", "Trapezius", "Triceps"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Devils Press', '["Front Deltoid", "Chest", "Quads", "Adductors"]', '["Forearm Flexors", "Calves", "Abs", "Trapezius", "Triceps"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Dumbbell Front Raise', '["Front Deltoid"]', '["Lateral Deltoid"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Dumbbell Horizontal Internal Shoulder Rotation', '["Rotator Cuff (anterior)"]', NULL, 'Shoulder');
@@ -83,7 +84,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Front Hold', '["Front Deltoid"]', '["Lateral Deltoid"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Handstand Push-Up', '["Front Deltoid"]', '["Lateral Deltoid", "Triceps"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Jerk', '["Front Deltoid"]', '["Quads", "Glutes", "Adductors", "Lower Back", "Trapezius", "Triceps", "Lateral Deltoid"]', 'Shoulder');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kettlebell Halo', '["Front Deltoid", "Lateral Deltoid", "Read Deltoid"]', '["Trapezius", "Triceps", "Abs", "Obliques"]', 'Shoulder');
+    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kettlebell Halo', '["Front Deltoid", "Lateral Deltoid", "Rear Deltoid"]', '["Trapezius", "Triceps", "Abs", "Obliques"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kettlebell Press', '["Front Deltoid"]', '["Triceps", "Lateral Deltoid"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kettlebell Push Press', '["Front Deltoid"]', '["Triceps", "Lateral Deltoid"]', 'Shoulder');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Landmine Press', '["Front Deltoid"]', '["Triceps", "Chest"]', 'Shoulder');
