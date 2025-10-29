@@ -30,7 +30,7 @@ export default function ExercisesScreen() {
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [filterSelect, setFilterSelect] = useState<boolean>(false);
   const [favSelect, setFavSelect] = useState<boolean>(false);
-  const [text, setText] = useState<string>();
+  const [text, setText] = useState('');
 
   const goToDetailPage = (id: number) => {
     router.push({
@@ -52,6 +52,43 @@ export default function ExercisesScreen() {
     }
     setup();
   }, []);
+
+  const updateFav = (item: Exercise) => {
+    let newFavStatus = !item.favorite;
+    db.runSync('UPDATE exercises SET favorite = ? WHERE id = ?', [
+      newFavStatus,
+      item.id,
+    ]);
+    setExercises((prevExercises) =>
+      prevExercises.map((exercise) =>
+        exercise.id === item.id
+          ? { ...exercise, favorite: Number(newFavStatus) }
+          : exercise
+      )
+    );
+  };
+
+  function filteredExercises(): Exercise[] {
+    if (favSelect) {
+      return exercises
+        .filter((item) => {
+          //item.name.toLowerCase().includes(text.toLowerCase());
+          return item.favorite;
+        })
+        .filter((item) => {
+          return item.name.toLowerCase().includes(text.toLowerCase());
+        });
+    } else {
+      let ex = exercises.filter((item) => {
+        return item.name.toLowerCase().includes(text.toLowerCase());
+      });
+      return ex;
+    }
+  }
+
+  const handleChange = (text: string) => {
+    setText(text);
+  };
 
   return (
     <SafeAreaProvider>
@@ -91,6 +128,7 @@ export default function ExercisesScreen() {
             <TextInput
               placeholder="Search"
               value={text}
+              onChangeText={handleChange}
               style={{
                 fontFamily: 'Outfit-Regular',
                 fontSize: 20,
@@ -99,15 +137,16 @@ export default function ExercisesScreen() {
             ></TextInput>
           </View>
           <FlatList
-            data={exercises}
+            data={filteredExercises()}
             renderItem={({ item }) => (
               <ExerciseCard
                 name={item.name}
-                is_favorite={false}
+                is_favorite={Boolean(item.favorite)}
                 region="Chest"
                 primary="Upper Chest"
                 secondary="Triceps"
-                onPress={() => goToDetailPage(item.id)}
+                onPressInfo={() => goToDetailPage(item.id)}
+                onPressFav={() => updateFav(item)}
               />
             )}
           />
