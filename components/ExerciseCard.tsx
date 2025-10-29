@@ -11,7 +11,8 @@ type Props = {
   region?: string;
   primary?: string;
   secondary?: string;
-  onPress?: () => void;
+  onPressInfo?: () => void;
+  onPressFav?: () => void;
 };
 
 export default function ExerciseCard({
@@ -20,7 +21,8 @@ export default function ExerciseCard({
   region,
   primary,
   secondary,
-  onPress,
+  onPressInfo,
+  onPressFav,
 }: Props) {
   const colorOne = '#b3cbe4ff';
   const colorOneAlpha = '#b3cbe490';
@@ -56,7 +58,7 @@ export default function ExerciseCard({
       }}
     >
       <View style={styles.exerciseCardContainer}>
-        <Pressable style={styles.favoritesButton}>
+        <Pressable style={styles.favoritesButton} onPress={onPressFav}>
           <MaterialCommunityIcons
             name={is_favorite ? 'heart' : 'heart-outline'}
             size={30}
@@ -69,7 +71,7 @@ export default function ExerciseCard({
           </CustomText>
           <CustomText style={styles.regionText}>{region}</CustomText>
         </View>
-        <Pressable style={styles.infoButton} onPress={onPress}>
+        <Pressable style={styles.infoButton} onPress={onPressInfo}>
           <MaterialCommunityIcons name="information" size={30} color="black" />
         </Pressable>
         <View style={styles.targetsContainer}>
