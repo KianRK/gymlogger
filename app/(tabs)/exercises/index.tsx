@@ -72,7 +72,6 @@ export default function ExercisesScreen() {
     if (favSelect) {
       return exercises
         .filter((item) => {
-          //item.name.toLowerCase().includes(text.toLowerCase());
           return item.favorite;
         })
         .filter((item) => {
@@ -85,10 +84,6 @@ export default function ExercisesScreen() {
       return ex;
     }
   }
-
-  const handleChange = (text: string) => {
-    setText(text);
-  };
 
   return (
     <SafeAreaProvider>
@@ -128,7 +123,7 @@ export default function ExercisesScreen() {
             <TextInput
               placeholder="Search"
               value={text}
-              onChangeText={handleChange}
+              onChangeText={(text) => setText(text)}
               style={{
                 fontFamily: 'Outfit-Regular',
                 fontSize: 20,
