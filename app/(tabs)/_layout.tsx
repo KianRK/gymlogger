@@ -4,6 +4,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useColorScheme, StyleSheet } from 'react-native';
 
+import SettingsButton from '@/components/Buttons/SettingsButton';
+import ProfileButton from '@/components/Buttons/ProfileButton';
+
 import { Colors } from '@/constants/Colors';
 
 export default function TabLayout() {
@@ -15,6 +18,10 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.tabIconSelected,
         headerShadowVisible: false,
         headerTintColor: colors.text,
+        headerTitleAlign: 'center',
+        headerTitleStyle: { fontSize: 28, fontFamily: 'Outfit-Regular' },
+        headerLeft: () => <SettingsButton />,
+        headerRight: () => <ProfileButton />,
         headerBackground: () => (
           <LinearGradient
             style={StyleSheet.absoluteFill}
