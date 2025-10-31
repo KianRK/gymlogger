@@ -21,7 +21,6 @@ export default function RootLayout() {
   });
   useEffect(() => {
     if (loaded || error) {
-      let loadedFonts = Font.getLoadedFonts();
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
@@ -32,7 +31,12 @@ export default function RootLayout() {
   return (
     <DatabaseProvider>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
       <StatusBar style="light" />
     </DatabaseProvider>
