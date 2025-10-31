@@ -1,4 +1,4 @@
-import { Dimensions, Text, Image, StyleSheet, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, View } from 'react-native';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 
