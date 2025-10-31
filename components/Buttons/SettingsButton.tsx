@@ -1,4 +1,4 @@
-import { Pressable, View, StyleSheet, ViewStyle } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 
 import { useRouter } from 'expo-router';
 

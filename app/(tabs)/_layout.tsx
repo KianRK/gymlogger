@@ -20,8 +20,12 @@ export default function TabLayout() {
         headerTintColor: colors.text,
         headerTitleAlign: 'center',
         headerTitleStyle: { fontSize: 28, fontFamily: 'Outfit-Regular' },
-        headerLeft: () => <SettingsButton />,
-        headerRight: () => <ProfileButton />,
+        headerRight: () => (
+          <>
+            <SettingsButton />
+            <ProfileButton />
+          </>
+        ),
         headerBackground: () => (
           <LinearGradient
             style={StyleSheet.absoluteFill}
