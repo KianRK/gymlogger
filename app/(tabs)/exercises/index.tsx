@@ -92,7 +92,7 @@ export default function ExercisesScreen() {
           start={{ x: 0.5, y: 0.5 }}
           end={{ x: 1, y: 1 }}
           colors={['#ddeaf6ff', '#b3cbe4ff']}
-          style={StyleSheet.absoluteFillObject}
+          style={[{ overflow: 'visible' }]}
         >
           <View style={styles.filterBarContainer}>
             <FilterButton

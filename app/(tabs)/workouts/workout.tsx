@@ -144,7 +144,7 @@ export default function Workouts() {
           ))}
         </ScrollView>
         <Modal
-          style={{ alignSelf: 'center' }}
+          style={{ alignSelf: 'center', overflow: 'visible' }}
           visible={selectionModalVisible}
           animationType="fade"
           transparent={true}
@@ -153,7 +153,12 @@ export default function Workouts() {
           }}
         >
           <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'visible',
+            }}
           >
             <SelectExerciseCard
               updateExerciseName={setExerciseName}

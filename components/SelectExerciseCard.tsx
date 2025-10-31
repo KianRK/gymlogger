@@ -20,7 +20,7 @@ export default function SelectExerciseCard({
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
-  const [fontSize, setFontSize] = useState(26);
+  const [fontSize, setFontSize] = useState(24);
   const handleConfirm = () => {
     onConfirm();
   };
@@ -56,59 +56,64 @@ export default function SelectExerciseCard({
   }, []);
 
   return (
-    <LinearGradient
-      start={{ x: 0.375, y: 0.375 }}
-      end={{ x: 0.75, y: 0.75 }}
-      colors={[colorOneAlpha, colorTwo, colorOne]}
-      style={{ borderRadius: 8 }}
-    >
-      <View style={styles.selectExerciseCardContainer}>
-        <View style={styles.selectionContainer}>
-          <TextInput
-            style={[styles.inputText, { fontSize: fontSize }]}
-            onChangeText={handleChange}
-            placeholder="Enter Exercise"
-            value={text}
-            onPress={() => setTyping(true)}
-          ></TextInput>
-          {typing && (
-            <FlatList
-              data={filteredExercises}
-              style={styles.flatListContainer}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => {
-                    handleChange(item.name);
-                    updateExerciseName(item.name);
-                    setTyping(false);
-                  }}
-                >
-                  <CustomText style={styles.listItems}>{item.name}</CustomText>
-                </Pressable>
-              )}
+    <View style={styles.cardWrapper}>
+      <LinearGradient
+        start={{ x: 0.375, y: 0.375 }}
+        end={{ x: 0.75, y: 0.75 }}
+        colors={[colorTwo, colorOne]}
+        style={{ borderRadius: 36, overflow: 'visible' }} // Still good practice
+      >
+        <View style={styles.selectExerciseCardContainer}>
+          <View style={styles.selectionContainer}>
+            <TextInput
+              style={[styles.inputText, { fontSize: fontSize }]}
+              onChangeText={handleChange}
+              placeholder="Enter Exercise"
+              value={text}
+              onPress={() => setTyping(true)}
             />
-          )}
+          </View>
+          <ConfirmButton
+            onPress={handleConfirm}
+            componentStyle={styles.confirmButtonContainer}
+            buttonStyle={styles.confirmButton}
+            labelStyle={styles.confirmButtonLabel}
+          />
         </View>
-        <ConfirmButton
-          onPress={handleConfirm}
-          componentStyle={styles.confirmButtonContainer}
-          buttonStyle={styles.confirmButton}
-          labelStyle={styles.confirmButtonLabel}
+      </LinearGradient>
+
+      {typing && (
+        <FlatList
+          data={filteredExercises}
+          style={styles.flatListContainer}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => {
+                handleChange(item.name);
+                updateExerciseName(item.name);
+                setTyping(false);
+              }}
+            >
+              <CustomText style={styles.listItems}>{item.name}</CustomText>
+            </Pressable>
+          )}
         />
-      </View>
-    </LinearGradient>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  selectExerciseCardContainer: {
+  cardWrapper: {
     width: '75%',
     position: 'relative',
+  },
+  selectExerciseCardContainer: {
+    width: '100%',
     borderColor: 'black',
     flexDirection: 'row',
     maxHeight: 120,
-    borderWidth: 2,
     borderRadius: 10,
     padding: 5,
     justifyContent: 'space-between',
@@ -116,24 +121,27 @@ const styles = StyleSheet.create({
   },
   selectionContainer: { width: '75%' },
   flatListContainer: {
-    width: '100%',
-    top: 60,
-    position: 'absolute',
+    width: '70%',
+    marginLeft: 10,
     maxHeight: 150,
     borderWidth: 1,
-    borderColor: 'black',
-    zIndex: 100,
+    borderColor: 'transparent',
+    zIndex: 999999,
   },
   inputText: {
     borderWidth: 1,
     width: '100%',
+    borderRadius: 36,
+    paddingLeft: 10,
     fontSize: 26,
     fontFamily: 'Outfit-Regular',
-    textAlign: 'center',
+    textAlign: 'left',
+    padding: 5,
   },
   listItems: {
     borderWidth: 1,
     fontSize: 18,
+    color: 'black',
   },
   confirmButton: { width: 40, height: 40 },
   confirmButtonContainer: {
