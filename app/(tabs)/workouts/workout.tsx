@@ -15,6 +15,7 @@ import WorkoutExerciseCard from '@/components/WorkoutExerciseCard';
 import CalendarButton from '@/components/Buttons/CalendarButton';
 import AddButton from '@/components/Buttons/AddButton';
 import SelectExerciseCard from '@/components/SelectExerciseCard';
+import BackButton from '@/components/Buttons/BackButton';
 
 import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/database/db_interfaces';
@@ -122,7 +123,26 @@ export default function Workouts() {
           colors={['#ddeaf6ff', '#b3cbe4ff']}
           style={StyleSheet.absoluteFillObject}
         />
-        <CalendarButton date={date} />
+        <View
+          style={{
+            flexDirection: 'row',
+            height: '12%',
+            width: '100%',
+            marginTop: '5%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <BackButton />
+          <CalendarButton
+            date={date}
+            gradientStyle={{
+              height: '100%',
+              marginTop: 0,
+              marginRight: '5%',
+            }}
+          />
+        </View>
         <ScrollView
           style={styles.scrollViewContainer}
           {...(Platform.OS === 'android' ? { fadingEdgeLength: 75 } : {})}
@@ -192,7 +212,7 @@ export default function Workouts() {
           </View>
         </Modal>
         <AddButton
-          label="Add Exercise"
+          label="Add exercise"
           componentStyle={styles.buttonComponent}
           onPress={handleAddExercise}
         />
