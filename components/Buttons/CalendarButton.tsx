@@ -1,14 +1,19 @@
-import { StyleSheet, Text, Pressable, View } from 'react-native';
+import { StyleSheet, Pressable, View, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import CustomText from '../CustomText';
 
 type Props = {
   date: string;
+  gradientStyle?: ViewStyle;
   onPress?: () => void;
 };
 
-export default function CalendarButton({ date, onPress }: Props) {
+export default function CalendarButton({
+  date,
+  gradientStyle,
+  onPress,
+}: Props) {
   const colorOne = '#b3cbe4ff';
   const colorOneAlpha = '#b3cbe490';
   const colorTwo = '#ddeaf6ff';
@@ -18,15 +23,18 @@ export default function CalendarButton({ date, onPress }: Props) {
       start={{ x: 0.375, y: 0.375 }}
       end={{ x: 0.75, y: 0.75 }}
       colors={[colorOneAlpha, colorTwo, colorOne]}
-      style={{
-        height: '12%',
-        borderRadius: 8,
-        marginTop: '5%',
-        marginRight: '5%',
-        marginLeft: 'auto',
-        marginBottom: 'auto',
-        justifyContent: 'center',
-      }}
+      style={[
+        {
+          height: '12%',
+          borderRadius: 8,
+          marginTop: '5%',
+          marginRight: '5%',
+          marginLeft: 'auto',
+          marginBottom: 'auto',
+          justifyContent: 'center',
+        },
+        gradientStyle,
+      ]}
     >
       <View style={styles.calendarButtonContainer}>
         <Pressable style={styles.calendarButton} onPress={onPress}>
