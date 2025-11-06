@@ -4,6 +4,7 @@ import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import DatabaseProvider from '@/src/providers/DatabaseProvider';
+import { SettingsProvider } from '@/src/providers/SettingsProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -30,15 +31,17 @@ export default function RootLayout() {
   }
   return (
     <DatabaseProvider>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack>
-      <StatusBar style="light" />
+      <SettingsProvider>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+        <StatusBar style="light" />
+      </SettingsProvider>
     </DatabaseProvider>
   );
 }
