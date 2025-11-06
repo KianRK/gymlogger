@@ -13,7 +13,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Colors } from '@/constants/Colors';
 import ExerciseCard from '@/components/ExerciseCard';
-import { Exercise } from '@/src/database/db_interfaces';
+import { Exercise } from '@/src/Interfaces/db_interfaces';
 import { db } from '@/src/database';
 
 import DeleteButton from '@/components/Buttons/DeleteButton';

@@ -6,7 +6,7 @@ import ConfirmButton from './Buttons/ConfirmButton';
 import CustomText from './CustomText';
 
 import { db } from '@/src/database';
-import { Exercise } from '@/src/database/db_interfaces';
+import { Exercise } from '@/src/Interfaces/db_interfaces';
 
 type Props = {
   onConfirm: () => void;

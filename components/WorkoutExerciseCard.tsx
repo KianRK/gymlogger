@@ -8,7 +8,7 @@ import DeleteButton from './Buttons/DeleteButton';
 import CustomText from './CustomText';
 
 import { db } from '@/src/database';
-import { Set } from '@/src/database/db_interfaces';
+import { Set } from '@/src/Interfaces/db_interfaces';
 
 type Props = {
   name: string;

@@ -23,7 +23,7 @@ import { Colors } from '@/constants/Colors';
 import WorkoutCard from '@/components/WorkoutCard';
 
 import { db } from '@/src/database';
-import { Workout } from '@/src/database/db_interfaces';
+import { Workout } from '@/src/Interfaces/db_interfaces';
 
 export default function Index() {
   const router = useRouter();

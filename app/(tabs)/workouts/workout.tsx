@@ -18,7 +18,7 @@ import SelectExerciseCard from '@/components/SelectExerciseCard';
 import BackButton from '@/components/Buttons/BackButton';
 
 import { db } from '@/src/database';
-import { WorkoutExercise } from '@/src/database/db_interfaces';
+import { WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 
 import { Colors } from '@/constants/Colors';
 

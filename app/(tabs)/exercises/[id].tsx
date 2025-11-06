@@ -5,7 +5,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { LineChart } from 'react-native-chart-kit';
 
 import { db } from '@/src/database';
-import { Exercise, WorkoutExercise } from '@/src/database/db_interfaces';
+import { Exercise, WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 
 import { DateDictionary } from '@/constants/DataTypes';
 import CustomText from '@/components/CustomText';
