@@ -15,10 +15,9 @@ type Props = {
   visible: boolean;
   currentSelection: string;
   options: string[];
+  registrationHandler: () => void;
   selectionSetter: (selection: string) => void;
   visibilitySetter: (vis: boolean) => void;
-  onPressButton?: () => void;
-  onPressOption?: (item: any) => void;
 };
 
 export default function DropDownButton({
@@ -26,15 +25,21 @@ export default function DropDownButton({
   textStyle,
   optionsStyle,
   visible,
-  visibilitySetter,
   currentSelection,
   options,
+  registrationHandler,
   selectionSetter,
+  visibilitySetter,
 }: Props) {
   return (
     <View style={[styles.componentStyleDefault, componentStyle]}>
       {!visible && (
-        <Pressable onPress={() => visibilitySetter(!visible)}>
+        <Pressable
+          onPress={() => {
+            registrationHandler();
+            visibilitySetter(!visible);
+          }}
+        >
           <CustomText style={[styles.textStyleDefault, textStyle]}>
             {currentSelection}
           </CustomText>
