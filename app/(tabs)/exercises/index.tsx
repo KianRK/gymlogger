@@ -20,7 +20,7 @@ import DeleteButton from '@/components/Buttons/DeleteButton';
 import FilterButton from '@/components/Buttons/FilterButton';
 import FavoritesButton from '@/components/Buttons/FavoritesButton';
 import EditButton from '@/components/Buttons/EditButton';
-import FilterOptionButton from '@/components/Buttons/FilterOption';
+import FilterOptionButton from '@/components/Buttons/FilterOptionButton';
 
 const colorScheme = useColorScheme() ?? 'light';
 const colors = Colors[colorScheme];
