@@ -61,7 +61,7 @@ export default function SelectExerciseCard({
         start={{ x: 0.375, y: 0.375 }}
         end={{ x: 0.75, y: 0.75 }}
         colors={[colorTwo, colorOne]}
-        style={{ borderRadius: 36, overflow: 'visible' }} // Still good practice
+        style={{ borderRadius: 36, overflow: 'visible' }}
       >
         <View style={styles.selectExerciseCardContainer}>
           <View style={styles.selectionContainer}>
