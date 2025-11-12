@@ -9,7 +9,11 @@ import {
 
 const SETTINGS_STORAGE_KEY = '@MyApp:Settings';
 
-const initialSettings: Settings = { darkMode: false, fontSize: 16 };
+const initialSettings: Settings = {
+  darkMode: 'Off',
+  language: 'English',
+  units: 'metric (kg)',
+};
 
 const defaultContextValue: SettingsContextValue = {
   settings: initialSettings,
