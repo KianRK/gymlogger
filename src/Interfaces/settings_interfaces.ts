@@ -1,10 +1,11 @@
 export interface Settings {
-  darkMode: boolean;
-  fontSize: number;
+  darkMode: string;
+  language: string;
+  units: string;
 }
 
 export interface SettingsContextValue {
   settings: Settings;
-  updateSetting: (key: keyof Settings, value: any) => void;
+  updateSetting: (key: keyof Settings, value: string) => void;
   isLoading: boolean;
 }
