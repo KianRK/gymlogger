@@ -7,15 +7,17 @@ import { useSettings } from '@/src/providers/SettingsProvider';
 import { Colors } from '@/constants/Colors';
 import CustomText from '@/components/CustomText';
 import DropDownButton from '@/components/Buttons/DropDownButton';
+import { Settings } from '@/src/Interfaces/settings_interfaces';
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const { settings, updateSetting } = useSettings();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const [currentDropDownVisible, setCurrentDropDownVisible] = useState('');
 
-  const [currentLanguage, setCurrentLanguage] = useState('English');
+  const [currentLanguage, setCurrentLanguage] = useState(settings.language);
   const [languageSettingVisible, setLanguageSettingVisible] = useState(false);
   const [languageOptions, setLanguageOptions] = useState([
     'German',
@@ -23,11 +25,13 @@ export default function SettingsScreen() {
     'French',
   ]);
 
-  const [currentDarkModeSetting, setCurrentDarkModeSetting] = useState('Off');
+  const [currentDarkModeSetting, setCurrentDarkModeSetting] = useState(
+    settings.darkMode
+  );
   const [darkModeSettingVisible, setDarkModeSettingVisible] = useState(false);
   const [darkModeOptions, setDarkModeOptions] = useState(['On, Off']);
 
-  const [currentUnitSetting, setCurrentUnitSetting] = useState('metric (kg)');
+  const [currentUnitSetting, setCurrentUnitSetting] = useState(settings.units);
   const [unitSettingVisible, setUnitSettingVisible] = useState(false);
   const [unitOptions, setUnitOptions] = useState([
     'metric (kg)',
@@ -101,6 +105,7 @@ export default function SettingsScreen() {
             <DropDownButton
               currentSelection={currentLanguage}
               options={languageOptions}
+              settingName="language"
               visible={languageSettingVisible}
               registrationHandler={() => setCurrentDropDownVisible('lang')}
               selectionSetter={setCurrentLanguage}
@@ -112,6 +117,7 @@ export default function SettingsScreen() {
             <DropDownButton
               currentSelection={currentDarkModeSetting}
               options={darkModeOptions}
+              settingName="darkMode"
               visible={darkModeSettingVisible}
               registrationHandler={() => setCurrentDropDownVisible('darkmode')}
               visibilitySetter={setDarkModeSettingVisible}
@@ -134,6 +140,7 @@ export default function SettingsScreen() {
               componentStyle={{ width: '40%' }}
               currentSelection={currentUnitSetting}
               options={unitOptions}
+              settingName="units"
               visible={unitSettingVisible}
               registrationHandler={() => setCurrentDropDownVisible('unit')}
               selectionSetter={setCurrentUnitSetting}

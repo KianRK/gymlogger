@@ -7,11 +7,14 @@ import {
 } from 'react-native';
 
 import CustomText from '../CustomText';
+import { useSettings } from '@/src/providers/SettingsProvider';
+import { Settings } from '@/src/Interfaces/settings_interfaces';
 
 type Props = {
   componentStyle?: ViewStyle;
   textStyle?: TextStyle;
   optionsStyle?: ViewStyle;
+  settingName: keyof Settings;
   visible: boolean;
   currentSelection: string;
   options: string[];
@@ -24,6 +27,7 @@ export default function DropDownButton({
   componentStyle,
   textStyle,
   optionsStyle,
+  settingName,
   visible,
   currentSelection,
   options,
@@ -31,6 +35,8 @@ export default function DropDownButton({
   selectionSetter,
   visibilitySetter,
 }: Props) {
+  const { updateSetting } = useSettings();
+
   return (
     <View style={[styles.componentStyleDefault, componentStyle]}>
       {!visible && (
@@ -53,6 +59,7 @@ export default function DropDownButton({
               onPress={() => {
                 selectionSetter(item);
                 visibilitySetter(!visible);
+                updateSetting(settingName, item);
               }}
             >
               <CustomText style={[styles.textStyleDefault, textStyle]}>
@@ -68,7 +75,7 @@ export default function DropDownButton({
 
 const styles = StyleSheet.create({
   componentStyleDefault: {
-    width: '30%',
+    width: '35%',
     alignItems: 'flex-end',
     justifyContent: 'flex-start',
   },
@@ -77,6 +84,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
+    borderRadius: 4,
+    padding: 2,
     backgroundColor: '#f6f6f6',
     top: 0,
     zIndex: 10,
