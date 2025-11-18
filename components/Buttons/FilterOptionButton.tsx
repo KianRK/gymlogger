@@ -1,34 +1,60 @@
 import {
+  FlatList,
   Pressable,
-  Text,
   View,
   StyleSheet,
   ViewStyle,
   TextStyle,
+  ScrollView,
 } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import CustomText from '../CustomText';
+import { useState } from 'react';
 
 type Props = {
   label?: string;
   buttonText: string;
-  onPress?: () => void;
   componentStyle?: ViewStyle;
   buttonStyle?: ViewStyle;
   labelStyle?: TextStyle;
   iconSize?: number;
+  data: string[];
+  activeFilters: string[];
+  setActiveFilter: (active: string[]) => void;
+  dropDownVisible: boolean;
+  visibilitySetter: (vis: boolean) => void;
+  registrationHandler: () => void;
 };
 
 export default function FilterOptionButton({
   label,
   buttonText,
-  onPress,
   componentStyle,
   buttonStyle,
   labelStyle,
   iconSize = 25,
+  data,
+  activeFilters,
+  setActiveFilter,
+  dropDownVisible,
+  visibilitySetter,
+  registrationHandler,
 }: Props) {
+  const filteredData = () => {
+    let filtered = data.filter((item) => {
+      return !activeFilters.includes(item);
+    });
+    if (activeFilters.length == data.length) {
+      visibilitySetter(false);
+    }
+    return filtered;
+  };
+
+  const updateActiveFilters = (newFilter: string) => {
+    setActiveFilter([...activeFilters, newFilter].sort());
+  };
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
@@ -37,7 +63,13 @@ export default function FilterOptionButton({
         </CustomText>
       )}
       <View style={[styles.optionButtonContainer, buttonStyle]}>
-        <Pressable style={styles.optionButton} onPress={onPress}>
+        <Pressable
+          style={styles.optionButton}
+          onPress={() => {
+            registrationHandler();
+            visibilitySetter(!dropDownVisible);
+          }}
+        >
           <CustomText>{buttonText}</CustomText>
           <MaterialCommunityIcons
             name="arrow-down-right"
@@ -46,6 +78,28 @@ export default function FilterOptionButton({
           />
         </Pressable>
       </View>
+      {dropDownVisible && (
+        <View
+          style={{
+            position: 'absolute',
+            width: '90%',
+            justifyContent: 'center',
+            maxHeight: 80,
+            top: 30,
+            zIndex: 999,
+            backgroundColor: '#f9f9f9ee',
+          }}
+        >
+          <FlatList
+            data={filteredData()}
+            renderItem={({ item }) => (
+              <Pressable onPress={() => updateActiveFilters(item)}>
+                <CustomText style={{ textAlign: 'center' }}>{item}</CustomText>
+              </Pressable>
+            )}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -54,6 +108,7 @@ const styles = StyleSheet.create({
   componentContainer: {
     position: 'relative',
     justifyContent: 'center',
+    alignItems: 'center',
     alignContent: 'center',
   },
   optionButtonContainer: {
