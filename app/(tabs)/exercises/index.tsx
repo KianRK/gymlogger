@@ -4,6 +4,8 @@ import {
   StyleSheet,
   FlatList,
   TextInput,
+  Pressable,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react';
@@ -13,7 +15,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { Colors } from '@/constants/Colors';
 import ExerciseCard from '@/components/ExerciseCard';
-import { Exercise } from '@/src/Interfaces/db_interfaces';
+import { Exercise, ExerciseParsed } from '@/src/Interfaces/db_interfaces';
 import { db } from '@/src/database';
 
 import DeleteButton from '@/components/Buttons/DeleteButton';
@@ -21,16 +23,82 @@ import FilterButton from '@/components/Buttons/FilterButton';
 import FavoritesButton from '@/components/Buttons/FavoritesButton';
 import EditButton from '@/components/Buttons/EditButton';
 import FilterOptionButton from '@/components/Buttons/FilterOptionButton';
+import CustomText from '@/components/CustomText';
 
 const colorScheme = useColorScheme() ?? 'light';
 const colors = Colors[colorScheme];
 
 export default function ExercisesScreen() {
   const router = useRouter();
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [exercises, setExercises] = useState<ExerciseParsed[]>([]);
   const [filterSelect, setFilterSelect] = useState<boolean>(false);
   const [favSelect, setFavSelect] = useState<boolean>(false);
   const [text, setText] = useState('');
+  const [activeRegionFilter, setActiveRegionFilter] = useState<string[]>([]);
+  const [activePrimaryFilter, setActivePrimaryFilter] = useState<string[]>([]);
+  const [activeSecondaryFilter, setActiveSecondaryFilter] = useState<string[]>(
+    []
+  );
+  const [regionDropDownVisible, setRegionDropDownVisible] = useState(false);
+  const [primaryDropDownVisible, setPrimaryDropDownVisible] = useState(false);
+  const [secondaryDropDownVisible, setSecondaryDropDownVisible] =
+    useState(false);
+  const [currentDropDownVisible, setCurrentDropDownVisible] = useState('');
+  const regionOptions = [
+    'Abs',
+    'Back',
+    'Biceps',
+    'Calves',
+    'Chest',
+    'Forearm',
+    'Leg',
+    'Shoulder',
+    'Triceps',
+  ];
+  const primaryOptions = [
+    'Abductors',
+    'Abs',
+    'Adductors',
+    'Biceps',
+    'Calves',
+    'Chest',
+    'Forearm flexors',
+    'Front Deltoid',
+    'Glutes',
+    'Hamstrings',
+    'Hip flexor',
+    'Lateral Deltoid',
+    'Lats',
+    'Lower Back',
+    'Obliques',
+    'Quads',
+    'Rear Deltoid',
+    'Rotator Cuff',
+    'Trapezius',
+    'Triceps',
+  ];
+  const secondaryOptions = [
+    'Abductors',
+    'Abs',
+    'Adductors',
+    'Biceps',
+    'Calves',
+    'Chest',
+    'Forearm flexors',
+    'Front Deltoid',
+    'Glutes',
+    'Hamstrings',
+    'Hip flexor',
+    'Lateral Deltoid',
+    'Lats',
+    'Lower Back',
+    'Obliques',
+    'Quads',
+    'Rear Deltoid',
+    'Rotator Cuff',
+    'Trapezius',
+    'Triceps',
+  ];
 
   const goToDetailPage = (id: number) => {
     router.push({
@@ -42,10 +110,44 @@ export default function ExercisesScreen() {
   };
 
   useEffect(() => {
+    if (currentDropDownVisible === 'Region') {
+      setPrimaryDropDownVisible(false);
+      setSecondaryDropDownVisible(false);
+    }
+    if (currentDropDownVisible === 'Primary') {
+      setRegionDropDownVisible(false);
+      setSecondaryDropDownVisible(false);
+    }
+    if (currentDropDownVisible === 'Secondary') {
+      setRegionDropDownVisible(false);
+      setPrimaryDropDownVisible(false);
+    }
+  }, [currentDropDownVisible]);
+
+  useEffect(() => {
     function setup() {
       try {
         const result = db.getAllSync<Exercise>('SELECT * FROM exercises');
-        setExercises(result);
+        const parsed_result = result.map((exercise) => {
+          let parsed_primary = [];
+          let parsed_secondary = [];
+          try {
+            parsed_primary = JSON.parse(exercise.primary_target);
+            parsed_secondary = JSON.parse(exercise.secondary_target);
+          } catch (e) {
+            console.error(
+              'Failed to parse targets for exercise ID: ${exercise.id}',
+              e
+            );
+          }
+          return {
+            ...exercise,
+            primary_target: parsed_primary,
+            secondary_target: parsed_secondary,
+          };
+        });
+
+        setExercises(parsed_result);
       } catch (error) {
         console.error('Failed to fetch exercises', error);
       }
@@ -53,7 +155,7 @@ export default function ExercisesScreen() {
     setup();
   }, []);
 
-  const updateFav = (item: Exercise) => {
+  const updateFav = (item: ExerciseParsed) => {
     let newFavStatus = !item.favorite;
     db.runSync('UPDATE exercises SET favorite = ? WHERE id = ?', [
       newFavStatus,
@@ -68,21 +170,45 @@ export default function ExercisesScreen() {
     );
   };
 
-  function filteredExercises(): Exercise[] {
+  function filteredExercises(): ExerciseParsed[] {
+    let ex = exercises;
     if (favSelect) {
-      return exercises
+      ex = ex
         .filter((item) => {
           return item.favorite;
         })
         .filter((item) => {
           return item.name.toLowerCase().includes(text.toLowerCase());
         });
-    } else {
-      let ex = exercises.filter((item) => {
-        return item.name.toLowerCase().includes(text.toLowerCase());
-      });
-      return ex;
     }
+    if (filterSelect) {
+      if (activeRegionFilter.length > 0) {
+        ex = ex.filter((item) => {
+          return activeRegionFilter.includes(item.region);
+        });
+      }
+      if (activePrimaryFilter.length > 0) {
+        ex = ex.filter((item) => {
+          if (item.primary_target) {
+            return item.primary_target.some((element) =>
+              activePrimaryFilter.includes(element)
+            );
+          }
+        });
+      }
+      if (activeSecondaryFilter.length > 0) {
+        ex = ex.filter((item) => {
+          if (item.secondary_target) {
+            return item.secondary_target.some((element) =>
+              activeSecondaryFilter.includes(element)
+            );
+          }
+        });
+      }
+    }
+    return ex.filter((item) => {
+      return item.name.toLowerCase().includes(text.toLowerCase());
+    });
   }
 
   return (
@@ -113,9 +239,142 @@ export default function ExercisesScreen() {
           </View>
           {filterSelect && (
             <View style={styles.filterOptionsContainer}>
-              <FilterOptionButton buttonText="Region" />
-              <FilterOptionButton buttonText="Primary" />
-              <FilterOptionButton buttonText="Secondary" />
+              <View style={{ flexDirection: 'column' }}>
+                <View>
+                  <FilterOptionButton
+                    buttonText="Region"
+                    data={regionOptions}
+                    activeFilters={activeRegionFilter}
+                    setActiveFilter={setActiveRegionFilter}
+                    dropDownVisible={regionDropDownVisible}
+                    visibilitySetter={setRegionDropDownVisible}
+                    registrationHandler={() =>
+                      setCurrentDropDownVisible('Region')
+                    }
+                  />
+                </View>
+                <ScrollView style={styles.activeFilterScrollView}>
+                  {activeRegionFilter.map((filterOption) => (
+                    <Pressable
+                      key={filterOption}
+                      style={styles.activeFilterButton}
+                      onPress={() => {
+                        setActiveRegionFilter(
+                          activeRegionFilter.filter(
+                            (item) => item !== filterOption
+                          )
+                        );
+                      }}
+                    >
+                      <View style={styles.activeFilterButtonContent}>
+                        <CustomText
+                          style={styles.activeFilterButtonText}
+                          key={filterOption}
+                        >
+                          {filterOption}
+                        </CustomText>
+                        <MaterialCommunityIcons
+                          style={styles.activeFilterButtonIcon}
+                          name="close"
+                          size={15}
+                          color={'black'}
+                        />
+                      </View>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+
+              <View>
+                <View>
+                  <FilterOptionButton
+                    buttonText="Primary"
+                    data={primaryOptions}
+                    activeFilters={activePrimaryFilter}
+                    setActiveFilter={setActivePrimaryFilter}
+                    dropDownVisible={primaryDropDownVisible}
+                    visibilitySetter={setPrimaryDropDownVisible}
+                    registrationHandler={() =>
+                      setCurrentDropDownVisible('Primary')
+                    }
+                  />
+                </View>
+                <ScrollView style={styles.activeFilterScrollView}>
+                  {activePrimaryFilter.map((filterOption) => (
+                    <Pressable
+                      key={filterOption}
+                      style={styles.activeFilterButton}
+                      onPress={() => {
+                        setActivePrimaryFilter(
+                          activePrimaryFilter.filter(
+                            (item) => item !== filterOption
+                          )
+                        );
+                      }}
+                    >
+                      <View style={styles.activeFilterButtonContent}>
+                        <CustomText
+                          style={styles.activeFilterButtonText}
+                          key={filterOption}
+                        >
+                          {filterOption}
+                        </CustomText>
+                        <MaterialCommunityIcons
+                          style={styles.activeFilterButtonIcon}
+                          name="close"
+                          size={15}
+                          color={'black'}
+                        />
+                      </View>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+              <View>
+                <View>
+                  <FilterOptionButton
+                    buttonText="Secondary"
+                    data={secondaryOptions}
+                    activeFilters={activeSecondaryFilter}
+                    setActiveFilter={setActiveSecondaryFilter}
+                    dropDownVisible={secondaryDropDownVisible}
+                    visibilitySetter={setSecondaryDropDownVisible}
+                    registrationHandler={() =>
+                      setCurrentDropDownVisible('Secondary')
+                    }
+                  />
+                </View>
+                <ScrollView style={styles.activeFilterScrollView}>
+                  {activeSecondaryFilter.map((filterOption) => (
+                    <Pressable
+                      style={styles.activeFilterButton}
+                      key={filterOption}
+                      onPress={() => {
+                        setActiveSecondaryFilter(
+                          activeSecondaryFilter.filter(
+                            (item) => item !== filterOption
+                          )
+                        );
+                      }}
+                    >
+                      <View style={styles.activeFilterButtonContent}>
+                        <CustomText
+                          style={styles.activeFilterButtonText}
+                          key={filterOption}
+                        >
+                          {filterOption}
+                        </CustomText>
+                        <MaterialCommunityIcons
+                          style={styles.activeFilterButtonIcon}
+                          name="close"
+                          size={15}
+                          color={'black'}
+                        />
+                      </View>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
             </View>
           )}
           <View style={styles.searchBarContainer}>
@@ -137,9 +396,9 @@ export default function ExercisesScreen() {
               <ExerciseCard
                 name={item.name}
                 is_favorite={Boolean(item.favorite)}
-                region="Chest"
-                primary="Upper Chest"
-                secondary="Triceps"
+                region={item.region}
+                primary={item.primary_target}
+                secondary={item.secondary_target}
                 onPressInfo={() => goToDetailPage(item.id)}
                 onPressFav={() => updateFav(item)}
               />
@@ -177,6 +436,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderBottomWidth: 1,
     borderRightWidth: 1,
+    zIndex: 999,
   },
   searchBarContainer: {
     flexDirection: 'row',
@@ -191,4 +451,24 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     backgroundColor: '#cfcecfff',
   },
+  activeFilterScrollView: {
+    maxHeight: 200,
+  },
+  activeFilterButton: {
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+  },
+  activeFilterButtonContent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'flex-start',
+    borderRadius: 8,
+    backgroundColor: '#b8b8b8ff',
+    margin: 2,
+    padding: 2,
+  },
+  activeFilterButtonText: { textAlignVertical: 'center' },
+  activeFilterButtonIcon: { alignSelf: 'center' },
 });
