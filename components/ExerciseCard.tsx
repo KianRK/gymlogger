@@ -9,8 +9,8 @@ type Props = {
   name: string;
   is_favorite: boolean;
   region?: string;
-  primary?: string;
-  secondary?: string;
+  primary?: string[] | undefined;
+  secondary?: string[] | undefined;
   onPressInfo?: () => void;
   onPressFav?: () => void;
 };
@@ -27,6 +27,8 @@ export default function ExerciseCard({
   const colorOne = '#b3cbe4ff';
   const colorOneAlpha = '#b3cbe490';
   const colorTwo = '#ddeaf6ff';
+  const primaryText = primary ? primary[0] : '';
+  const secondaryText = secondary ? secondary[0] : '';
   const [fontSize, setFontSize] = useState<number>(18);
 
   useEffect(() => {
@@ -75,8 +77,10 @@ export default function ExerciseCard({
           <MaterialCommunityIcons name="information" size={30} color="black" />
         </Pressable>
         <View style={styles.targetsContainer}>
-          <CustomText style={styles.primaryTarget}>{primary}</CustomText>
-          <CustomText style={styles.secondaryTarget}>{secondary}</CustomText>
+          <CustomText style={styles.primaryTarget}>{primaryText}</CustomText>
+          <CustomText style={styles.secondaryTarget}>
+            {secondaryText}
+          </CustomText>
         </View>
       </View>
     </LinearGradient>
