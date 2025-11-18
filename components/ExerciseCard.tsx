@@ -102,12 +102,13 @@ const styles = StyleSheet.create({
   favoritesButton: {},
   mainTextContainer: {
     width: '55%',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     alignItems: 'flex-start',
   },
   exerciseName: {
     width: '100%',
     textAlign: 'left',
+    height: 25,
     color: 'black',
     fontSize: 18,
   },
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
   },
-  targetsContainer: {},
-  primaryTarget: { textAlign: 'center', color: 'black', fontSize: 12 },
-  secondaryTarget: { textAlign: 'center', color: 'black', fontSize: 12 },
+  targetsContainer: { width: '20%' },
+  primaryTarget: { textAlign: 'center', color: 'black', fontSize: 11 },
+  secondaryTarget: { textAlign: 'center', color: 'black', fontSize: 11 },
 });
