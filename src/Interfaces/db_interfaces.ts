@@ -1,8 +1,17 @@
 export interface Exercise {
   id: number;
   name: string;
-  primary_target: Array<string>;
-  secondary_target: Array<string>;
+  primary_target: string;
+  secondary_target: string;
+  region: string;
+  favorite: number;
+}
+
+export interface ExerciseParsed {
+  id: number;
+  name: string;
+  primary_target: string[];
+  secondary_target: string[];
   region: string;
   favorite: number;
 }
