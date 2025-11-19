@@ -10,7 +10,7 @@ import {
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import CustomText from '../CustomText';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = {
   label?: string;
@@ -45,15 +45,22 @@ export default function FilterOptionButton({
     let filtered = data.filter((item) => {
       return !activeFilters.includes(item);
     });
-    if (activeFilters.length == data.length) {
-      visibilitySetter(false);
-    }
+
     return filtered;
   };
 
   const updateActiveFilters = (newFilter: string) => {
     setActiveFilter([...activeFilters, newFilter].sort());
   };
+
+  useEffect(() => {
+    function setup() {
+      if (activeFilters.length == data.length) {
+        visibilitySetter(false);
+      }
+    }
+    setup();
+  }, []);
 
   return (
     <View style={[styles.componentContainer, componentStyle]}>
