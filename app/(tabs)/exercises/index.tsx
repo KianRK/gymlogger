@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#cfcecfff',
   },
   activeFilterScrollView: {
-    maxHeight: 200,
+    maxHeight: 120,
   },
   activeFilterButton: {
     justifyContent: 'center',
