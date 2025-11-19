@@ -9,6 +9,7 @@ import { Exercise, WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 
 import { DateDictionary } from '@/constants/DataTypes';
 import CustomText from '@/components/CustomText';
+import BackButton from '@/components/Buttons/BackButton';
 
 export default function ExerciseId() {
   const screenWidth = Dimensions.get('window').width;
@@ -173,11 +174,13 @@ export default function ExerciseId() {
     <View>
       <View
         style={{
+          flexDirection: 'row',
           borderWidth: 2,
           justifyContent: 'center',
           alignItems: 'center',
         }}
       >
+        <BackButton componentStyle={{ position: 'absolute', right: '85%' }} />
         <CustomText style={{ color: 'black', fontSize: 32 }}>
           {exercise?.name}
         </CustomText>
