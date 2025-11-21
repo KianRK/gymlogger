@@ -36,8 +36,11 @@ export default function Index() {
   const [show, setShow] = useState(false);
   //Month is zero indexed therefore needs to be increased by 1
   const dateString =
-    date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
-  const dateName = dateString.replaceAll('.', '');
+    `${date.getDate()}`.padStart(2, '0') +
+    `.${date.getMonth() + 1}.${date.getFullYear()}`;
+  const dateName =
+    `${date.getFullYear()}${date.getMonth() + 1}` +
+    `${date.getDate()}`.padStart(2, '0');
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate;
