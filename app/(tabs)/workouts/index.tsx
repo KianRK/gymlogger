@@ -37,9 +37,10 @@ export default function Index() {
   //Month is zero indexed therefore needs to be increased by 1
   const dateString =
     `${date.getDate()}`.padStart(2, '0') +
-    `.${date.getMonth() + 1}.${date.getFullYear()}`;
+    `.${date.getMonth() + 1}`.padStart(2, '0') +
+    `.${date.getFullYear()}`;
   const dateName =
-    `${date.getFullYear()}${date.getMonth() + 1}` +
+    `${date.getFullYear()}${date.getMonth() + 1}`.padStart(2, '0') +
     `${date.getDate()}`.padStart(2, '0');
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
