@@ -1,6 +1,8 @@
-import { Dimensions, Image, StyleSheet, View } from 'react-native';
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { LineChart } from 'react-native-chart-kit';
 
@@ -10,21 +12,238 @@ import { Exercise, WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 import { DateDictionary } from '@/constants/DataTypes';
 import CustomText from '@/components/CustomText';
 import BackButton from '@/components/Buttons/BackButton';
+import { Rect, Text as TextSVG, Svg } from 'react-native-svg';
 
 export default function ExerciseId() {
   const screenWidth = Dimensions.get('window').width;
   const { id } = useLocalSearchParams<{ id: string }>();
   const [exercise, setExercise] = useState<Exercise>();
-  const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
-    []
-  );
 
   const dateDict: DateDictionary = {};
+  const [dataLabels, setDataLabels] = useState<string[]>([]);
   const [maxWeight, setMaxWeight] = useState<number>(0);
+  const [maxVolume, setMaxVolume] = useState<number>(0);
   const [volumeChartData, setVolumeChartData] = useState<any>(null);
   const [dailyMaxChartData, setDailyMaxChartData] = useState<any>(null);
   const [setsChartData, setSetsChartData] = useState<any>(null);
   const [repsChartData, setRepsChartData] = useState<any>(null);
+
+  const [tooltipPos, setTooltipPos] = useState({
+    x: 0,
+    y: 0,
+    dailyMaxVisible: false,
+    volumeVisible: false,
+    setsVisible: false,
+    repsVisible: false,
+    label: '',
+    chartName: '',
+    value: 0,
+  });
+
+  const chartBackgroundColor = '#f9f9f9';
+  const chartWidthRatio = 0.9;
+  const chartHeight = 264;
+
+  function dailyMaxDec() {
+    return tooltipPos.dailyMaxVisible ? (
+      <View>
+        <Svg>
+          <Rect
+            x={tooltipPos.x - 30}
+            y={tooltipPos.y + 15}
+            width="70"
+            height="40"
+            fill="black"
+          />
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 30}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.value + ' kg'}
+          </TextSVG>
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 45}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.label}
+          </TextSVG>
+        </Svg>
+      </View>
+    ) : null;
+  }
+
+  function volumeDec() {
+    return tooltipPos.volumeVisible ? (
+      <View>
+        <Svg>
+          <Rect
+            x={tooltipPos.x - 30}
+            y={tooltipPos.y + 15}
+            width="70"
+            height="40"
+            fill="black"
+          />
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 30}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.value + ' kg'}
+          </TextSVG>
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 45}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.label}
+          </TextSVG>
+        </Svg>
+      </View>
+    ) : null;
+  }
+  function setsDec() {
+    return tooltipPos.setsVisible ? (
+      <View>
+        <Svg>
+          <Rect
+            x={tooltipPos.x - 30}
+            y={tooltipPos.y + 15}
+            width="70"
+            height="40"
+            fill="black"
+          />
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 30}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.value}
+          </TextSVG>
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 45}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.label}
+          </TextSVG>
+        </Svg>
+      </View>
+    ) : null;
+  }
+  function repsDec() {
+    return tooltipPos.repsVisible ? (
+      <View>
+        <Svg>
+          <Rect
+            x={tooltipPos.x - 30}
+            y={tooltipPos.y + 15}
+            width="70"
+            height="40"
+            fill="black"
+          />
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 30}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.value}
+          </TextSVG>
+          <TextSVG
+            x={tooltipPos.x + 5}
+            y={tooltipPos.y + 45}
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            textAnchor="middle"
+          >
+            {tooltipPos.label}
+          </TextSVG>
+        </Svg>
+      </View>
+    ) : null;
+  }
+
+  function handleClickOnDataPoint(data: any) {
+    let maxData = dailyMaxChartData.datasets[0].data;
+    let volData = volumeChartData.datasets[0].data;
+    let repsData = repsChartData.datasets[0].data;
+    let setsData = setsChartData.datasets[0].data;
+    let label = dataLabels[data.index];
+    let formatted_label = `${label.slice(2, 4)}/${label.slice(
+      4,
+      6
+    )}/${label.slice(6, 8)}`;
+
+    let pointData = data.dataset.data;
+
+    let isMaxData = pointData === maxData;
+    let isVolData = pointData === volData;
+    let isRepsData = pointData === repsData;
+    let isSetsData = pointData === setsData;
+
+    let chartName: string = '';
+
+    if (isMaxData) {
+      chartName = 'max';
+    } else if (isVolData) {
+      chartName = 'vol';
+    } else if (isRepsData) {
+      chartName = 'reps';
+    } else if (isSetsData) {
+      chartName = 'sets';
+    }
+
+    let isSamePoint =
+      tooltipPos.x === data.x &&
+      tooltipPos.y === data.y &&
+      tooltipPos.chartName === chartName;
+
+    isSamePoint
+      ? setTooltipPos((previousState) => {
+          return {
+            ...previousState,
+            value: data.value,
+            dailyMaxVisible: isMaxData && !previousState.dailyMaxVisible,
+            volumeVisible: isVolData && !previousState.volumeVisible,
+            repsVisible: isRepsData && !previousState.repsVisible,
+            setsVisible: isSetsData && !previousState.setsVisible,
+          };
+        })
+      : setTooltipPos({
+          x: data.x,
+          y: data.y,
+          value: data.value,
+          dailyMaxVisible: isMaxData,
+          volumeVisible: isVolData,
+          repsVisible: isRepsData,
+          setsVisible: isSetsData,
+          label: formatted_label,
+          chartName: chartName,
+        });
+  }
 
   function fetchExercise() {
     let result;
@@ -47,7 +266,7 @@ export default function ExerciseId() {
     if (ex != null) {
       try {
         result = db.getAllSync<WorkoutExercise>(
-          'SELECT * FROM workout_exercises WHERE name = ?',
+          'SELECT * FROM workout_exercises WHERE name = ? ORDER BY date',
           [ex.name]
         );
       } catch (error) {
@@ -61,7 +280,7 @@ export default function ExerciseId() {
     let dDict: DateDictionary = {};
     for (const row of workoutEx) {
       let volResult = db.getFirstSync<{ vol: number }>(
-        'SELECT SUM(weight) AS vol FROM sets WHERE exercise_id = ?',
+        'SELECT SUM(reps * weight) AS vol FROM sets WHERE exercise_id = ?',
         [row.id]
       );
       let volume = volResult?.vol ?? 0;
@@ -96,20 +315,20 @@ export default function ExerciseId() {
         };
       }
     }
-
     return dDict;
   }
 
   function createChartData(dDict: DateDictionary) {
-    let dl = Object.keys(dDict);
+    setDataLabels(Object.keys(dDict));
     let vd = Object.values(dDict).map((data) => data.volume);
     let dmd = Object.values(dDict).map((data) => data.dailyMax);
     let sd = Object.values(dDict).map((data) => data.sets);
     let rd = Object.values(dDict).map((data) => data.reps);
 
     if (vd.length > 0) {
+      setMaxVolume(Math.max(...vd));
       setVolumeChartData({
-        labels: dl,
+        labels: dataLabels,
         datasets: [
           {
             data: vd,
@@ -120,8 +339,9 @@ export default function ExerciseId() {
     }
 
     if (dmd.length > 0) {
+      setMaxWeight(Math.max(...dmd));
       setDailyMaxChartData({
-        labels: dl,
+        labels: dataLabels,
         datasets: [
           {
             data: dmd,
@@ -132,7 +352,7 @@ export default function ExerciseId() {
     }
     if (sd.length > 0) {
       setSetsChartData({
-        labels: dl,
+        labels: dataLabels,
         datasets: [
           {
             data: sd,
@@ -143,7 +363,7 @@ export default function ExerciseId() {
     }
     if (rd.length > 0) {
       setRepsChartData({
-        labels: dl,
+        labels: dataLabels,
         datasets: [
           {
             data: rd,
@@ -154,74 +374,257 @@ export default function ExerciseId() {
     }
   }
 
-  useEffect(() => {
-    let ex;
-    let workEx;
-    let dDict;
-    ex = fetchExercise();
-    if (ex != null) {
-      workEx = fetchWorkoutExercises(ex);
-    }
-    if (workEx != null) {
-      dDict = prepareData(workEx);
-    }
-    if (dDict != null) {
-      createChartData(dDict);
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      let ex;
+      let workEx;
+      let dDict;
+      ex = fetchExercise();
+      if (ex != null) {
+        workEx = fetchWorkoutExercises(ex);
+      }
+      if (workEx != null) {
+        dDict = prepareData(workEx);
+      }
+      if (dDict != null) {
+        createChartData(dDict);
+      }
+    }, [])
+  );
 
   return (
-    <View>
-      <View
-        style={{
-          flexDirection: 'row',
-          borderWidth: 2,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+    <LinearGradient
+      start={{ x: 0.5, y: 0.5 }}
+      end={{ x: 1, y: 1 }}
+      colors={['#ddeaf6ff', '#b3cbe4ff']}
+      style={{ ...StyleSheet.absoluteFillObject, flex: 12 }}
+    >
+      <View style={styles.pageHeader}>
         <BackButton componentStyle={{ position: 'absolute', right: '85%' }} />
         <CustomText style={{ color: 'black', fontSize: 32 }}>
           {exercise?.name}
         </CustomText>
       </View>
-      <View style={{ flexDirection: 'row' }}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require('@/assets/images/latpull_target_muscles.png')}
-            style={styles.exerciseImage}
-          />
-        </View>
-        {dailyMaxChartData != null && (
-          <View style={styles.chartContainer}>
-            <LineChart
-              data={dailyMaxChartData}
-              width={screenWidth * 0.75}
-              height={196}
-              chartConfig={{
-                backgroundGradientFrom: '#1E2923',
-                backgroundGradientFromOpacity: 0.5,
-                backgroundGradientTo: '#08130D',
-                backgroundGradientToOpacity: 0.5,
-                color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                strokeWidth: 2,
-                useShadowColorFromDataset: false, // optional
-              }}
+      {/*<View style={styles.imageContainer}>
+            <Image
+              source={require('@/assets/images/latpull_target_muscles.png')}
+              style={styles.exerciseImage}
             />
           </View>
-        )}
+          */}
+      <View style={styles.statContainer}>
+        <View style={styles.statRow}>
+          <CustomText style={styles.statRowText}>Maximum weight:</CustomText>
+          <CustomText style={styles.statRowText}>{maxWeight}</CustomText>
+        </View>
+        <View style={styles.statRow}>
+          <CustomText style={styles.statRowText}>Maximum volume:</CustomText>
+          <CustomText style={styles.statRowText}>{maxVolume}</CustomText>
+        </View>
+        <View style={styles.statRow}>
+          <CustomText style={styles.statRowText}>1RM:</CustomText>
+          <CustomText style={styles.statRowText}>250</CustomText>
+        </View>
       </View>
-    </View>
+      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+        <ScrollView
+          style={{ height: '100%' }}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          {dailyMaxChartData != null && (
+            <View style={styles.chartContainer}>
+              <CustomText style={styles.chartTitle}>Maximum Weight</CustomText>
+              <LineChart
+                data={dailyMaxChartData}
+                width={screenWidth * chartWidthRatio}
+                height={chartHeight}
+                yAxisSuffix=" kg"
+                fromZero={true}
+                withOuterLines={false}
+                decorator={() => dailyMaxDec()}
+                withVerticalLabels={false}
+                onDataPointClick={(data) => handleClickOnDataPoint(data)}
+                formatXLabel={(xValue) => {
+                  return (
+                    xValue.slice(2, 4) +
+                    '/' +
+                    xValue.slice(4, 6) +
+                    '/' +
+                    xValue.slice(6, 8)
+                  );
+                }}
+                chartConfig={{
+                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFromOpacity: 0.5,
+                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientToOpacity: 0.5,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  useShadowColorFromDataset: false, // optional
+                }}
+              />
+            </View>
+          )}
+          {volumeChartData != null && (
+            <View style={styles.chartContainer}>
+              <CustomText style={styles.chartTitle}>Volume</CustomText>
+              <LineChart
+                data={volumeChartData}
+                width={screenWidth * chartWidthRatio}
+                height={chartHeight}
+                fromZero={true}
+                withVerticalLabels={false}
+                onDataPointClick={(data) => handleClickOnDataPoint(data)}
+                decorator={() => volumeDec()}
+                formatXLabel={(xValue) => {
+                  return (
+                    xValue.slice(2, 4) +
+                    '/' +
+                    xValue.slice(4, 6) +
+                    '/' +
+                    xValue.slice(6, 8)
+                  );
+                }}
+                chartConfig={{
+                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFromOpacity: 0.5,
+                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientToOpacity: 0.5,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  strokeWidth: 2,
+                  useShadowColorFromDataset: false, // optional
+                }}
+              />
+            </View>
+          )}
+          {repsChartData != null && (
+            <View style={styles.chartContainer}>
+              <CustomText style={styles.chartTitle}>Total Reps</CustomText>
+              <LineChart
+                data={repsChartData}
+                width={screenWidth * chartWidthRatio}
+                height={chartHeight}
+                fromZero={true}
+                withVerticalLabels={false}
+                onDataPointClick={(data) => handleClickOnDataPoint(data)}
+                decorator={() => repsDec()}
+                formatXLabel={(xValue) => {
+                  return (
+                    xValue.slice(2, 4) +
+                    '/' +
+                    xValue.slice(4, 6) +
+                    '/' +
+                    xValue.slice(6, 8)
+                  );
+                }}
+                formatYLabel={(yValue) => {
+                  return yValue.split('.')[0];
+                }}
+                chartConfig={{
+                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFromOpacity: 0.5,
+                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientToOpacity: 0.5,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  strokeWidth: 2,
+                  useShadowColorFromDataset: false, // optional
+                }}
+              />
+            </View>
+          )}
+          {setsChartData != null && (
+            <View style={styles.chartContainer}>
+              <CustomText style={styles.chartTitle}>Sets</CustomText>
+              <LineChart
+                data={setsChartData}
+                width={screenWidth * chartWidthRatio}
+                height={chartHeight}
+                fromZero={true}
+                withVerticalLabels={false}
+                onDataPointClick={(data) => handleClickOnDataPoint(data)}
+                decorator={() => setsDec()}
+                formatXLabel={(xValue) => {
+                  return (
+                    xValue.slice(2, 4) +
+                    '/' +
+                    xValue.slice(4, 6) +
+                    '/' +
+                    xValue.slice(6, 8)
+                  );
+                }}
+                formatYLabel={(yValue) => {
+                  return yValue.split('.')[0];
+                }}
+                chartConfig={{
+                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFromOpacity: 0.5,
+                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientToOpacity: 0.5,
+                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  strokeWidth: 2,
+                  useShadowColorFromDataset: false, // optional
+                }}
+              />
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  pageContainer: { flex: 12 },
-  imageContainer: { borderWidth: 2, margin: 2, flex: 4 },
-  exerciseImage: {
-    width: '100%',
-    resizeMode: 'contain',
-    height: 196,
+  pageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
   },
-  chartContainer: { borderWidth: 2, margin: 2 },
+  statContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '3%',
+    marginBottom: '3%',
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    width: '90%',
+    marginTop: 1,
+    marginBottom: 1,
+    paddingLeft: 3,
+    paddingRight: 3,
+  },
+  statRowText: { fontSize: 24 },
+  imageContainer: { borderWidth: 2, margin: 2, flex: 4, height: 100 },
+  exerciseImage: {
+    width: '25%',
+    resizeMode: 'contain',
+    height: 50,
+  },
+  scrollContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: 1244,
+  },
+  chartTitle: {
+    color: 'black',
+    textAlign: 'left',
+    textAlignVertical: 'center',
+    fontSize: 18,
+    width: '100%',
+    margin: 6,
+    paddingLeft: 6,
+  },
+  chartContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: '#f9f9f9',
+    height: 304,
+    width: '90%',
+    borderWidth: 2,
+    borderColor: 'gray',
+    marginBottom: 16,
+  },
 });
