@@ -389,6 +389,17 @@ export default function ExerciseId() {
       if (dDict != null) {
         createChartData(dDict);
       }
+      return () => {
+        setTooltipPos((previousState) => {
+          return {
+            ...previousState,
+            dailyMaxVisible: false,
+            volumeVisible: false,
+            setsVisible: false,
+            repsVisible: false,
+          };
+        });
+      };
     }, [])
   );
 
