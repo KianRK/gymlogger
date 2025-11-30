@@ -369,6 +369,26 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     );
     db.execSync(
       `
+      CREATE TABLE IF NOT EXISTS workout_templates (
+      id INTEGER PRIMARY KEY NOT NULL,
+      notes TEXT
+      );
+      `
+    );
+    db.execSync(
+      `
+      CREATE TABLE IF NOT EXISTS template_exercises (
+      id INTEGER PRIMARY KEY,
+      template_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      order_index INTEGER,
+      FOREIGN KEY (template_id) REFERENCES workout_templates(id) ON DELETE CASCADE,
+      UNIQUE(template_id, order_index)
+      );
+      `
+    );
+    db.execSync(
+      `
       CREATE TABLE IF NOT EXISTS workout_exercises (
       id INTEGER PRIMARY KEY,
       workout_id INTEGER NOT NULL,
