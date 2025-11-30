@@ -18,7 +18,6 @@ import DateTimePicker, {
 
 import CalendarButton from '@/components/Buttons/CalendarButton';
 import AddButton from '@/components/Buttons/AddButton';
-import MenuButton from '@/components/Buttons/MenuButton';
 import { Colors } from '@/constants/Colors';
 import WorkoutCard from '@/components/WorkoutCard';
 
@@ -31,9 +30,14 @@ export default function Index() {
   const colors = Colors[colorScheme];
   const today = new Date();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [refreshWorkoutKey, setRefreshWorkoutKey] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [dropDownNumber, setDropDownNumber] = useState<{ num: number }>({
+    num: 0,
+  });
+
   //Month is zero indexed therefore needs to be increased by 1
   const dateString =
     `${date.getDate()}`.padStart(2, '0') +
@@ -51,6 +55,10 @@ export default function Index() {
     }
   };
 
+  const registrationHandler = (workoutNum: number) => {
+    setDropDownNumber({ num: workoutNum });
+  };
+
   function isCurrentDateToday() {
     return (
       today.getDate() === date.getDate() &&
@@ -58,6 +66,17 @@ export default function Index() {
       today.getFullYear() === date.getFullYear()
     );
   }
+
+  const goToEditMode = (workoutId: string) => {
+    router.push({
+      pathname: './workouts/workout',
+      params: {
+        date: isCurrentDateToday() ? 'Today' : dateString,
+        dateName: dateName,
+        workout_id: workoutId,
+      },
+    });
+  };
 
   const handleAddWorkout = () => {
     try {
@@ -80,6 +99,7 @@ export default function Index() {
 
   useFocusEffect(
     useCallback(() => {
+      setRefreshWorkoutKey(refreshWorkoutKey + 1);
       function fetchWorkouts() {
         try {
           const result = db.getAllSync<Workout>(
@@ -92,6 +112,9 @@ export default function Index() {
         }
       }
       fetchWorkouts();
+      return () => {
+        setDropDownNumber({ num: 0 });
+      };
     }, [dateName, refreshKey])
   );
 
@@ -133,7 +156,11 @@ export default function Index() {
               <WorkoutCard
                 workout_id={workout.id.toString()}
                 workout_number={index + 1}
+                pressedDropDownNumber={dropDownNumber}
+                refreshKey={refreshWorkoutKey}
                 refreshTrigger={() => setRefreshKey(refreshKey + 1)}
+                onPressEdit={() => goToEditMode(workout.id.toString())}
+                onPress={() => registrationHandler(index + 1)}
               />
             </View>
           ))}
