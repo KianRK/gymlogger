@@ -369,7 +369,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     );
     db.execSync(
       `
-      CREATE TABLE IF NOT EXISTS workout_templates (
+      CREATE TABLE IF NOT EXISTS template_workouts (
       id INTEGER PRIMARY KEY NOT NULL,
       notes TEXT
       );
@@ -409,6 +409,19 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       reps INTEGER NOT NULL,
       weight REAL NOT NULL,
       FOREIGN KEY (exercise_id) REFERENCES workout_exercises(id) ON DELETE CASCADE,
+      UNIQUE(exercise_id, order_index)
+      );
+      `
+    );
+    db.execSync(
+      `
+      CREATE TABLE IF NOT EXISTS template_sets (
+      id INTEGER PRIMARY KEY,
+      exercise_id INTEGER NOT NULL,
+      order_index INTEGER,
+      reps INTEGER NOT NULL,
+      weight REAL NOT NULL,
+      FOREIGN KEY (exercise_id) REFERENCES template_exercises(id) ON DELETE CASCADE,
       UNIQUE(exercise_id, order_index)
       );
       `
