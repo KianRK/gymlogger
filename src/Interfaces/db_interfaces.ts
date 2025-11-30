@@ -30,6 +30,18 @@ export interface WorkoutExercise {
   order_index: number;
 }
 
+export interface Template {
+  id: number;
+  notes: string;
+}
+
+export interface TemplateExercise {
+  id: number;
+  template_id: number;
+  name: string;
+  order_index: number;
+}
+
 export interface Set {
   id: number;
   exercise_id: number;
