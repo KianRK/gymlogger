@@ -15,7 +15,6 @@ import { TemplateExercise } from '@/src/Interfaces/db_interfaces';
 import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
 
-import DeleteButton from './Buttons/DeleteButton';
 import MenuButton from './Buttons/MenuButton';
 
 type Props = {
