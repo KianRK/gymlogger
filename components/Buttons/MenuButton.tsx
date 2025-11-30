@@ -41,9 +41,10 @@ export default function MenuButton({
 
 const styles = StyleSheet.create({
   componentContainer: {
+    alignSelf: 'center',
     position: 'relative',
     justifyContent: 'center',
-    alignContent: 'center',
+    alignItems: 'center',
   },
   menuButtonContainer: {
     width: 50,
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignSelf: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
     alignContent: 'center',
     backgroundColor: 'white',
   },
