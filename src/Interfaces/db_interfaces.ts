@@ -32,6 +32,7 @@ export interface WorkoutExercise {
 
 export interface Template {
   id: number;
+  name: string;
   notes: string;
 }
 
