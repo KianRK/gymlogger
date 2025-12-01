@@ -19,7 +19,7 @@ type Props = {
   refreshTrigger?: () => void;
 };
 
-export default function WorkoutExerciseCard({
+export default function TemplateExerciseCard({
   name,
   exercise_id,
   editable,
@@ -63,14 +63,14 @@ export default function WorkoutExerciseCard({
     if (insertSets.length > 0) {
       try {
         let result = db.runSync(
-          'INSERT INTO template_exercises (template_id, name, order_index) VALUES (?, ?, ?, ?)',
+          'INSERT INTO template_exercises (template_id, name, order_index) VALUES (?, ?, ?)',
           [template_id, name, orderIndex]
         );
         let id = result.lastInsertRowId.toString();
         setOrderIndex(orderIndex + 1);
         insertSets.map((set, index) => {
           const result = db.runSync(
-            'INSERT INTO sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
+            'INSERT INTO template_sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
             [id, index + 1, set[0], set[1]]
           );
         });
