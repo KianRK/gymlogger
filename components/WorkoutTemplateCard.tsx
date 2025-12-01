@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   Platform,
   Modal,
   Pressable,
+  TextInput,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,12 +15,14 @@ import { db } from '@/src/database';
 import { TemplateExercise } from '@/src/Interfaces/db_interfaces';
 import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
+import CustomTextInput from './CustomTextInput';
 
 import MenuButton from './Buttons/MenuButton';
 
 type Props = {
   template_id: string;
   template_number: number;
+  name: string;
   pressedDropDownNumber: { num: number };
   refreshKey: number;
   refreshTrigger: () => void;
@@ -29,7 +32,8 @@ type Props = {
 
 export default function WorkoutTemplateCard({
   template_id,
-  template_number: template_number,
+  template_number,
+  name,
   pressedDropDownNumber,
   refreshKey,
   refreshTrigger,
@@ -41,6 +45,7 @@ export default function WorkoutTemplateCard({
   >([]);
   const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
     useState(false);
+  const [nameEditable, setNameEditable] = useState(false);
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const colorOne = '#b3cbe4ff';
@@ -48,6 +53,9 @@ export default function WorkoutTemplateCard({
   const colorTwo = '#ddeaf6ff';
   const colorTwoAlpha = '#ddeaf633';
   const [dropDownVisible, setDropDownVisible] = useState(false);
+  const [text, setText] = useState('');
+
+  const textInputRef = useRef<TextInput | null>(null);
 
   useEffect(() => {
     function setup() {
@@ -57,6 +65,12 @@ export default function WorkoutTemplateCard({
     }
     setup();
   }, [pressedDropDownNumber]);
+
+  const handleFocus = () => {
+    if (textInputRef.current) {
+      setTimeout(() => textInputRef.current?.focus(), 50);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -74,6 +88,18 @@ export default function WorkoutTemplateCard({
       setup();
     }, [refreshKey])
   );
+
+  function updateName(name: string) {
+    let result;
+    try {
+      result = db.runSync(
+        'UPDATE template_workouts SET name = ? WHERE id = ?',
+        [name, template_id]
+      );
+    } catch (error) {
+      console.error('Failed to update template name', error);
+    }
+  }
 
   function countSets(exercise_id: number) {
     let result;
@@ -106,9 +132,36 @@ export default function WorkoutTemplateCard({
         style={[StyleSheet.absoluteFill, styles.gradientStyle]}
       />
       <View style={styles.workoutCardHeaderContainer}>
-        <CustomText style={styles.workoutCardLabel}>
-          Template {template_number}
-        </CustomText>
+        {name && (
+          <CustomTextInput
+            onEndEditing={() => {
+              setNameEditable(false);
+              updateName(text);
+            }}
+            enterKeyHint="done"
+            ref={textInputRef}
+            editable={nameEditable}
+            onChangeText={(text) => setText(text)}
+            style={styles.workoutCardLabel}
+          >
+            {name}
+          </CustomTextInput>
+        )}
+        {!name && (
+          <CustomTextInput
+            onEndEditing={() => {
+              setNameEditable(false);
+              updateName(text);
+            }}
+            enterKeyHint="done"
+            ref={textInputRef}
+            editable={nameEditable}
+            onChangeText={(text) => setText(text)}
+            style={styles.workoutCardLabel}
+          >
+            Template {template_number}
+          </CustomTextInput>
+        )}
         <View style={styles.menuDropDownContainer}>
           <MenuButton
             componentStyle={styles.deletebuttonComponent}
@@ -118,11 +171,21 @@ export default function WorkoutTemplateCard({
           />
           {dropDownVisible && (
             <View style={styles.dropDownContainer}>
-              <Pressable style={{ zIndex: 10 }} onPress={onPressEdit}>
+              <Pressable style={{ zIndex: 999 }} onPress={onPressEdit}>
                 <CustomText style={styles.buttonText}>Edit</CustomText>
               </Pressable>
               <Pressable
-                style={{ zIndex: 10 }}
+                style={{ zIndex: 999 }}
+                onPress={() => {
+                  setNameEditable(true);
+                  setDropDownVisible(false);
+                  handleFocus();
+                }}
+              >
+                <CustomText style={styles.buttonText}>Rename</CustomText>
+              </Pressable>
+              <Pressable
+                style={{ zIndex: 999 }}
                 onPress={() => {
                   setDropDownVisible(false);
                   setDeleteConfirmationVisible(!deleteConfirmationVisible);
@@ -243,7 +306,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginBottom: 2,
     overflow: 'visible',
-    zIndex: 8,
+    zIndex: 9999,
   },
   dropDownContainer: {
     position: 'absolute',
@@ -255,14 +318,14 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: '#f9f9f9',
     overflow: 'visible',
-    zIndex: 9,
+    zIndex: 9999,
   },
   deletebuttonComponent: {
     marginLeft: 'auto',
     marginRight: 3,
     marginBottom: 2,
   },
-  buttonText: { fontSize: 18, padding: 2, zIndex: 10 },
+  buttonText: { fontSize: 17, padding: 1, zIndex: 9999 },
   workoutCardExerciseContainer: {
     width: '100%',
     flexDirection: 'row',
