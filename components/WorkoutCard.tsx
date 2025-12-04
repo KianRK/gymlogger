@@ -15,7 +15,6 @@ import { WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
 
-import DeleteButton from './Buttons/DeleteButton';
 import MenuButton from './Buttons/MenuButton';
 
 type Props = {
@@ -23,9 +22,9 @@ type Props = {
   workout_number: number;
   pressedDropDownNumber: { num: number };
   refreshKey: number;
-  refreshTrigger: () => void;
+  onPressMenu: () => void;
   onPressEdit: () => void;
-  onPress: () => void;
+  onPressDelete: () => void;
 };
 
 export default function WorkoutCard({
@@ -33,15 +32,14 @@ export default function WorkoutCard({
   workout_number,
   pressedDropDownNumber,
   refreshKey,
-  refreshTrigger,
+  onPressMenu,
   onPressEdit,
-  onPress,
+  onPressDelete,
 }: Props) {
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
-  const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
-    useState(false);
+
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
   const colorOne = '#b3cbe4ff';
@@ -61,7 +59,7 @@ export default function WorkoutCard({
 
   useFocusEffect(
     useCallback(() => {
-      function setup() {
+      function fetchWorkoutExercises() {
         try {
           const result = db.getAllSync<WorkoutExercise>(
             'SELECT * FROM workout_exercises WHERE workout_id = ? order by order_index',
@@ -72,7 +70,7 @@ export default function WorkoutCard({
           console.error('Failed to fetch workout exercises', error);
         }
       }
-      setup();
+      fetchWorkoutExercises();
     }, [refreshKey])
   );
 
@@ -87,15 +85,6 @@ export default function WorkoutCard({
       console.error('Failed to fetch sets with exercise_id', error);
     }
     return result?.count ?? 0;
-  }
-
-  function deleteWorkout(workout_id: string) {
-    try {
-      db.runSync('DELETE FROM workouts WHERE id = ?', [workout_id]);
-      refreshTrigger();
-    } catch (error) {
-      console.log('Could not delete workout', error);
-    }
   }
 
   return (
@@ -115,7 +104,7 @@ export default function WorkoutCard({
             componentStyle={styles.deletebuttonComponent}
             buttonStyle={{ width: 40, height: 40 }}
             iconSize={25}
-            onPress={onPress}
+            onPress={onPressMenu}
           />
           {dropDownVisible && (
             <View style={styles.dropDownContainer}>
@@ -126,7 +115,7 @@ export default function WorkoutCard({
                 style={{ zIndex: 10 }}
                 onPress={() => {
                   setDropDownVisible(false);
-                  setDeleteConfirmationVisible(!deleteConfirmationVisible);
+                  onPressDelete();
                 }}
               >
                 <CustomText style={styles.buttonText}>Delete</CustomText>
@@ -135,60 +124,6 @@ export default function WorkoutCard({
           )}
         </View>
       </View>
-      <Modal transparent={true} visible={deleteConfirmationVisible}>
-        <View style={styles.confirmationContainer}>
-          <CustomText
-            style={{
-              height: '50%',
-              width: '100%',
-              alignSelf: 'center',
-              borderBottomWidth: 1,
-              textAlign: 'center',
-              textAlignVertical: 'center',
-              fontSize: 24,
-            }}
-          >
-            Delete Workout ?
-          </CustomText>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              width: '100%',
-              flex: 1,
-            }}
-          >
-            <Pressable
-              onPress={() => deleteWorkout(workout_id)}
-              style={[styles.confirmationButton, { borderRightWidth: 1 }]}
-            >
-              <CustomText
-                style={{
-                  fontSize: 20,
-                  textAlign: 'center',
-                  textAlignVertical: 'center',
-                }}
-              >
-                Delete
-              </CustomText>
-            </Pressable>
-            <Pressable
-              onPress={() => setDeleteConfirmationVisible(false)}
-              style={styles.confirmationButton}
-            >
-              <CustomText
-                style={{
-                  fontSize: 20,
-                  textAlign: 'center',
-                  textAlignVertical: 'center',
-                }}
-              >
-                Cancel
-              </CustomText>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
       {workoutExercises.map((exercise) => (
         <View key={exercise.id} style={styles.workoutCardExerciseContainer}>
           <CustomText style={styles.workoutCardExerciseName}>
