@@ -3,7 +3,7 @@ import { TextInput, TextInputProps } from 'react-native';
 interface CustomTextProps extends TextInputProps {
   children?: React.ReactNode;
   fontFamily?: string;
-  ref: React.RefObject<TextInput | null>;
+  ref?: React.RefObject<TextInput | null>;
 }
 
 const CustomTextInput = ({
