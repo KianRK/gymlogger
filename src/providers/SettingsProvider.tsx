@@ -13,6 +13,7 @@ const initialSettings: Settings = {
   darkMode: 'Off',
   language: 'English',
   units: 'metric (kg)',
+  email: 'blabla@blamail.bla',
 };
 
 const defaultContextValue: SettingsContextValue = {

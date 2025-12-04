@@ -2,6 +2,7 @@ export interface Settings {
   darkMode: string;
   language: string;
   units: string;
+  email: string;
 }
 
 export interface SettingsContextValue {
