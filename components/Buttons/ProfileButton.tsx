@@ -1,8 +1,25 @@
-import { Pressable, View, StyleSheet, Image } from 'react-native';
+import {
+  Pressable,
+  View,
+  StyleSheet,
+  Image,
+  ImageStyle,
+  ViewStyle,
+} from 'react-native';
 
 import { useRouter } from 'expo-router';
 
-export default function ProfileButton() {
+type Props = {
+  componentStyle?: ViewStyle;
+  imageStyle?: ImageStyle;
+  onPress?: () => void;
+};
+
+export default function ProfileButton({
+  componentStyle,
+  imageStyle,
+  onPress,
+}: Props) {
   const router = useRouter();
 
   const goToProfile = () => {
@@ -12,11 +29,14 @@ export default function ProfileButton() {
   };
 
   return (
-    <View style={styles.componentContainer}>
-      <Pressable style={styles.profileButton} onPress={goToProfile}>
+    <View style={[styles.componentContainer, componentStyle]}>
+      <Pressable
+        style={styles.profileButton}
+        onPress={onPress ? () => onPress() : goToProfile}
+      >
         <Image
           source={require('@/assets/images/comic_style_img.png')}
-          style={styles.profileImage}
+          style={[styles.profileImage, imageStyle]}
         />
       </Pressable>
     </View>
