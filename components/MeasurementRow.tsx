@@ -81,7 +81,7 @@ export default function MeasurementsRow({
           onChangeText={(text) => updateMetric(text)}
           returnKeyType="done"
           keyboardType="number-pad"
-          placeholder="no value"
+          placeholder="no data"
         >
           {value}
         </CustomTextInput>
