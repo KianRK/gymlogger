@@ -1,5 +1,5 @@
 import { View, useColorScheme, StyleSheet, Pressable } from 'react-native';
-import { Image } from 'react-native';
+import { useState } from 'react';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -8,9 +8,12 @@ import CustomText from '@/components/CustomText';
 import CustomTextInput from '@/components/CustomTextInput';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import ProfileButton from '@/components/Buttons/ProfileButton';
+import MeasurementsModal from '@/components/ MeasurementsModal';
 
 export default function ProfileScreen() {
   const { settings, updateSetting } = useSettings();
+
+  const [measureModalVisible, setMeasureModalVisible] = useState(false);
 
   const colorScheme = useColorScheme() ?? 'light';
   const colors = Colors[colorScheme];
@@ -63,9 +66,11 @@ export default function ProfileScreen() {
           <CustomText style={styles.settingText}>Email</CustomText>
           <CustomText style={styles.settingText}>{settings.email}</CustomText>
         </View>
-        <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
-          <CustomText style={styles.settingText}>Measurements</CustomText>
-        </View>
+        <Pressable onPress={() => setMeasureModalVisible(true)}>
+          <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
+            <CustomText style={styles.settingText}>Measurements</CustomText>
+          </View>
+        </Pressable>
       </View>
       <View style={styles.accountSettings}>
         <CustomText style={styles.settingSectionHeader}>Account</CustomText>
@@ -76,6 +81,26 @@ export default function ProfileScreen() {
           <CustomText style={styles.settingText}>Delete account</CustomText>
         </View>
       </View>
+      <MeasurementsModal
+        visible={measureModalVisible}
+        onRequestClose={() => setMeasureModalVisible(false)}
+        setMeasureModalVisible={setMeasureModalVisible}
+        animationType="fade"
+        transparent={true}
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+        }}
+        viewStyle={{
+          top: '4%',
+          height: '90%',
+          width: '100%',
+          position: 'absolute',
+          borderRadius: 64,
+          backgroundColor: '#b4b4b4ee',
+        }}
+      />
     </View>
   );
 }
