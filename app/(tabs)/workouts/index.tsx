@@ -436,7 +436,7 @@ export default function Index() {
               style={{}}
               onPress={() => setTemplateSelectModalVisible(false)}
             >
-              <Ionicons name="close-outline" size={60} color="white" />
+              <Ionicons name="close-outline" size={60} color="#f9f9f9" />
             </Pressable>
           </View>
         </Modal>
