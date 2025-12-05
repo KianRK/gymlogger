@@ -2,6 +2,7 @@ import {
   Modal,
   ModalProps,
   Pressable,
+  ScrollView,
   StyleSheet,
   View,
   ViewStyle,
@@ -30,25 +31,26 @@ export default function MeasurementsModal({
 
   return (
     <Modal {...otherProps}>
-      <View
-        style={[
-          {
-            height: '75%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          },
-          viewStyle,
-        ]}
-      >
-        {Object.keys(settings.measurements).map((key, index) => (
-          <MeasurementsRow
-            key={index}
-            metric={key as keyof Measurements}
-            units={settings.units}
-            currentTempMeasurements={tempMeasurements}
-            setTempMeasurements={setTempMeasurements}
-          />
-        ))}
+      <View style={[styles.mainContainer, viewStyle]}>
+        <CustomText style={styles.title}>Measurements</CustomText>
+        <View style={styles.scrollViewContainer}>
+          <ScrollView
+            contentContainerStyle={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {Object.keys(settings.measurements).map((key, index) => (
+              <MeasurementsRow
+                key={index}
+                metric={key as keyof Measurements}
+                units={settings.units}
+                currentTempMeasurements={tempMeasurements}
+                setTempMeasurements={setTempMeasurements}
+              />
+            ))}
+          </ScrollView>
+        </View>
         <View style={styles.buttonContainer}>
           <Pressable
             style={styles.button}
@@ -76,12 +78,23 @@ export default function MeasurementsModal({
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    height: '80%',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    marginTop: '8%',
+    marginBottom: '10%',
+  },
+  scrollViewContainer: { height: '70%', width: '100%' },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '80%',
-    marginTop: '5%',
+    marginTop: 'auto',
+    marginBottom: '8%',
   },
   button: {
     justifyContent: 'center',
