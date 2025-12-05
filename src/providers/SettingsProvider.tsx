@@ -14,6 +14,23 @@ const initialSettings: Settings = {
   language: 'English',
   units: 'metric (kg)',
   email: 'blabla@blamail.bla',
+  measurements: {
+    Weight: null,
+    BodyFat: null,
+    Neck: null,
+    Shoulders: null,
+    Chest: null,
+    RightBiceps: null,
+    RightForearm: null,
+    LeftBiceps: null,
+    LeftForearm: null,
+    Waist: null,
+    Hip: null,
+    RightThigh: null,
+    RightCalf: null,
+    LeftThigh: null,
+    LeftCalf: null,
+  },
 };
 
 const defaultContextValue: SettingsContextValue = {
