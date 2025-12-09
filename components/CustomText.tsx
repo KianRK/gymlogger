@@ -1,5 +1,7 @@
 import { Text, TextProps } from 'react-native';
 
+import useThemeColors from '@/hooks/UseThemeColors';
+
 interface CustomTextProps extends TextProps {
   children?: React.ReactNode;
   fontFamily?: string;
@@ -11,10 +13,14 @@ const CustomText = ({
   style,
   ...otherProps
 }: CustomTextProps) => {
+  const colors = useThemeColors();
   return (
     <Text
       style={[
-        { fontFamily: fontFamily ? fontFamily : 'Outfit-Regular' },
+        {
+          fontFamily: fontFamily ? fontFamily : 'Outfit-Regular',
+          color: colors.text,
+        },
         style,
       ]}
       {...otherProps}

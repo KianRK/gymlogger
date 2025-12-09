@@ -14,8 +14,8 @@ import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
-
 import MenuButton from './Buttons/MenuButton';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   workout_id: string;
@@ -36,16 +36,11 @@ export default function WorkoutCard({
   onPressEdit,
   onPressDelete,
 }: Props) {
+  const colors = useThemeColors();
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
 
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const colorOne = '#b3cbe4ff';
-  const colorOneAlpha = '#b3cbe490';
-  const colorTwo = '#ddeaf6ff';
-  const colorTwoAlpha = '#ddeaf633';
   const [dropDownVisible, setDropDownVisible] = useState(false);
 
   useEffect(() => {
@@ -88,12 +83,18 @@ export default function WorkoutCard({
   }
 
   return (
-    <View style={styles.WorkoutCardContainer}>
+    <View
+      style={[styles.WorkoutCardContainer, { borderColor: colors.borderColor }]}
+    >
       <LinearGradient
         start={{ x: 0.375, y: 0.375 }}
         end={{ x: 0.75, y: 0.75 }}
-        colors={[colorOneAlpha, colorTwo, colorOne]}
-        style={[StyleSheet.absoluteFill, styles.gradientStyle]}
+        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
+        style={[
+          StyleSheet.absoluteFill,
+          { borderColor: colors.borderColor },
+          styles.gradientStyle,
+        ]}
       />
       <View style={styles.workoutCardHeaderContainer}>
         <CustomText style={styles.workoutCardLabel}>
@@ -107,7 +108,12 @@ export default function WorkoutCard({
             onPress={onPressMenu}
           />
           {dropDownVisible && (
-            <View style={styles.dropDownContainer}>
+            <View
+              style={[
+                styles.dropDownContainer,
+                { backgroundColor: colors.background },
+              ]}
+            >
               <Pressable style={{ zIndex: 10 }} onPress={onPressEdit}>
                 <CustomText style={styles.buttonText}>Edit</CustomText>
               </Pressable>
@@ -143,7 +149,6 @@ const styles = StyleSheet.create({
     width: '95%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'black',
     borderRadius: 8,
     overflow: 'visible',
     margin: 8,
@@ -152,7 +157,6 @@ const styles = StyleSheet.create({
   gradientStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'black',
     borderRadius: 8,
   },
   workoutCardHeaderContainer: {
@@ -189,7 +193,6 @@ const styles = StyleSheet.create({
     width: 80,
     top: 40,
     marginLeft: 'auto',
-    backgroundColor: '#f9f9f9',
     overflow: 'visible',
     zIndex: 9,
   },
@@ -224,7 +227,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     width: '60%',
     height: '10%',
-    backgroundColor: '#f9f9f9',
     margin: 'auto',
   },
   confirmationButton: {

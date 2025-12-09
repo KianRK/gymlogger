@@ -1,12 +1,14 @@
-import { TextInput, View, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, StyleSheet, FlatList, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import ConfirmButton from './Buttons/ConfirmButton';
 import CustomText from './CustomText';
+import CustomTextInput from './CustomTextInput';
 
 import { db } from '@/src/database';
 import { Exercise } from '@/src/Interfaces/db_interfaces';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   onConfirm: () => void;
@@ -17,6 +19,7 @@ export default function SelectExerciseCard({
   onConfirm,
   updateExerciseName,
 }: Props) {
+  const colors = useThemeColors();
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
@@ -24,9 +27,6 @@ export default function SelectExerciseCard({
   const handleConfirm = () => {
     onConfirm();
   };
-  const colorOne = '#b3cbe4ff';
-  const colorOneAlpha = '#b3cbe490';
-  const colorTwo = '#ddeaf6ff';
 
   const filteredExercises = exercises.filter((item) =>
     item.name.toLowerCase().includes(text.toLowerCase())
@@ -60,15 +60,21 @@ export default function SelectExerciseCard({
       <LinearGradient
         start={{ x: 0.375, y: 0.375 }}
         end={{ x: 0.75, y: 0.75 }}
-        colors={[colorTwo, colorOne]}
+        colors={[colors.mainOne, colors.mainTwo]}
         style={{ borderRadius: 36, overflow: 'visible' }}
       >
-        <View style={styles.selectExerciseCardContainer}>
+        <View
+          style={[
+            styles.selectExerciseCardContainer,
+            { borderColor: colors.borderColor },
+          ]}
+        >
           <View style={styles.selectionContainer}>
-            <TextInput
+            <CustomTextInput
               style={[styles.inputText, { fontSize: fontSize }]}
               onChangeText={handleChange}
               placeholder="Enter Exercise"
+              placeholderTextColor={colors.text}
               value={text}
               onPress={() => setTyping(true)}
             />
@@ -111,7 +117,6 @@ const styles = StyleSheet.create({
   },
   selectExerciseCardContainer: {
     width: '100%',
-    borderColor: 'black',
     flexDirection: 'row',
     maxHeight: 120,
     borderRadius: 10,
@@ -125,7 +130,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     maxHeight: 150,
     borderWidth: 1,
-    borderColor: 'transparent',
     zIndex: 999999,
   },
   inputText: {
@@ -141,7 +145,6 @@ const styles = StyleSheet.create({
   listItems: {
     borderWidth: 1,
     fontSize: 18,
-    color: 'black',
   },
   confirmButton: { width: 40, height: 40 },
   confirmButtonContainer: {

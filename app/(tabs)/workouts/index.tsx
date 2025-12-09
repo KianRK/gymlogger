@@ -1,5 +1,4 @@
 import {
-  useColorScheme,
   View,
   Pressable,
   ScrollView,
@@ -18,9 +17,9 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 
+import useThemeColors from '@/hooks/UseThemeColors';
 import CalendarButton from '@/components/Buttons/CalendarButton';
 import AddButton from '@/components/Buttons/AddButton';
-import { Colors } from '@/constants/Colors';
 import WorkoutCard from '@/components/WorkoutCard';
 import TemplateOverviewCard from '@/components/TemplateOverviewCard';
 import CustomText from '@/components/CustomText';
@@ -31,13 +30,11 @@ import {
   Template,
   TemplateExercise,
   Set,
-  WorkoutExercise,
 } from '@/src/Interfaces/db_interfaces';
 
 export default function Index() {
   const router = useRouter();
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const colors = useThemeColors();
   const today = new Date();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -232,7 +229,7 @@ export default function Index() {
         <LinearGradient
           start={{ x: 0.5, y: 0.5 }}
           end={{ x: 1, y: 1 }}
-          colors={['#ddeaf6ff', '#b3cbe4ff']}
+          colors={[colors.mainOne, colors.mainTwo]}
           style={StyleSheet.absoluteFillObject}
         />
         <CalendarButton
@@ -272,7 +269,12 @@ export default function Index() {
         </ScrollView>
         {/* RENDERS ALL WORKOUTCARDS IN ID ORDER AND PASSES WORKOUT ID TO WORKOUTCARD*/}
         <Modal transparent={true} visible={deleteConfirmationVisible}>
-          <View style={styles.confirmationContainer}>
+          <View
+            style={[
+              styles.confirmationContainer,
+              { backgroundColor: colors.background },
+            ]}
+          >
             <CustomText
               style={{
                 height: '50%',
@@ -299,7 +301,10 @@ export default function Index() {
                   deleteWorkout(activeWorkoutId),
                     setDeleteConfirmationVisible(false);
                 }}
-                style={[styles.confirmationButton, { borderRightWidth: 1 }]}
+                style={[
+                  styles.deleteConfirmationButton,
+                  { borderRightWidth: 1 },
+                ]}
               >
                 <CustomText
                   style={{
@@ -313,7 +318,7 @@ export default function Index() {
               </Pressable>
               <Pressable
                 onPress={() => setDeleteConfirmationVisible(false)}
-                style={styles.confirmationButton}
+                style={styles.deleteConfirmationButton}
               >
                 <CustomText
                   style={{
@@ -329,7 +334,12 @@ export default function Index() {
           </View>
         </Modal>
         <Modal transparent={true} visible={workoutSelectionVisible}>
-          <View style={styles.workoutSelectionContainer}>
+          <View
+            style={[
+              styles.workoutSelectionContainer,
+              { backgroundColor: colors.background },
+            ]}
+          >
             <CustomText
               style={{
                 height: '50%',
@@ -356,7 +366,7 @@ export default function Index() {
                   handleAddWorkout();
                   setWorkoutSelectionVisible(false);
                 }}
-                style={[styles.confirmationButton, { borderRightWidth: 1 }]}
+                style={[styles.workoutSourceButton, { borderRightWidth: 1 }]}
               >
                 <CustomText
                   style={{
@@ -373,7 +383,7 @@ export default function Index() {
                   setWorkoutSelectionVisible(false);
                   setTemplateSelectModalVisible(true);
                 }}
-                style={[styles.confirmationButton, { borderRightWidth: 1 }]}
+                style={[styles.workoutSourceButton, { borderRightWidth: 1 }]}
               >
                 <CustomText
                   style={{
@@ -387,7 +397,7 @@ export default function Index() {
               </Pressable>
               <Pressable
                 onPress={() => setWorkoutSelectionVisible(false)}
-                style={styles.confirmationButton}
+                style={styles.workoutSourceButton}
               >
                 <CustomText
                   style={{
@@ -436,7 +446,7 @@ export default function Index() {
               style={{}}
               onPress={() => setTemplateSelectModalVisible(false)}
             >
-              <Ionicons name="close-outline" size={60} color="#f9f9f9" />
+              <Ionicons name="close-outline" size={60} color={colors.icon} />
             </Pressable>
           </View>
         </Modal>
@@ -474,7 +484,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     width: '60%',
     height: '10%',
-    backgroundColor: '#f9f9f9',
     margin: 'auto',
   },
   workoutSelectionContainer: {
@@ -485,12 +494,15 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     width: '70%',
     height: '10%',
-    backgroundColor: '#f9f9f9',
     margin: 'auto',
   },
-  confirmationButton: {
+  workoutSourceButton: {
     justifyContent: 'center',
     width: '33%',
+  },
+  deleteConfirmationButton: {
+    justifyContent: 'center',
+    width: '50%',
   },
   templateContainer: {
     top: '20%',

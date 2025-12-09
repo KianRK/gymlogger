@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import CustomText from './CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   name: string;
@@ -24,9 +25,7 @@ export default function ExerciseCard({
   onPressInfo,
   onPressFav,
 }: Props) {
-  const colorOne = '#b3cbe4ff';
-  const colorOneAlpha = '#b3cbe490';
-  const colorTwo = '#ddeaf6ff';
+  const colors = useThemeColors();
   const primaryText = primary ? primary[0] : '';
   const secondaryText = secondary ? secondary[0] : '';
   const [fontSize, setFontSize] = useState<number>(18);
@@ -50,7 +49,7 @@ export default function ExerciseCard({
     <LinearGradient
       start={{ x: 0.375, y: 0.375 }}
       end={{ x: 0.75, y: 0.75 }}
-      colors={[colorOneAlpha, colorTwo, colorOne]}
+      colors={[colors.alpha, colors.mainTwo, colors.mainOne]}
       style={{
         borderRadius: 8,
         width: '95%',
@@ -64,7 +63,7 @@ export default function ExerciseCard({
           <MaterialCommunityIcons
             name={is_favorite ? 'heart' : 'heart-outline'}
             size={30}
-            color="black"
+            color={colors.icon}
           />
         </Pressable>
         <View style={styles.mainTextContainer}>
@@ -74,7 +73,11 @@ export default function ExerciseCard({
           <CustomText style={styles.regionText}>{region}</CustomText>
         </View>
         <Pressable style={styles.infoButton} onPress={onPressInfo}>
-          <MaterialCommunityIcons name="information" size={30} color="black" />
+          <MaterialCommunityIcons
+            name="information"
+            size={30}
+            color={colors.icon}
+          />
         </Pressable>
         <View style={styles.targetsContainer}>
           <CustomText style={styles.primaryTarget}>{primaryText}</CustomText>
@@ -109,16 +112,15 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'left',
     height: 25,
-    color: 'black',
     fontSize: 18,
   },
-  regionText: { height: 12, textAlign: 'center', color: 'black', fontSize: 12 },
+  regionText: { height: 12, textAlign: 'center', fontSize: 12 },
   infoButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
   },
   targetsContainer: { width: '20%' },
-  primaryTarget: { textAlign: 'center', color: 'black', fontSize: 11 },
-  secondaryTarget: { textAlign: 'center', color: 'black', fontSize: 11 },
+  primaryTarget: { textAlign: 'center', fontSize: 11 },
+  secondaryTarget: { textAlign: 'center', fontSize: 11 },
 });

@@ -8,6 +8,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import CustomText from '../CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
+import { useTheme } from '@react-navigation/native';
 
 type Props = {
   label?: string;
@@ -26,6 +28,8 @@ export default function DeleteButton({
   labelStyle,
   iconSize = 35,
 }: Props) {
+  const colors = useThemeColors();
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
@@ -33,9 +37,17 @@ export default function DeleteButton({
           {label}
         </CustomText>
       )}
-      <View style={[styles.deleteButtonContainer, buttonStyle]}>
+      <View
+        style={[
+          styles.deleteButtonContainer,
+          {
+            borderColor: colors.borderColor,
+          },
+          buttonStyle,
+        ]}
+      >
         <Pressable onPress={onPress}>
-          <Ionicons name="trash-outline" size={iconSize} color={'black'} />
+          <Ionicons name="trash-outline" size={iconSize} color={colors.icon} />
         </Pressable>
       </View>
     </View>
@@ -58,7 +70,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
   },
   deleteButton: { alignItems: 'center' },
   deleteButtonLabel: {

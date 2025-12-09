@@ -102,5 +102,6 @@ const styles = StyleSheet.create({
   settingsText: {
     fontSize: 18,
     textAlignVertical: 'bottom',
+    color: '#222222',
   },
 });

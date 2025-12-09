@@ -16,6 +16,7 @@ import { TemplateExercise } from '@/src/Interfaces/db_interfaces';
 import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
 import CustomTextInput from './CustomTextInput';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 import MenuButton from './Buttons/MenuButton';
 
@@ -30,16 +31,11 @@ export default function TemplateOverviewCard({
   template_number,
   name,
 }: Props) {
+  const colors = useThemeColors();
   const [templateExercises, setTemplateExercises] = useState<
     TemplateExercise[]
   >([]);
   useState(false);
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const colorOne = '#b3cbe4ff';
-  const colorOneAlpha = '#b3cbe490';
-  const colorTwo = '#ddeaf6ff';
-  const colorTwoAlpha = '#ddeaf633';
 
   useFocusEffect(
     useCallback(() => {
@@ -72,12 +68,21 @@ export default function TemplateOverviewCard({
   }
 
   return (
-    <View style={styles.TemplateCardContainer}>
+    <View
+      style={[
+        styles.TemplateCardContainer,
+        { borderColor: colors.borderColor },
+      ]}
+    >
       <LinearGradient
         start={{ x: 0.375, y: 0.375 }}
         end={{ x: 0.75, y: 0.75 }}
-        colors={[colorOneAlpha, colorTwo, colorOne]}
-        style={[StyleSheet.absoluteFill, styles.gradientStyle]}
+        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
+        style={[
+          StyleSheet.absoluteFill,
+          { borderColor: colors.borderColor },
+          styles.gradientStyle,
+        ]}
       />
       <View style={styles.templateCardHeaderContainer}>
         {name && (
@@ -108,7 +113,6 @@ const styles = StyleSheet.create({
     width: '95%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'black',
     borderRadius: 8,
     overflow: 'visible',
     margin: 8,
@@ -117,7 +121,6 @@ const styles = StyleSheet.create({
   gradientStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'black',
     borderRadius: 8,
   },
   templateCardHeaderContainer: {

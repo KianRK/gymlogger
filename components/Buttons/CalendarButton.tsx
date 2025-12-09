@@ -2,6 +2,7 @@ import { StyleSheet, Pressable, View, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import CustomText from '../CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   date: string;
@@ -14,6 +15,7 @@ export default function CalendarButton({
   gradientStyle,
   onPress,
 }: Props) {
+  const colors = useThemeColors();
   const colorOne = '#b3cbe4ff';
   const colorOneAlpha = '#b3cbe490';
   const colorTwo = '#ddeaf6ff';
@@ -22,7 +24,7 @@ export default function CalendarButton({
     <LinearGradient
       start={{ x: 0.375, y: 0.375 }}
       end={{ x: 0.75, y: 0.75 }}
-      colors={[colorOneAlpha, colorTwo, colorOne]}
+      colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
       style={[
         {
           height: '12%',
@@ -64,7 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     textAlignVertical: 'center',
-    color: 'black',
     fontSize: 24,
   },
 });

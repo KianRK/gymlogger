@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
+    color: '#222222',
     marginTop: '8%',
     marginBottom: '10%',
   },
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontFamily: 'Outfit-SemiBold',
+    color: '#222222',
     textAlign: 'center',
     textAlignVertical: 'top',
   },

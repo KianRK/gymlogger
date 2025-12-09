@@ -4,14 +4,12 @@ import { useState, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { useSettings } from '@/src/providers/SettingsProvider';
-import { Colors } from '@/constants/Colors';
+import useThemeColors from '@/hooks/UseThemeColors';
 import CustomText from '@/components/CustomText';
 import DropDownButton from '@/components/Buttons/DropDownButton';
-import { Settings } from '@/src/Interfaces/settings_interfaces';
 
 export default function SettingsScreen() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const colors = useThemeColors();
   const { settings, updateSetting } = useSettings();
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -29,7 +27,7 @@ export default function SettingsScreen() {
     settings.darkMode
   );
   const [darkModeSettingVisible, setDarkModeSettingVisible] = useState(false);
-  const [darkModeOptions, setDarkModeOptions] = useState(['On, Off']);
+  const [darkModeOptions, setDarkModeOptions] = useState(['On, Off', 'System']);
 
   const [currentUnitSetting, setCurrentUnitSetting] = useState(settings.units);
   const [unitSettingVisible, setUnitSettingVisible] = useState(false);
@@ -37,9 +35,6 @@ export default function SettingsScreen() {
     'metric (kg)',
     'imperial (lb)',
   ]);
-
-  const colorOne = '#b3cbe4ff';
-  const colorTwo = '#91c7faff';
 
   useEffect(() => {
     if (currentDropDownVisible === 'lang') {
@@ -74,10 +69,13 @@ export default function SettingsScreen() {
 
   useEffect(() => {
     if (currentDarkModeSetting === 'On') {
-      setDarkModeOptions(['On', 'Off']);
+      setDarkModeOptions(['On', 'Off', 'System']);
     }
     if (currentDarkModeSetting === 'Off') {
-      setDarkModeOptions(['Off', 'On']);
+      setDarkModeOptions(['Off', 'On', 'System']);
+    }
+    if (currentDarkModeSetting === 'System') {
+      setDarkModeOptions(['System', 'Off', 'On']);
     }
   }, [currentDarkModeSetting]);
 
@@ -94,13 +92,15 @@ export default function SettingsScreen() {
     <LinearGradient
       start={{ x: 0.5, y: 0.5 }}
       end={{ x: 1, y: 1 }}
-      colors={['#ddeaf6ff', '#b3cbe4ff']}
+      colors={[colors.mainOne, colors.mainTwo]}
       style={[StyleSheet.absoluteFillObject, { alignItems: 'center' }]}
     >
       <View style={styles.settingsContainer}>
         <View style={styles.generalSection}>
           <CustomText style={styles.settingSectionHeader}>General</CustomText>
-          <View style={[styles.settingRow, { backgroundColor: colorTwo }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.settings }]}
+          >
             <CustomText style={styles.settingText}>Language</CustomText>
             <DropDownButton
               currentSelection={currentLanguage}
@@ -112,7 +112,9 @@ export default function SettingsScreen() {
               visibilitySetter={setLanguageSettingVisible}
             />
           </View>
-          <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
+          >
             <CustomText style={styles.settingText}>Dark mode</CustomText>
             <DropDownButton
               currentSelection={currentDarkModeSetting}
@@ -127,14 +129,18 @@ export default function SettingsScreen() {
         </View>
         <View style={styles.trainingSection}>
           <CustomText style={styles.settingSectionHeader}>Training</CustomText>
-          <View style={[styles.settingRow, { backgroundColor: colorTwo }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
+          >
             <Pressable>
               <CustomText style={styles.settingText}>
                 Reset to default exercises
               </CustomText>
             </Pressable>
           </View>
-          <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.settings }]}
+          >
             <CustomText style={styles.settingText}>Units</CustomText>
             <DropDownButton
               componentStyle={{ width: '40%' }}
@@ -150,22 +156,30 @@ export default function SettingsScreen() {
         </View>
         <View style={styles.contactSection}>
           <CustomText style={styles.settingSectionHeader}>Contact</CustomText>
-          <View style={[styles.settingRow, { backgroundColor: colorTwo }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
+          >
             <Pressable>
               <CustomText style={styles.settingText}>Feedback</CustomText>
             </Pressable>
           </View>
-          <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.settings }]}
+          >
             <Pressable>
               <CustomText style={styles.settingText}>Help & Support</CustomText>
             </Pressable>
           </View>
-          <View style={[styles.settingRow, { backgroundColor: colorTwo }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
+          >
             <Pressable>
               <CustomText style={styles.settingText}>Rate</CustomText>
             </Pressable>
           </View>
-          <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.settings }]}
+          >
             <Pressable>
               <CustomText style={styles.settingText}>Social</CustomText>
             </Pressable>

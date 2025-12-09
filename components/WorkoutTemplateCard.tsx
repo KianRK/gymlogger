@@ -16,8 +16,8 @@ import { TemplateExercise } from '@/src/Interfaces/db_interfaces';
 import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
 import CustomTextInput from './CustomTextInput';
-
 import MenuButton from './Buttons/MenuButton';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   template_id: string;
@@ -40,18 +40,14 @@ export default function WorkoutTemplateCard({
   onPressEdit,
   onPress,
 }: Props) {
+  const colors = useThemeColors();
   const [templateExercises, setTemplateExercises] = useState<
     TemplateExercise[]
   >([]);
   const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
     useState(false);
   const [nameEditable, setNameEditable] = useState(false);
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const colorOne = '#b3cbe4ff';
-  const colorOneAlpha = '#b3cbe490';
-  const colorTwo = '#ddeaf6ff';
-  const colorTwoAlpha = '#ddeaf633';
+
   const [dropDownVisible, setDropDownVisible] = useState(false);
   const [text, setText] = useState('');
 
@@ -128,7 +124,7 @@ export default function WorkoutTemplateCard({
       <LinearGradient
         start={{ x: 0.375, y: 0.375 }}
         end={{ x: 0.75, y: 0.75 }}
-        colors={[colorOneAlpha, colorTwo, colorOne]}
+        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
         style={[StyleSheet.absoluteFill, styles.gradientStyle]}
       />
       <View style={styles.workoutCardHeaderContainer}>
@@ -222,7 +218,7 @@ export default function WorkoutTemplateCard({
           >
             <Pressable
               onPress={() => deleteTemplate(template_id)}
-              style={[styles.confirmationButton, { borderRightWidth: 1 }]}
+              style={[styles.deleteConfirmationButton, { borderRightWidth: 1 }]}
             >
               <CustomText
                 style={{
@@ -236,7 +232,7 @@ export default function WorkoutTemplateCard({
             </Pressable>
             <Pressable
               onPress={() => setDeleteConfirmationVisible(false)}
-              style={styles.confirmationButton}
+              style={styles.deleteConfirmationButton}
             >
               <CustomText
                 style={{
@@ -354,7 +350,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     margin: 'auto',
   },
-  confirmationButton: {
+  deleteConfirmationButton: {
     justifyContent: 'center',
     width: '50%',
   },

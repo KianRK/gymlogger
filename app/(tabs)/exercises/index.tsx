@@ -1,6 +1,5 @@
 import {
   View,
-  useColorScheme,
   StyleSheet,
   FlatList,
   TextInput,
@@ -13,7 +12,7 @@ import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-import { Colors } from '@/constants/Colors';
+import useThemeColors from '@/hooks/UseThemeColors';
 import ExerciseCard from '@/components/ExerciseCard';
 import { Exercise, ExerciseParsed } from '@/src/Interfaces/db_interfaces';
 import { db } from '@/src/database';
@@ -25,10 +24,8 @@ import EditButton from '@/components/Buttons/EditButton';
 import FilterOptionButton from '@/components/Buttons/FilterOptionButton';
 import CustomText from '@/components/CustomText';
 
-const colorScheme = useColorScheme() ?? 'light';
-const colors = Colors[colorScheme];
-
 export default function ExercisesScreen() {
+  const colors = useThemeColors();
   const router = useRouter();
   const [exercises, setExercises] = useState<ExerciseParsed[]>([]);
   const [filterSelect, setFilterSelect] = useState<boolean>(false);
@@ -217,7 +214,7 @@ export default function ExercisesScreen() {
         <LinearGradient
           start={{ x: 0.5, y: 0.5 }}
           end={{ x: 1, y: 1 }}
-          colors={['#ddeaf6ff', '#b3cbe4ff']}
+          colors={[colors.mainOne, colors.mainTwo]}
           style={[{ overflow: 'visible' }]}
         >
           <View style={styles.filterBarContainer}>

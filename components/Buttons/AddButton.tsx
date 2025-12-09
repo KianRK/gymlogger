@@ -7,7 +7,9 @@ import {
   TextStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
 import CustomText from '../CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   label?: string;
@@ -26,6 +28,8 @@ export default function AddButton({
   labelStyle,
   iconSize = 35,
 }: Props) {
+  const colors = useThemeColors();
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
@@ -33,9 +37,18 @@ export default function AddButton({
           {label}
         </CustomText>
       )}
-      <View style={[styles.addButtonContainer, buttonStyle]}>
+      <View
+        style={[
+          styles.addButtonContainer,
+          {
+            backgroundColor: colors.background,
+            borderColor: colors.borderColor,
+          },
+          buttonStyle,
+        ]}
+      >
         <Pressable style={styles.addButton} onPress={onPress}>
-          <Ionicons name="add-sharp" size={iconSize} color={'black'} />
+          <Ionicons name="add-sharp" size={iconSize} color={colors.icon} />
         </Pressable>
       </View>
     </View>
@@ -56,14 +69,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: 'white',
   },
 
   addButton: { alignItems: 'center' },
   addButtonLabel: {
     width: 140,
     textAlign: 'center',
-    color: 'black',
     fontSize: 18,
   },
 });

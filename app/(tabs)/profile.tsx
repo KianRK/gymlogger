@@ -1,24 +1,18 @@
-import { View, useColorScheme, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { useState } from 'react';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Colors } from '@/constants/Colors';
+import useThemeColors from '@/hooks/UseThemeColors';
 import CustomText from '@/components/CustomText';
-import CustomTextInput from '@/components/CustomTextInput';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import ProfileButton from '@/components/Buttons/ProfileButton';
 import MeasurementsModal from '@/components/ MeasurementsModal';
 
 export default function ProfileScreen() {
   const { settings, updateSetting } = useSettings();
-
+  const colors = useThemeColors();
   const [measureModalVisible, setMeasureModalVisible] = useState(false);
-
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
-  const colorOne = '#b3cbe4ff';
-  const colorTwo = '#91c7faff';
 
   return (
     <View
@@ -31,7 +25,7 @@ export default function ProfileScreen() {
       <LinearGradient
         start={{ x: 0.5, y: 0.5 }}
         end={{ x: 1, y: 1 }}
-        colors={['#ddeaf6ff', '#b3cbe4ff']}
+        colors={[colors.mainOne, colors.mainTwo]}
         style={StyleSheet.absoluteFillObject}
       />
       <View style={styles.profileOverview}>
@@ -62,22 +56,24 @@ export default function ProfileScreen() {
         <CustomText style={styles.settingSectionHeader}>
           Profile Settings
         </CustomText>
-        <View style={[styles.settingRow, { backgroundColor: colorTwo }]}>
+        <View style={[styles.settingRow, { backgroundColor: colors.settings }]}>
           <CustomText style={styles.settingText}>Email</CustomText>
           <CustomText style={styles.settingText}>{settings.email}</CustomText>
         </View>
         <Pressable onPress={() => setMeasureModalVisible(true)}>
-          <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
+          <View
+            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
+          >
             <CustomText style={styles.settingText}>Measurements</CustomText>
           </View>
         </Pressable>
       </View>
       <View style={styles.accountSettings}>
         <CustomText style={styles.settingSectionHeader}>Account</CustomText>
-        <View style={[styles.settingRow, { backgroundColor: colorTwo }]}>
+        <View style={[styles.settingRow, { backgroundColor: colors.settings }]}>
           <CustomText style={styles.settingText}>Sign out</CustomText>
         </View>
-        <View style={[styles.settingRow, { backgroundColor: colorOne }]}>
+        <View style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}>
           <CustomText style={styles.settingText}>Delete account</CustomText>
         </View>
       </View>
@@ -136,6 +132,7 @@ const styles = StyleSheet.create({
   membershipButtonText: {
     fontFamily: 'Outfit-SemiBold',
     fontSize: 24,
+    color: '#222222',
     textAlign: 'center',
     textAlignVertical: 'center',
     letterSpacing: 1,

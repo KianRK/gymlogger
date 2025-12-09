@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { LineChart } from 'react-native-chart-kit';
 
+import useThemeColors from '@/hooks/UseThemeColors';
 import { db } from '@/src/database';
 import { Exercise, WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 
@@ -15,6 +16,7 @@ import BackButton from '@/components/Buttons/BackButton';
 import { Rect, Text as TextSVG, Svg } from 'react-native-svg';
 
 export default function ExerciseId() {
+  const colors = useThemeColors();
   const screenWidth = Dimensions.get('window').width;
   const { id } = useLocalSearchParams<{ id: string }>();
   const [exercise, setExercise] = useState<Exercise>();
@@ -40,7 +42,6 @@ export default function ExerciseId() {
     value: 0,
   });
 
-  const chartBackgroundColor = '#f9f9f9';
   const chartWidthRatio = 0.9;
   const chartHeight = 264;
 
@@ -407,14 +408,12 @@ export default function ExerciseId() {
     <LinearGradient
       start={{ x: 0.5, y: 0.5 }}
       end={{ x: 1, y: 1 }}
-      colors={['#ddeaf6ff', '#b3cbe4ff']}
+      colors={[colors.mainOne, colors.mainTwo]}
       style={{ ...StyleSheet.absoluteFillObject, flex: 12 }}
     >
       <View style={styles.pageHeader}>
         <BackButton componentStyle={{ position: 'absolute', right: '85%' }} />
-        <CustomText style={{ color: 'black', fontSize: 32 }}>
-          {exercise?.name}
-        </CustomText>
+        <CustomText style={{ fontSize: 32 }}>{exercise?.name}</CustomText>
       </View>
       {/*<View style={styles.imageContainer}>
             <Image
@@ -443,7 +442,12 @@ export default function ExerciseId() {
           contentContainerStyle={styles.scrollContainer}
         >
           {dailyMaxChartData != null && (
-            <View style={styles.chartContainer}>
+            <View
+              style={[
+                styles.chartContainer,
+                { backgroundColor: colors.background },
+              ]}
+            >
               <CustomText style={styles.chartTitle}>Maximum Weight</CustomText>
               <LineChart
                 data={dailyMaxChartData}
@@ -465,18 +469,23 @@ export default function ExerciseId() {
                   );
                 }}
                 chartConfig={{
-                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFrom: colors.background,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientTo: colors.background,
                   backgroundGradientToOpacity: 0.5,
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  color: () => colors.text,
                   useShadowColorFromDataset: false, // optional
                 }}
               />
             </View>
           )}
           {volumeChartData != null && (
-            <View style={styles.chartContainer}>
+            <View
+              style={[
+                styles.chartContainer,
+                { backgroundColor: colors.background },
+              ]}
+            >
               <CustomText style={styles.chartTitle}>Volume</CustomText>
               <LineChart
                 data={volumeChartData}
@@ -496,11 +505,11 @@ export default function ExerciseId() {
                   );
                 }}
                 chartConfig={{
-                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFrom: colors.background,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientTo: colors.background,
                   backgroundGradientToOpacity: 0.5,
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  color: () => colors.text,
                   strokeWidth: 2,
                   useShadowColorFromDataset: false, // optional
                 }}
@@ -508,7 +517,12 @@ export default function ExerciseId() {
             </View>
           )}
           {repsChartData != null && (
-            <View style={styles.chartContainer}>
+            <View
+              style={[
+                styles.chartContainer,
+                { backgroundColor: colors.background },
+              ]}
+            >
               <CustomText style={styles.chartTitle}>Total Reps</CustomText>
               <LineChart
                 data={repsChartData}
@@ -531,11 +545,11 @@ export default function ExerciseId() {
                   return yValue.split('.')[0];
                 }}
                 chartConfig={{
-                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFrom: colors.background,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientTo: colors.background,
                   backgroundGradientToOpacity: 0.5,
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  color: () => colors.text,
                   strokeWidth: 2,
                   useShadowColorFromDataset: false, // optional
                 }}
@@ -543,7 +557,12 @@ export default function ExerciseId() {
             </View>
           )}
           {setsChartData != null && (
-            <View style={styles.chartContainer}>
+            <View
+              style={[
+                styles.chartContainer,
+                { backgroundColor: colors.background },
+              ]}
+            >
               <CustomText style={styles.chartTitle}>Sets</CustomText>
               <LineChart
                 data={setsChartData}
@@ -566,11 +585,11 @@ export default function ExerciseId() {
                   return yValue.split('.')[0];
                 }}
                 chartConfig={{
-                  backgroundGradientFrom: `${chartBackgroundColor}`,
+                  backgroundGradientFrom: colors.background,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: `${chartBackgroundColor}`,
+                  backgroundGradientTo: colors.background,
                   backgroundGradientToOpacity: 0.5,
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  color: () => colors.text,
                   strokeWidth: 2,
                   useShadowColorFromDataset: false, // optional
                 }}
@@ -600,7 +619,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'white',
     width: '90%',
     marginTop: 1,
     marginBottom: 1,
@@ -620,7 +638,6 @@ const styles = StyleSheet.create({
     height: 1244,
   },
   chartTitle: {
-    color: 'black',
     textAlign: 'left',
     textAlignVertical: 'center',
     fontSize: 18,
@@ -631,7 +648,6 @@ const styles = StyleSheet.create({
   chartContainer: {
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: '#f9f9f9',
     height: 304,
     width: '90%',
     borderWidth: 2,

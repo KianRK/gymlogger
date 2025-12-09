@@ -1,16 +1,10 @@
-import {
-  useColorScheme,
-  Modal,
-  View,
-  Platform,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import { Modal, View, Platform, ScrollView, StyleSheet } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 
+import useThemeColors from '@/hooks/UseThemeColors';
 import WorkoutExerciseCard from '@/components/WorkoutExerciseCard';
 import CalendarButton from '@/components/Buttons/CalendarButton';
 import AddButton from '@/components/Buttons/AddButton';
@@ -20,16 +14,13 @@ import BackButton from '@/components/Buttons/BackButton';
 import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 
-import { Colors } from '@/constants/Colors';
-
 export default function Workouts() {
-  const colorScheme = useColorScheme() ?? 'light';
+  const colors = useThemeColors();
   const { date, dateName, workout_id } = useLocalSearchParams<{
     date: string;
     dateName: string;
     workout_id: string;
   }>();
-  const colors = Colors[colorScheme];
   const [orderIndex, setOrderIndex] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
   const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
@@ -111,7 +102,6 @@ export default function Workouts() {
     <SafeAreaProvider>
       <SafeAreaView
         style={{
-          backgroundColor: 'white',
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
@@ -120,7 +110,7 @@ export default function Workouts() {
         <LinearGradient
           start={{ x: 0.5, y: 0.5 }}
           end={{ x: 1, y: 1 }}
-          colors={['#ddeaf6ff', '#b3cbe4ff']}
+          colors={[colors.mainOne, colors.mainTwo]}
           style={StyleSheet.absoluteFillObject}
         />
         <View

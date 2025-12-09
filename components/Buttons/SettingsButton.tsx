@@ -1,11 +1,13 @@
 import { Pressable, View, StyleSheet } from 'react-native';
 
 import { useRouter } from 'expo-router';
-
 import { Ionicons } from '@expo/vector-icons';
+
+import useThemeColors from '@/hooks/UseThemeColors';
 
 export default function SettingsButton() {
   const router = useRouter();
+  const colors = useThemeColors();
 
   const goToSettings = () => {
     router.push({
@@ -16,7 +18,7 @@ export default function SettingsButton() {
   return (
     <View style={styles.componentContainer}>
       <Pressable style={styles.settingsButton} onPress={goToSettings}>
-        <Ionicons name="settings-sharp" size={30} color={'#222222'} />
+        <Ionicons name="settings-sharp" size={30} color={colors.icon} />
       </Pressable>
     </View>
   );

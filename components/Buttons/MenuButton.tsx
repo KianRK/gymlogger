@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import useThemeColors from '@/hooks/UseThemeColors';
+
 type Props = {
   label?: string;
   onPress?: () => void;
@@ -25,14 +27,25 @@ export default function MenuButton({
   labelStyle,
   iconSize = 35,
 }: Props) {
+  const colors = useThemeColors();
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
         <Text style={[styles.menuButtonLabel, labelStyle]}>{label}</Text>
       )}
-      <View style={[styles.menuButtonContainer, buttonStyle]}>
+      <View
+        style={[
+          styles.menuButtonContainer,
+          {
+            backgroundColor: colors.background,
+            borderColor: colors.borderColor,
+          },
+          buttonStyle,
+        ]}
+      >
         <Pressable style={styles.menuButton} onPress={onPress}>
-          <Ionicons name="menu-outline" size={iconSize} color={'black'} />
+          <Ionicons name="menu-outline" size={iconSize} color={colors.icon} />
         </Pressable>
       </View>
     </View>
@@ -55,7 +68,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    backgroundColor: 'white',
   },
 
   menuButton: { alignSelf: 'center' },

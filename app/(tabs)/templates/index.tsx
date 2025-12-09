@@ -1,16 +1,11 @@
-import {
-  useColorScheme,
-  View,
-  ScrollView,
-  StyleSheet,
-  Platform,
-} from 'react-native';
+import { View, ScrollView, StyleSheet, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
+import useThemeColors from '@/hooks/UseThemeColors';
 import AddButton from '@/components/Buttons/AddButton';
 import { Colors } from '@/constants/Colors';
 import WorkoutTemplateCard from '@/components/WorkoutTemplateCard';
@@ -20,8 +15,7 @@ import { Template } from '@/src/Interfaces/db_interfaces';
 
 export default function Index() {
   const router = useRouter();
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const colors = useThemeColors();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [refreshTemplateKey, setRefreshTemplateKey] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -90,7 +84,7 @@ export default function Index() {
         <LinearGradient
           start={{ x: 0.5, y: 0.5 }}
           end={{ x: 1, y: 1 }}
-          colors={['#ddeaf6ff', '#b3cbe4ff']}
+          colors={[colors.mainOne, colors.mainTwo]}
           style={StyleSheet.absoluteFillObject}
         />
 

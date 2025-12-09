@@ -1,8 +1,9 @@
 import { Pressable, View, ViewStyle, StyleSheet } from 'react-native';
 
 import { useRouter } from 'expo-router';
-
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   componentStyle?: ViewStyle;
@@ -10,11 +11,16 @@ type Props = {
 
 export default function BackButton({ componentStyle }: Props) {
   const router = useRouter();
+  const colors = useThemeColors();
 
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       <Pressable style={styles.backButton} onPress={() => router.back()}>
-        <MaterialCommunityIcons name="arrow-left" size={30} color={'#222222'} />
+        <MaterialCommunityIcons
+          name="arrow-left"
+          size={30}
+          color={colors.icon}
+        />
       </Pressable>
     </View>
   );

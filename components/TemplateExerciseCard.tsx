@@ -6,6 +6,7 @@ import AddButton from './Buttons/AddButton';
 import ConfirmButton from './Buttons/ConfirmButton';
 import DeleteButton from './Buttons/DeleteButton';
 import CustomText from './CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 import { db } from '@/src/database';
 import { Set } from '@/src/Interfaces/db_interfaces';
@@ -27,6 +28,7 @@ export default function TemplateExerciseCard({
   onConfirm,
   refreshTrigger,
 }: Props) {
+  const colors = useThemeColors();
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
@@ -135,19 +137,45 @@ export default function TemplateExerciseCard({
     refreshTrigger?.();
   }, []);
   return (
-    <View style={styles.exerciseCardContainer}>
+    <View
+      style={[
+        styles.exerciseCardContainer,
+        { borderColor: colors.borderColor },
+      ]}
+    >
       <LinearGradient
         start={{ x: 0.375, y: 0.375 }}
         end={{ x: 0.75, y: 0.75 }}
-        colors={[colorOneAlpha, colorTwo, colorOne]}
+        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
       >
         {editable && (
           <View>
             <CustomText style={styles.exerciseCardHeader}>{name}</CustomText>
             <View style={styles.setContainer}>
-              <CustomText style={styles.setTextEditable}>Set</CustomText>
-              <CustomText style={styles.setTextEditable}>Reps</CustomText>
-              <CustomText style={styles.setTextEditable}>Weight</CustomText>
+              <CustomText
+                style={[
+                  styles.setTextEditable,
+                  { borderColor: colors.borderColor },
+                ]}
+              >
+                Set
+              </CustomText>
+              <CustomText
+                style={[
+                  styles.setTextEditable,
+                  { borderColor: colors.borderColor },
+                ]}
+              >
+                Reps
+              </CustomText>
+              <CustomText
+                style={[
+                  styles.setTextEditable,
+                  { borderColor: colors.borderColor },
+                ]}
+              >
+                Weight
+              </CustomText>
               <CustomText style={{ flex: 1 }}></CustomText>
             </View>
           </View>
@@ -167,9 +195,21 @@ export default function TemplateExerciseCard({
               />
             </View>
             <View style={styles.setContainer}>
-              <CustomText style={styles.setText}>Set</CustomText>
-              <CustomText style={styles.setText}>Reps</CustomText>
-              <CustomText style={styles.setText}>Weight</CustomText>
+              <CustomText
+                style={[styles.setText, { borderColor: colors.borderColor }]}
+              >
+                Set
+              </CustomText>
+              <CustomText
+                style={[styles.setText, { borderColor: colors.borderColor }]}
+              >
+                Reps
+              </CustomText>
+              <CustomText
+                style={[styles.setText, { borderColor: colors.borderColor }]}
+              >
+                Weight
+              </CustomText>
             </View>
           </View>
         )}
@@ -177,11 +217,30 @@ export default function TemplateExerciseCard({
           {editable &&
             setList.map((set, index) => (
               <View key={index} style={styles.setContainer}>
-                <CustomText style={styles.setTextEditable}>
+                <CustomText
+                  style={[
+                    styles.setTextEditable,
+                    { borderColor: colors.borderColor },
+                  ]}
+                >
                   {index + 1}
                 </CustomText>
-                <CustomText style={styles.setTextEditable}>{set[0]}</CustomText>
-                <CustomText style={styles.setTextEditable}>{set[1]}</CustomText>
+                <CustomText
+                  style={[
+                    styles.setTextEditable,
+                    { borderColor: colors.borderColor },
+                  ]}
+                >
+                  {set[0]}
+                </CustomText>
+                <CustomText
+                  style={[
+                    styles.setTextEditable,
+                    { borderColor: colors.borderColor },
+                  ]}
+                >
+                  {set[1]}
+                </CustomText>
                 <DeleteButton
                   componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
                   onPress={() => setSetList(setList.toSpliced(index, 1))}
@@ -192,25 +251,48 @@ export default function TemplateExerciseCard({
           {!editable &&
             sets.map((set, index) => (
               <View key={set.id} style={styles.setContainer}>
-                <CustomText style={styles.setText}>{index + 1}</CustomText>
-                <CustomText style={styles.setText}>{set.reps}</CustomText>
-                <CustomText style={styles.setText}>{set.weight}</CustomText>
+                <CustomText
+                  style={[styles.setText, { borderColor: colors.borderColor }]}
+                >
+                  {index + 1}
+                </CustomText>
+                <CustomText
+                  style={[styles.setText, { borderColor: colors.borderColor }]}
+                >
+                  {set.reps}
+                </CustomText>
+                <CustomText
+                  style={[styles.setText, { borderColor: colors.borderColor }]}
+                >
+                  {set.weight}
+                </CustomText>
               </View>
             ))}
           {editing && (
             <View style={styles.setContainer}>
-              <CustomText style={styles.setTextEditable}>
+              <CustomText
+                style={[
+                  styles.setTextEditable,
+                  { borderColor: colors.borderColor },
+                ]}
+              >
                 {setList.length + 1}
               </CustomText>
               <TextInput
                 onChangeText={(text) => handleChangeText(text, 0)}
                 inputMode="numeric"
-                style={styles.setTextEditable}
+                style={[
+                  styles.setTextEditable,
+                  { borderColor: colors.borderColor },
+                ]}
               ></TextInput>
               <TextInput
                 onChangeText={(text) => handleChangeText(text, 1)}
                 inputMode="numeric"
-                style={styles.setTextEditable}
+                style={[
+                  styles.setTextEditable,
+                  { borderColor: colors.borderColor },
+                ]}
               ></TextInput>
             </View>
           )}
@@ -237,7 +319,6 @@ export default function TemplateExerciseCard({
 const styles = StyleSheet.create({
   exerciseCardContainer: {
     width: '75%',
-    borderColor: 'black',
     borderWidth: 1,
     borderRadius: 10,
     padding: 5,
@@ -251,7 +332,6 @@ const styles = StyleSheet.create({
   },
   exerciseCardHeader: {
     alignSelf: 'center',
-    color: 'black',
     fontSize: 28,
   },
   exerciseCardHeaderContainer: { flexDirection: 'row' },

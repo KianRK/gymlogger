@@ -2,16 +2,14 @@ import { Tabs } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useColorScheme, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
+import useThemeColors from '@/hooks/UseThemeColors';
 import SettingsButton from '@/components/Buttons/SettingsButton';
 import ProfileButton from '@/components/Buttons/ProfileButton';
 
-import { Colors } from '@/constants/Colors';
-
 export default function TabLayout() {
-  const colorScheme = useColorScheme() ?? 'light';
-  const colors = Colors[colorScheme];
+  const colors = useThemeColors();
   return (
     <Tabs
       screenOptions={{

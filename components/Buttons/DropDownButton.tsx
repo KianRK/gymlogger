@@ -6,6 +6,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import useThemeColors from '@/hooks/UseThemeColors';
+import { Colors } from '@/constants/Colors';
 import CustomText from '../CustomText';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { Settings } from '@/src/Interfaces/settings_interfaces';
@@ -36,6 +38,7 @@ export default function DropDownButton({
   visibilitySetter,
 }: Props) {
   const { updateSetting } = useSettings();
+  const colors = useThemeColors();
 
   return (
     <View style={[styles.componentStyleDefault, componentStyle]}>
@@ -52,7 +55,13 @@ export default function DropDownButton({
         </Pressable>
       )}
       {visible && (
-        <View style={[styles.optionsStyleDefault, optionsStyle]}>
+        <View
+          style={[
+            styles.optionsStyleDefault,
+            { backgroundColor: colors.total },
+            optionsStyle,
+          ]}
+        >
           {options.map((item, index) => (
             <Pressable
               key={item}
@@ -86,7 +95,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     borderRadius: 4,
     padding: 2,
-    backgroundColor: '#f6f6f6',
     top: 0,
     zIndex: 10,
   },

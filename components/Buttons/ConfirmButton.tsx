@@ -1,12 +1,14 @@
 import {
   Pressable,
-  Text,
   View,
   StyleSheet,
   ViewStyle,
   TextStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
+import CustomText from '../CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   label?: string;
@@ -25,14 +27,31 @@ export default function ConfirmButton({
   labelStyle,
   iconSize = 35,
 }: Props) {
+  const colors = useThemeColors();
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
-        <Text style={[styles.confirmButtonLabel, labelStyle]}>{label}</Text>
+        <CustomText style={[styles.confirmButtonLabel, labelStyle]}>
+          {label}
+        </CustomText>
       )}
-      <View style={[styles.confirmButtonContainer, buttonStyle]}>
+      <View
+        style={[
+          styles.confirmButtonContainer,
+          {
+            backgroundColor: colors.background,
+            borderColor: colors.borderColor,
+          },
+          buttonStyle,
+        ]}
+      >
         <Pressable style={styles.confirmButton} onPress={onPress}>
-          <Ionicons name="checkmark-outline" size={iconSize} color={'black'} />
+          <Ionicons
+            name="checkmark-outline"
+            size={iconSize}
+            color={colors.icon}
+          />
         </Pressable>
       </View>
     </View>
@@ -53,7 +72,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: 'white',
   },
   confirmButton: {
     alignItems: 'center',
@@ -61,7 +79,6 @@ const styles = StyleSheet.create({
   confirmButtonLabel: {
     width: 140,
     textAlign: 'center',
-    color: 'black',
     fontSize: 18,
   },
 });
