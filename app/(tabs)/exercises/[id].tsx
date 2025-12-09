@@ -42,7 +42,7 @@ export default function ExerciseId() {
     value: 0,
   });
 
-  const chartWidthRatio = 0.9;
+  const chartWidthRatio = 0.85;
   const chartHeight = 264;
 
   function dailyMaxDec() {
@@ -441,14 +441,14 @@ export default function ExerciseId() {
           style={{ height: '100%' }}
           contentContainerStyle={styles.scrollContainer}
         >
-          {dailyMaxChartData != null && (
-            <View
-              style={[
-                styles.chartContainer,
-                { backgroundColor: colors.background },
-              ]}
-            >
-              <CustomText style={styles.chartTitle}>Maximum Weight</CustomText>
+          <View
+            style={[
+              styles.chartContainer,
+              { backgroundColor: colors.background },
+            ]}
+          >
+            <CustomText style={styles.chartTitle}>Maximum Weight</CustomText>
+            {dailyMaxChartData != null && (
               <LineChart
                 data={dailyMaxChartData}
                 width={screenWidth * chartWidthRatio}
@@ -469,6 +469,7 @@ export default function ExerciseId() {
                   );
                 }}
                 chartConfig={{
+                  decimalPlaces: 0,
                   backgroundGradientFrom: colors.background,
                   backgroundGradientFromOpacity: 0.5,
                   backgroundGradientTo: colors.background,
@@ -477,16 +478,22 @@ export default function ExerciseId() {
                   useShadowColorFromDataset: false, // optional
                 }}
               />
-            </View>
-          )}
-          {volumeChartData != null && (
-            <View
-              style={[
-                styles.chartContainer,
-                { backgroundColor: colors.background },
-              ]}
-            >
-              <CustomText style={styles.chartTitle}>Volume</CustomText>
+            )}
+            {dailyMaxChartData == null && (
+              <CustomText style={styles.emptyChartText}>
+                NO DATA YET!
+              </CustomText>
+            )}
+          </View>
+
+          <View
+            style={[
+              styles.chartContainer,
+              { backgroundColor: colors.background },
+            ]}
+          >
+            <CustomText style={styles.chartTitle}>Volume</CustomText>
+            {volumeChartData != null && (
               <LineChart
                 data={volumeChartData}
                 width={screenWidth * chartWidthRatio}
@@ -505,6 +512,7 @@ export default function ExerciseId() {
                   );
                 }}
                 chartConfig={{
+                  decimalPlaces: 0,
                   backgroundGradientFrom: colors.background,
                   backgroundGradientFromOpacity: 0.5,
                   backgroundGradientTo: colors.background,
@@ -514,16 +522,22 @@ export default function ExerciseId() {
                   useShadowColorFromDataset: false, // optional
                 }}
               />
-            </View>
-          )}
-          {repsChartData != null && (
-            <View
-              style={[
-                styles.chartContainer,
-                { backgroundColor: colors.background },
-              ]}
-            >
-              <CustomText style={styles.chartTitle}>Total Reps</CustomText>
+            )}
+            {volumeChartData == null && (
+              <CustomText style={styles.emptyChartText}>
+                NO DATA YET!
+              </CustomText>
+            )}
+          </View>
+
+          <View
+            style={[
+              styles.chartContainer,
+              { backgroundColor: colors.background },
+            ]}
+          >
+            <CustomText style={styles.chartTitle}>Total Reps</CustomText>
+            {repsChartData != null && (
               <LineChart
                 data={repsChartData}
                 width={screenWidth * chartWidthRatio}
@@ -554,16 +568,22 @@ export default function ExerciseId() {
                   useShadowColorFromDataset: false, // optional
                 }}
               />
-            </View>
-          )}
-          {setsChartData != null && (
-            <View
-              style={[
-                styles.chartContainer,
-                { backgroundColor: colors.background },
-              ]}
-            >
-              <CustomText style={styles.chartTitle}>Sets</CustomText>
+            )}
+            {repsChartData == null && (
+              <CustomText style={styles.emptyChartText}>
+                NO DATA YET!
+              </CustomText>
+            )}
+          </View>
+
+          <View
+            style={[
+              styles.chartContainer,
+              { backgroundColor: colors.background },
+            ]}
+          >
+            <CustomText style={styles.chartTitle}>Sets</CustomText>
+            {setsChartData != null && (
               <LineChart
                 data={setsChartData}
                 width={screenWidth * chartWidthRatio}
@@ -594,8 +614,13 @@ export default function ExerciseId() {
                   useShadowColorFromDataset: false, // optional
                 }}
               />
-            </View>
-          )}
+            )}
+            {setsChartData == null && (
+              <CustomText style={styles.emptyChartText}>
+                NO DATA YET!
+              </CustomText>
+            )}
+          </View>
         </ScrollView>
       </View>
     </LinearGradient>
@@ -635,7 +660,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: 1244,
+    height: 1280,
   },
   chartTitle: {
     textAlign: 'left',
@@ -646,12 +671,17 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   },
   chartContainer: {
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     height: 304,
     width: '90%',
     borderWidth: 2,
     borderColor: 'gray',
     marginBottom: 16,
+  },
+  emptyChartText: {
+    fontSize: 30,
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
 });

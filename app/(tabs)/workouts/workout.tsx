@@ -135,7 +135,9 @@ export default function Workouts() {
         </View>
         <ScrollView
           style={styles.scrollViewContainer}
-          {...(Platform.OS === 'android' ? { fadingEdgeLength: 75 } : {})}
+          {...(Platform.OS === 'android'
+            ? { fadingEdgeLength: { start: 0, end: 10 } }
+            : {})}
         >
           {workoutExercises.map((exercise) => (
             <View
@@ -215,6 +217,7 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     width: '100%',
     margin: 8,
+    marginTop: '10%',
   },
   exerciseCardContainer: {
     alignItems: 'center',

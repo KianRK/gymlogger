@@ -248,7 +248,9 @@ export default function Index() {
         )}
         <ScrollView
           style={styles.scrollViewContainer}
-          {...(Platform.OS === 'android' ? { fadingEdgeLength: 10 } : {})}
+          {...(Platform.OS === 'android'
+            ? { fadingEdgeLength: { start: 0, end: 10 } }
+            : {})}
         >
           {workouts.map((workout, index) => (
             <View key={workout.id} style={styles.workoutContainer}>

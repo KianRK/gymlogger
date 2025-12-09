@@ -41,7 +41,6 @@ export default function AddButton({
         style={[
           styles.addButtonContainer,
           {
-            backgroundColor: colors.background,
             borderColor: colors.borderColor,
           },
           buttonStyle,
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
   addButtonContainer: {
     width: 50,
     height: 50,
+    marginTop: 5,
     borderWidth: 2,
     borderRadius: 25,
     alignSelf: 'center',

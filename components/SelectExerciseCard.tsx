@@ -71,7 +71,10 @@ export default function SelectExerciseCard({
         >
           <View style={styles.selectionContainer}>
             <CustomTextInput
-              style={[styles.inputText, { fontSize: fontSize }]}
+              style={[
+                styles.inputText,
+                { fontSize: fontSize, borderColor: colors.borderColor },
+              ]}
               onChangeText={handleChange}
               placeholder="Enter Exercise"
               placeholderTextColor={colors.text}
@@ -91,7 +94,10 @@ export default function SelectExerciseCard({
       {typing && (
         <FlatList
           data={filteredExercises}
-          style={styles.flatListContainer}
+          style={[
+            styles.flatListContainer,
+            { backgroundColor: colors.background },
+          ]}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <Pressable

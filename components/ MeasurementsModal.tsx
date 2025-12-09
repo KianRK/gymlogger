@@ -1,6 +1,7 @@
 import {
   Modal,
   ModalProps,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -35,6 +36,7 @@ export default function MeasurementsModal({
         <CustomText style={styles.title}>Measurements</CustomText>
         <View style={styles.scrollViewContainer}>
           <ScrollView
+            fadingEdgeLength={{ start: 0, end: 20 }}
             contentContainerStyle={{
               justifyContent: 'center',
               alignItems: 'center',
