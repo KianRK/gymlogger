@@ -378,6 +378,7 @@ export default function ExercisesScreen() {
             <MaterialCommunityIcons name="magnify" size={30} color={'black'} />
             <TextInput
               placeholder="Search"
+              placeholderTextColor={colors.text}
               value={text}
               onChangeText={(text) => setText(text)}
               style={{

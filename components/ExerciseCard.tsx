@@ -49,7 +49,7 @@ export default function ExerciseCard({
     <LinearGradient
       start={{ x: 0.375, y: 0.375 }}
       end={{ x: 0.75, y: 0.75 }}
-      colors={[colors.alpha, colors.mainTwo, colors.mainOne]}
+      colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
       style={{
         borderRadius: 8,
         width: '95%',

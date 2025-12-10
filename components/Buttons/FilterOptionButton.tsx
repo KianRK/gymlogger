@@ -96,7 +96,7 @@ export default function FilterOptionButton({
             maxHeight: 80,
             top: 30,
             zIndex: 999,
-            backgroundColor: '#f9f9f9ee',
+            backgroundColor: colors.background,
           }}
         >
           <FlatList
