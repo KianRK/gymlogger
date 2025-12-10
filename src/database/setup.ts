@@ -17,7 +17,8 @@ export async function initializeDatabase(db: SQLiteDatabase) {
       primary_target TEXT NOT NULL,
       secondary_target TEXT,
       region TEXT NOT NULL,
-      favorite INTEGER DEFAULT 0
+      is_favorite INTEGER DEFAULT 0,
+      is_default INTEGER DEFAULT 1
       );
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Assisted Dip', '["Chest", "Front Deltoid", "Triceps"]', NULL, 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Band-Assisted Bench Press', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');

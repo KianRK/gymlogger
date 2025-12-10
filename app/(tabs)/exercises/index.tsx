@@ -154,7 +154,7 @@ export default function ExercisesScreen() {
 
   const updateFav = (item: ExerciseParsed) => {
     let newFavStatus = !item.favorite;
-    db.runSync('UPDATE exercises SET favorite = ? WHERE id = ?', [
+    db.runSync('UPDATE exercises SET is_favorite = ? WHERE id = ?', [
       newFavStatus,
       item.id,
     ]);
