@@ -57,39 +57,38 @@ export default function SelectExerciseCard({
 
   return (
     <View style={styles.cardWrapper}>
-      <LinearGradient
-        start={{ x: 0.375, y: 0.375 }}
-        end={{ x: 0.75, y: 0.75 }}
-        colors={[colors.mainOne, colors.mainTwo]}
-        style={{ borderRadius: 36, overflow: 'visible' }}
+      <View
+        style={[
+          styles.selectExerciseCardContainer,
+          {
+            borderColor: colors.borderColor,
+            backgroundColor: colors.background,
+          },
+        ]}
       >
-        <View
-          style={[
-            styles.selectExerciseCardContainer,
-            { borderColor: colors.borderColor },
-          ]}
-        >
-          <View style={styles.selectionContainer}>
-            <CustomTextInput
-              style={[
-                styles.inputText,
-                { fontSize: fontSize, borderColor: colors.borderColor },
-              ]}
-              onChangeText={handleChange}
-              placeholder="Enter Exercise"
-              placeholderTextColor={colors.text}
-              value={text}
-              onPress={() => setTyping(true)}
-            />
-          </View>
-          <ConfirmButton
-            onPress={handleConfirm}
-            componentStyle={styles.confirmButtonContainer}
-            buttonStyle={styles.confirmButton}
-            labelStyle={styles.confirmButtonLabel}
+        <View style={styles.selectionContainer}>
+          <CustomTextInput
+            style={[
+              styles.inputText,
+              {
+                fontSize: fontSize,
+                borderColor: colors.borderColor,
+              },
+            ]}
+            onChangeText={handleChange}
+            placeholder="Enter Exercise"
+            placeholderTextColor={colors.text}
+            value={text}
+            onPress={() => setTyping(true)}
           />
         </View>
-      </LinearGradient>
+        <ConfirmButton
+          onPress={handleConfirm}
+          componentStyle={styles.confirmButtonContainer}
+          buttonStyle={styles.confirmButton}
+          labelStyle={styles.confirmButtonLabel}
+        />
+      </View>
 
       {typing && (
         <FlatList
@@ -118,14 +117,15 @@ export default function SelectExerciseCard({
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    width: '75%',
+    width: '80%',
     position: 'relative',
   },
   selectExerciseCardContainer: {
     width: '100%',
     flexDirection: 'row',
     maxHeight: 120,
-    borderRadius: 10,
+    borderRadius: 36,
+    borderWidth: 1,
     padding: 5,
     justifyContent: 'space-between',
     alignContent: 'space-between',
