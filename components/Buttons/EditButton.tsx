@@ -9,6 +9,7 @@ import {
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import CustomText from '../CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   label?: string;
@@ -27,6 +28,8 @@ export default function EditButton({
   labelStyle,
   iconSize = 35,
 }: Props) {
+  const colors = useThemeColors();
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
@@ -34,12 +37,18 @@ export default function EditButton({
           {label}
         </CustomText>
       )}
-      <View style={[styles.editButtonContainer, buttonStyle]}>
+      <View
+        style={[
+          styles.editButtonContainer,
+          { borderColor: colors.borderColor },
+          buttonStyle,
+        ]}
+      >
         <Pressable style={styles.editButton} onPress={onPress}>
           <MaterialCommunityIcons
             name="circle-edit-outline"
             size={iconSize}
-            color={'black'}
+            color={colors.icon}
           />
         </Pressable>
       </View>
@@ -63,7 +72,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
   },
 
   editButton: { alignItems: 'center' },

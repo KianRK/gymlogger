@@ -9,6 +9,7 @@ import {
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import CustomText from '../CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   label?: string;
@@ -29,6 +30,8 @@ export default function FavoritesButton({
   iconSize = 35,
   selected,
 }: Props) {
+  const colors = useThemeColors();
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
@@ -36,12 +39,18 @@ export default function FavoritesButton({
           {label}
         </CustomText>
       )}
-      <View style={[styles.favButtonContainer, buttonStyle]}>
+      <View
+        style={[
+          styles.favButtonContainer,
+          { borderColor: colors.borderColor },
+          buttonStyle,
+        ]}
+      >
         <Pressable style={styles.favButton} onPress={onPress}>
           <MaterialCommunityIcons
             name={selected ? 'heart' : 'heart-outline'}
             size={iconSize}
-            color={'black'}
+            color={colors.icon}
           />
         </Pressable>
       </View>
@@ -65,7 +74,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
   },
 
   favButton: { alignItems: 'center' },

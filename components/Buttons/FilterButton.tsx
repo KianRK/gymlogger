@@ -7,7 +7,9 @@ import {
   TextStyle,
 } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 import CustomText from '../CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   label?: string;
@@ -28,6 +30,8 @@ export default function FilterButton({
   iconSize = 35,
   selected,
 }: Props) {
+  const colors = useThemeColors();
+
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
@@ -35,12 +39,18 @@ export default function FilterButton({
           {label}
         </CustomText>
       )}
-      <View style={[styles.filterButtonContainer, buttonStyle]}>
+      <View
+        style={[
+          styles.filterButtonContainer,
+          { borderColor: colors.borderColor },
+          buttonStyle,
+        ]}
+      >
         <Pressable style={styles.filterButton} onPress={onPress}>
           <MaterialCommunityIcons
             name={selected ? 'filter' : 'filter-outline'}
             size={iconSize}
-            color={'black'}
+            color={colors.icon}
           />
         </Pressable>
       </View>
@@ -64,7 +74,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
   },
 
   filterButton: { alignItems: 'center' },

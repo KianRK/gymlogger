@@ -5,12 +5,12 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
-  ScrollView,
 } from 'react-native';
+import { useEffect } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import CustomText from '../CustomText';
-import { useEffect, useState } from 'react';
+import useThemeColors from '@/hooks/UseThemeColors';
 
 type Props = {
   label?: string;
@@ -41,6 +41,8 @@ export default function FilterOptionButton({
   visibilitySetter,
   registrationHandler,
 }: Props) {
+  const colors = useThemeColors();
+
   const filteredData = () => {
     let filtered = data.filter((item) => {
       return !activeFilters.includes(item);
@@ -81,7 +83,7 @@ export default function FilterOptionButton({
           <MaterialCommunityIcons
             name="arrow-down-right"
             size={iconSize}
-            color={'black'}
+            color={colors.icon}
           />
         </Pressable>
       </View>
@@ -128,9 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: 'white',
   },
-
   optionButton: { alignItems: 'center', flexDirection: 'row' },
   optionButtonLabel: {
     width: 140,
