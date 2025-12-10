@@ -1,5 +1,5 @@
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -27,6 +27,7 @@ export default function ExerciseId() {
   const [maxVolume, setMaxVolume] = useState<number>(0);
   const [volumeChartData, setVolumeChartData] = useState<any>(null);
   const [dailyMaxChartData, setDailyMaxChartData] = useState<any>(null);
+  const [headerFontSize, setHeaderFontSize] = useState<number>(32);
   const [setsChartData, setSetsChartData] = useState<any>(null);
   const [repsChartData, setRepsChartData] = useState<any>(null);
 
@@ -42,8 +43,25 @@ export default function ExerciseId() {
     value: 0,
   });
 
-  const chartWidthRatio = 0.85;
+  const chartWidthRatio = 0.9;
   const chartHeight = 264;
+
+  useEffect(() => {
+    function adjustFontSize() {
+      if (exercise) {
+        if (exercise.name.length > 16) {
+          let adjustedFontSize = 32 - (exercise.name.length - 16);
+
+          if (adjustedFontSize <= 14) {
+            setHeaderFontSize(14);
+          } else {
+            setHeaderFontSize(adjustedFontSize);
+          }
+        }
+      }
+    }
+    adjustFontSize();
+  }, []);
 
   function dailyMaxDec() {
     return tooltipPos.dailyMaxVisible ? (
@@ -405,15 +423,26 @@ export default function ExerciseId() {
   );
 
   return (
-    <LinearGradient
-      start={{ x: 0.5, y: 0.5 }}
-      end={{ x: 1, y: 1 }}
-      colors={[colors.mainOne, colors.mainTwo]}
-      style={{ ...StyleSheet.absoluteFillObject, flex: 12 }}
-    >
+    <View style={{ flex: 12, justifyContent: 'center', alignItems: 'center' }}>
+      <LinearGradient
+        start={{ x: 0.5, y: 0.5 }}
+        end={{ x: 1, y: 1 }}
+        colors={[colors.mainOne, colors.mainTwo]}
+        style={StyleSheet.absoluteFillObject}
+      />
       <View style={styles.pageHeader}>
         <BackButton componentStyle={{ position: 'absolute', right: '85%' }} />
-        <CustomText style={{ fontSize: 32 }}>{exercise?.name}</CustomText>
+        <CustomText
+          style={{
+            fontSize: headerFontSize,
+            textAlign: 'center',
+            textAlignVertical: 'center',
+            flexWrap: 'wrap',
+            width: '75%',
+          }}
+        >
+          {exercise?.name}
+        </CustomText>
       </View>
       {/*<View style={styles.imageContainer}>
             <Image
@@ -422,21 +451,59 @@ export default function ExerciseId() {
             />
           </View>
           */}
+      <View style={{ marginTop: '3%' }}>
+        <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
+          <CustomText style={styles.factText}>Region:</CustomText>
+          <CustomText style={styles.factValueText}>
+            {exercise?.region}
+          </CustomText>
+        </View>
+        {exercise?.primary_target && (
+          <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
+            <CustomText style={styles.factText}>Primary:</CustomText>
+            <CustomText style={styles.factValueText}>
+              {JSON.parse(exercise?.primary_target).map(
+                (target: string, index: number) => {
+                  return index ===
+                    JSON.parse(exercise.primary_target).length - 1
+                    ? target
+                    : target + '\n';
+                }
+              )}
+            </CustomText>
+          </View>
+        )}
+        {exercise?.secondary_target && (
+          <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
+            <CustomText style={styles.factText}>Secondary:</CustomText>
+            <CustomText style={styles.factValueText}>
+              {JSON.parse(exercise?.secondary_target).map(
+                (target: string, index: number) => {
+                  return index ==
+                    JSON.parse(exercise.secondary_target).length - 1
+                    ? target
+                    : target + '\n';
+                }
+              )}
+            </CustomText>
+          </View>
+        )}
+      </View>
       <View style={styles.statContainer}>
-        <View style={styles.statRow}>
+        <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
           <CustomText style={styles.statRowText}>Maximum weight:</CustomText>
           <CustomText style={styles.statRowText}>{maxWeight}</CustomText>
         </View>
-        <View style={styles.statRow}>
+        <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
           <CustomText style={styles.statRowText}>Maximum volume:</CustomText>
           <CustomText style={styles.statRowText}>{maxVolume}</CustomText>
         </View>
-        <View style={styles.statRow}>
+        <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
           <CustomText style={styles.statRowText}>1RM:</CustomText>
           <CustomText style={styles.statRowText}>250</CustomText>
         </View>
       </View>
-      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+      <View style={{ flex: 1, justifyContent: 'flex-start', width: '95%' }}>
         <ScrollView
           style={{ height: '100%' }}
           contentContainerStyle={styles.scrollContainer}
@@ -623,7 +690,7 @@ export default function ExerciseId() {
           </View>
         </ScrollView>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -632,25 +699,51 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    flexWrap: 'wrap',
     marginTop: 10,
   },
+  factRow: {
+    flexDirection: 'row',
+    width: '90%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    paddingLeft: 3,
+    paddingRight: 3,
+    paddingBottom: 3,
+  },
+  factText: {
+    fontSize: 22,
+    height: '100%',
+    textAlign: 'left',
+    textAlignVertical: 'center',
+  },
+  factValueText: {
+    fontSize: 22,
+    textAlign: 'right',
+    textAlignVertical: 'center',
+  },
+  targetContainer: {},
+  targetColumn: {},
   statContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: '3%',
+    width: '90%',
     marginBottom: '3%',
   },
   statRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '90%',
+    width: '100%',
+    borderBottomWidth: 1,
     marginTop: 1,
     marginBottom: 1,
     paddingLeft: 3,
     paddingRight: 3,
   },
-  statRowText: { fontSize: 24 },
+  statRowText: { fontSize: 22 },
   imageContainer: { borderWidth: 2, margin: 2, flex: 4, height: 100 },
   exerciseImage: {
     width: '25%',
@@ -660,7 +753,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: 1280,
+    height: 1320,
   },
   chartTitle: {
     textAlign: 'left',
@@ -668,13 +761,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     width: '100%',
     margin: 6,
+    marginBottom: 15,
     paddingLeft: 6,
   },
   chartContainer: {
     justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: 304,
-    width: '90%',
+    alignItems: 'flex-start',
+    height: 314,
+    width: '100%',
     borderWidth: 2,
     borderColor: 'gray',
     marginBottom: 16,
@@ -683,5 +777,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 'auto',
     marginBottom: 'auto',
+    alignSelf: 'center',
   },
 });
