@@ -1,0 +1,31 @@
+{
+  "buttonLabels": {
+    "addWorkout": "Add workout",
+    "addTemplate": "Add template"
+  },
+  "today": "Today",
+  "settings": {
+    "sections": {
+      "general": "General",
+      "contact": "Contact"
+    },
+    "language": {
+      "language": "Language",
+      "en": "English",
+      "de": "German"
+    },
+    "darkMode": {
+      "on": "On",
+      "off": "Off",
+      "system": "System"
+    },
+    "resetEx": "Reset to default exercises",
+    "units": {
+      "units": "Units",
+      "metric": "Metric (SI)",
+      "imperial": "Imperial"
+    },
+    "help": "Help & Support",
+    "rate": "Rate us"
+  }
+}

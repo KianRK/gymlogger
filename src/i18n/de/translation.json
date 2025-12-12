@@ -1,0 +1,31 @@
+{
+  "buttonLabels": {
+    "addWorkout": "Neues Workout",
+    "addTemplate": "Neues Template"
+  },
+  "today": "Heute",
+  "settings": {
+    "sections": {
+      "general": "Allgemein",
+      "contact": "Kontakt"
+    },
+    "language": {
+      "language": "Sprache",
+      "en": "Englisch",
+      "de": "Deutsch"
+    },
+    "darkMode": {
+      "on": "Ein",
+      "off": "Aus",
+      "system": "System"
+    },
+    "resetEx": "Übungen zurücksetzen",
+    "units": {
+      "units": "Einheiten",
+      "metric": "Metrisch (SI)",
+      "imperial": "Imperial"
+    },
+    "help": "Hilfe & Support",
+    "rate": "Bewerte uns"
+  }
+}
