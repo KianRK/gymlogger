@@ -12,6 +12,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import '../../../src/i18n/i18n';
+import i18n from '../../../src/i18n/i18n';
 
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -35,6 +38,7 @@ import {
 export default function Index() {
   const router = useRouter();
   const colors = useThemeColors();
+  const { t } = useTranslation();
   const today = new Date();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -453,9 +457,13 @@ export default function Index() {
           </View>
         </Modal>
         <AddButton
-          label="Add workout"
+          label={t('buttonLabels.addWorkout')}
           componentStyle={styles.buttonComponent}
-          onPress={() => setWorkoutSelectionVisible(true)}
+          onPress={() => {
+            i18n.language == 'en'
+              ? i18n.changeLanguage('de')
+              : i18n.changeLanguage('en');
+          }}
         />
       </SafeAreaView>
     </SafeAreaProvider>

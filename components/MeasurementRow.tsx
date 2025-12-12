@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import CustomText from './CustomText';
 import CustomTextInput from './CustomTextInput';
 
-import { useSettings } from '@/src/providers/SettingsProvider';
 import { Measurements } from '@/constants/Interfaces';
 import { metricsDict } from '@/constants/Constants';
 
@@ -24,8 +23,8 @@ export default function MeasurementsRow({
   const [value, setValue] = useState(currentTempMeasurements[metric]);
   const [unit, setUnit] = useState('');
   const metricName = metricsDict[metric];
-  const lengthUnit = units === 'metric (kg)' ? 'cm' : 'in';
-  const weightUnit = units === 'metric (kg)' ? 'kg' : 'lb';
+  const lengthUnit = units === 'metric' ? 'cm' : 'in';
+  const weightUnit = units === 'metric' ? 'kg' : 'lb';
   const textInputRef = useRef<TextInput | null>(null);
 
   const updateMetric = (text: string) => {

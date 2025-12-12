@@ -5,9 +5,10 @@ import {
   TextStyle,
   StyleSheet,
 } from 'react-native';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import useThemeColors from '@/hooks/UseThemeColors';
-import { Colors } from '@/constants/Colors';
 import CustomText from '../CustomText';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import { Settings } from '@/src/Interfaces/settings_interfaces';
@@ -37,6 +38,7 @@ export default function DropDownButton({
   selectionSetter,
   visibilitySetter,
 }: Props) {
+  const { t } = useTranslation();
   const { updateSetting } = useSettings();
   const colors = useThemeColors();
 
@@ -50,7 +52,7 @@ export default function DropDownButton({
           }}
         >
           <CustomText style={[styles.textStyleDefault, textStyle]}>
-            {currentSelection}
+            {t('settings.' + settingName + '.' + currentSelection)}
           </CustomText>
         </Pressable>
       )}
@@ -72,7 +74,7 @@ export default function DropDownButton({
               }}
             >
               <CustomText style={[styles.textStyleDefault, textStyle]}>
-                {item}
+                {t('settings.' + settingName + '.' + item)}
               </CustomText>
             </Pressable>
           ))}

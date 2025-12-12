@@ -13,8 +13,8 @@ export default function useThemeColors() {
   const colors = Colors[theme];
 
   useEffect(() => {
-    if (settings.darkMode !== 'System') {
-      setTheme(settings.darkMode === 'On' ? 'dark' : 'light');
+    if (settings.darkMode !== 'system') {
+      setTheme(settings.darkMode === 'on' ? 'dark' : 'light');
     } else setTheme(systemTheme as 'light' | 'dark');
   }, [settings.darkMode, systemTheme]);
 

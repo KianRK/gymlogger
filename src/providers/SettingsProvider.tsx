@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import '@/src/i18n/i18n';
+import i18n from '@/src/i18n/i18n';
 
 import {
   Settings,
@@ -10,9 +12,9 @@ import {
 const SETTINGS_STORAGE_KEY = '@MyApp:Settings';
 
 const initialSettings: Settings = {
-  darkMode: 'Off',
-  language: 'English',
-  units: 'metric (kg)',
+  darkMode: 'system',
+  language: 'en',
+  units: 'metric',
   email: 'blabla@blamail.bla',
   measurements: {
     Weight: null,
@@ -63,7 +65,9 @@ export const SettingsProvider = ({
       try {
         const jsonValue = await AsyncStorage.getItem(SETTINGS_STORAGE_KEY);
         if (jsonValue != null) {
-          setSettings(JSON.parse(jsonValue));
+          const parsedSettings = JSON.parse(jsonValue);
+          setSettings(parsedSettings);
+          i18n.changeLanguage(parsedSettings['language']);
         }
       } catch (e) {
         console.error('Failed to load settings from AsyncStorage:', e);
@@ -79,7 +83,9 @@ export const SettingsProvider = ({
       ...settings,
       [key]: value,
     };
-
+    if (key == 'language') {
+      i18n.changeLanguage(value);
+    }
     setSettings(newSettings);
 
     saveSettings(newSettings);
