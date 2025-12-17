@@ -94,19 +94,39 @@ export default function FilterOptionButton({
         <View
           style={{
             position: 'absolute',
-            width: '90%',
             justifyContent: 'center',
             maxHeight: 80,
+            flexWrap: 'nowrap',
             top: 30,
             zIndex: 999,
             backgroundColor: colors.background,
+            overflow: 'visible',
           }}
         >
           <FlatList
             data={filteredData()}
+            contentContainerStyle={{ alignItems: 'stretch', flexGrow: 1 }}
             renderItem={({ item }) => (
-              <Pressable onPress={() => updateActiveFilters(item)}>
-                <CustomText style={{ textAlign: 'center' }}>
+              <Pressable
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignSelf: 'stretch',
+                  minWidth: '100%',
+                }}
+                onPress={() => updateActiveFilters(item)}
+              >
+                <CustomText
+                  numberOfLines={1}
+                  style={{
+                    alignSelf: 'center',
+                    textAlign: 'center',
+                    flexWrap: 'nowrap',
+                    flexShrink: 0,
+                    flexGrow: 0,
+                    minWidth: '100%',
+                  }}
+                >
                   {t('targets.' + item)}
                 </CustomText>
               </Pressable>
