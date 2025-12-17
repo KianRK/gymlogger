@@ -1,24 +1,14 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  useColorScheme,
-  Platform,
-  Modal,
-  Pressable,
-  TextInput,
-} from 'react-native';
+import { useState, useCallback, useTransition } from 'react';
+import { View, StyleSheet, Platform } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import { db } from '@/src/database';
 import { TemplateExercise } from '@/src/Interfaces/db_interfaces';
-import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
-import CustomTextInput from './CustomTextInput';
 import useThemeColors from '@/hooks/UseThemeColors';
-
-import MenuButton from './Buttons/MenuButton';
 
 type Props = {
   template_id: string;
@@ -32,6 +22,7 @@ export default function TemplateOverviewCard({
   name,
 }: Props) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   const [templateExercises, setTemplateExercises] = useState<
     TemplateExercise[]
   >([]);
@@ -90,7 +81,7 @@ export default function TemplateOverviewCard({
         )}
         {!name && (
           <CustomText style={styles.templateCardLabel}>
-            Template {template_number}
+            {t('buttonLabels.template')} {template_number}
           </CustomText>
         )}
       </View>

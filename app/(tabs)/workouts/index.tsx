@@ -158,7 +158,7 @@ export default function Index() {
     router.push({
       pathname: './workouts/workout',
       params: {
-        date: isCurrentDateToday() ? 'Today' : dateString,
+        date: isCurrentDateToday() ? t('today') : dateString,
         dateName: dateName,
         workout_id: workoutId,
       },
@@ -174,7 +174,7 @@ export default function Index() {
       router.push({
         pathname: './workouts/workout',
         params: {
-          date: isCurrentDateToday() ? 'Today' : dateString,
+          date: isCurrentDateToday() ? t('today') : dateString,
           dateName: dateName,
           workout_id,
         },
@@ -237,7 +237,7 @@ export default function Index() {
           style={StyleSheet.absoluteFillObject}
         />
         <CalendarButton
-          date={isCurrentDateToday() ? 'Today' : dateString}
+          date={isCurrentDateToday() ? t('today') : dateString}
           onPress={() => {
             setShow(!show);
           }}
@@ -292,7 +292,7 @@ export default function Index() {
                 fontSize: 24,
               }}
             >
-              Delete Workout ?
+              {t('workouts.deleteWorkout')}
             </CustomText>
             <View
               style={{
@@ -319,7 +319,7 @@ export default function Index() {
                     textAlignVertical: 'center',
                   }}
                 >
-                  Delete
+                  {t('buttonLabels.delete')}
                 </CustomText>
               </Pressable>
               <Pressable
@@ -333,7 +333,7 @@ export default function Index() {
                     textAlignVertical: 'center',
                   }}
                 >
-                  Cancel
+                  {t('buttonLabels.cancel')}
                 </CustomText>
               </Pressable>
             </View>
@@ -357,7 +357,7 @@ export default function Index() {
                 fontSize: 24,
               }}
             >
-              Add Workout from ?
+              {t('workouts.addWorkoutFrom')}
             </CustomText>
             <View
               style={{
@@ -381,7 +381,7 @@ export default function Index() {
                     textAlignVertical: 'center',
                   }}
                 >
-                  Custom
+                  {t('buttonLabels.custom')}
                 </CustomText>
               </Pressable>
               <Pressable
@@ -398,7 +398,7 @@ export default function Index() {
                     textAlignVertical: 'center',
                   }}
                 >
-                  Template
+                  {t('buttonLabels.template')}
                 </CustomText>
               </Pressable>
               <Pressable
@@ -412,7 +412,7 @@ export default function Index() {
                     textAlignVertical: 'center',
                   }}
                 >
-                  Cancel
+                  {t('buttonLabels.cancel')}
                 </CustomText>
               </Pressable>
             </View>
@@ -459,11 +459,7 @@ export default function Index() {
         <AddButton
           label={t('buttonLabels.addWorkout')}
           componentStyle={styles.buttonComponent}
-          onPress={() => {
-            i18n.language == 'en'
-              ? i18n.changeLanguage('de')
-              : i18n.changeLanguage('en');
-          }}
+          onPress={() => setWorkoutSelectionVisible(true)}
         />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -502,7 +498,7 @@ const styles = StyleSheet.create({
     position: 'static',
     borderWidth: 1,
     borderRadius: 3,
-    width: '70%',
+    width: '80%',
     height: '10%',
     margin: 'auto',
   },

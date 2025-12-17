@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import useThemeColors from '@/hooks/UseThemeColors';
 import WorkoutExerciseCard from '@/components/WorkoutExerciseCard';
@@ -23,6 +25,7 @@ export default function Workouts() {
   }>();
   const [orderIndex, setOrderIndex] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
+  const { t } = useTranslation();
   const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
   const [selectionModalVisible, setSelectionModalVisible] = useState(false);
   const [exerciseName, setExerciseName] = useState('');
@@ -204,7 +207,7 @@ export default function Workouts() {
           </View>
         </Modal>
         <AddButton
-          label="Add exercise"
+          label={t('buttonLabels.addExercise')}
           componentStyle={styles.buttonComponent}
           onPress={handleAddExercise}
         />

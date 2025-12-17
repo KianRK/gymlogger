@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   StyleSheet,
-  useColorScheme,
   Platform,
   Modal,
   Pressable,
@@ -10,14 +9,16 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import { db } from '@/src/database';
 import { TemplateExercise } from '@/src/Interfaces/db_interfaces';
-import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
 import CustomTextInput from './CustomTextInput';
 import MenuButton from './Buttons/MenuButton';
 import useThemeColors from '@/hooks/UseThemeColors';
+import i18n from '@/src/i18n/i18n';
 
 type Props = {
   template_id: string;
@@ -41,6 +42,7 @@ export default function WorkoutTemplateCard({
   onPress,
 }: Props) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   const [templateExercises, setTemplateExercises] = useState<
     TemplateExercise[]
   >([]);
@@ -155,7 +157,7 @@ export default function WorkoutTemplateCard({
             onChangeText={(text) => setText(text)}
             style={styles.workoutCardLabel}
           >
-            Template {template_number}
+            {t('buttonLabels.template')} {template_number}
           </CustomTextInput>
         )}
         <View style={styles.menuDropDownContainer}>
@@ -166,9 +168,20 @@ export default function WorkoutTemplateCard({
             onPress={onPress}
           />
           {dropDownVisible && (
-            <View style={styles.dropDownContainer}>
+            <View
+              style={[
+                styles.dropDownContainer,
+                {
+                  backgroundColor: colors.background,
+                  width: i18n.language == 'de' ? 110 : 80,
+                  right: i18n.language == 'de' ? '1%' : undefined,
+                },
+              ]}
+            >
               <Pressable style={{ zIndex: 999 }} onPress={onPressEdit}>
-                <CustomText style={styles.buttonText}>Edit</CustomText>
+                <CustomText style={styles.buttonText}>
+                  {t('buttonLabels.edit')}
+                </CustomText>
               </Pressable>
               <Pressable
                 style={{ zIndex: 999 }}
@@ -178,7 +191,9 @@ export default function WorkoutTemplateCard({
                   handleFocus();
                 }}
               >
-                <CustomText style={styles.buttonText}>Rename</CustomText>
+                <CustomText style={styles.buttonText}>
+                  {t('buttonLabels.rename')}
+                </CustomText>
               </Pressable>
               <Pressable
                 style={{ zIndex: 999 }}
@@ -187,14 +202,21 @@ export default function WorkoutTemplateCard({
                   setDeleteConfirmationVisible(!deleteConfirmationVisible);
                 }}
               >
-                <CustomText style={styles.buttonText}>Delete</CustomText>
+                <CustomText style={styles.buttonText}>
+                  {t('buttonLabels.delete')}
+                </CustomText>
               </Pressable>
             </View>
           )}
         </View>
       </View>
       <Modal transparent={true} visible={deleteConfirmationVisible}>
-        <View style={styles.confirmationContainer}>
+        <View
+          style={[
+            styles.confirmationContainer,
+            { backgroundColor: colors.background },
+          ]}
+        >
           <CustomText
             style={{
               height: '50%',
@@ -206,7 +228,7 @@ export default function WorkoutTemplateCard({
               fontSize: 24,
             }}
           >
-            Delete Template ?
+            {t('templates.deleteTemplate')}
           </CustomText>
           <View
             style={{
@@ -227,7 +249,7 @@ export default function WorkoutTemplateCard({
                   textAlignVertical: 'center',
                 }}
               >
-                Delete
+                {t('buttonLabels.delete')}
               </CustomText>
             </Pressable>
             <Pressable
@@ -241,7 +263,7 @@ export default function WorkoutTemplateCard({
                   textAlignVertical: 'center',
                 }}
               >
-                Cancel
+                {t('buttonLabels.cancel')}
               </CustomText>
             </Pressable>
           </View>
@@ -321,7 +343,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginBottom: 2,
   },
-  buttonText: { fontSize: 17, padding: 1, zIndex: 9999 },
+  buttonText: { textAlign: 'left', fontSize: 17, padding: 1, zIndex: 9999 },
   workoutCardExerciseContainer: {
     width: '100%',
     flexDirection: 'row',

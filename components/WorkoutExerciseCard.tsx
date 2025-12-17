@@ -1,6 +1,8 @@
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import CustomTextInput from './CustomTextInput';
 import AddButton from './Buttons/AddButton';
@@ -32,6 +34,7 @@ export default function WorkoutExerciseCard({
   refreshTrigger,
 }: Props) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
@@ -303,12 +306,12 @@ export default function WorkoutExerciseCard({
       {editable && (
         <View style={styles.buttonContainer}>
           <ConfirmButton
-            label="Confirm"
+            label={t('buttonLabels.confirm')}
             componentStyle={styles.buttonComponent}
             onPress={handleConfirmSet}
           />
           <AddButton
-            label="Add set"
+            label={t('buttonLabels.addSet')}
             componentStyle={styles.buttonComponent}
             onPress={handleAddSet}
           />

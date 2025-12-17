@@ -40,7 +40,6 @@ export default function ConfirmButton({
         style={[
           styles.confirmButtonContainer,
           {
-            backgroundColor: colors.background,
             borderColor: colors.borderColor,
           },
           buttonStyle,

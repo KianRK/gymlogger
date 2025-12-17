@@ -3,8 +3,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-
 import { LineChart } from 'react-native-chart-kit';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import useThemeColors from '@/hooks/UseThemeColors';
 import { db } from '@/src/database';
@@ -17,6 +18,7 @@ import { Rect, Text as TextSVG, Svg } from 'react-native-svg';
 
 export default function ExerciseId() {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   const screenWidth = Dimensions.get('window').width;
   const { id } = useLocalSearchParams<{ id: string }>();
   const [exercise, setExercise] = useState<Exercise>();
@@ -49,8 +51,9 @@ export default function ExerciseId() {
   useEffect(() => {
     function adjustFontSize() {
       if (exercise) {
-        if (exercise.name.length > 16) {
-          let adjustedFontSize = 32 - (exercise.name.length - 16);
+        let translatedName = t(exercise.name);
+        if (translatedName.length > 16) {
+          let adjustedFontSize = 32 - (translatedName.length - 16);
 
           if (adjustedFontSize <= 14) {
             setHeaderFontSize(14);
@@ -441,7 +444,7 @@ export default function ExerciseId() {
             width: '75%',
           }}
         >
-          {exercise?.name}
+          {exercise?.name && t(exercise.name)}
         </CustomText>
       </View>
       {/*<View style={styles.imageContainer}>
@@ -460,7 +463,9 @@ export default function ExerciseId() {
         </View>
         {exercise?.primary_target && (
           <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
-            <CustomText style={styles.factText}>Primary:</CustomText>
+            <CustomText style={styles.factText}>
+              {t('exercises.primary')}:
+            </CustomText>
             <CustomText style={styles.factValueText}>
               {JSON.parse(exercise?.primary_target).map(
                 (target: string, index: number) => {
@@ -475,7 +480,9 @@ export default function ExerciseId() {
         )}
         {exercise?.secondary_target && (
           <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
-            <CustomText style={styles.factText}>Secondary:</CustomText>
+            <CustomText style={styles.factText}>
+              {t('exercises.secondary')}:
+            </CustomText>
             <CustomText style={styles.factValueText}>
               {JSON.parse(exercise?.secondary_target).map(
                 (target: string, index: number) => {
@@ -491,11 +498,15 @@ export default function ExerciseId() {
       </View>
       <View style={styles.statContainer}>
         <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-          <CustomText style={styles.statRowText}>Maximum weight:</CustomText>
+          <CustomText style={styles.statRowText}>
+            {t('exercises.maxWeight')}:
+          </CustomText>
           <CustomText style={styles.statRowText}>{maxWeight}</CustomText>
         </View>
         <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-          <CustomText style={styles.statRowText}>Maximum volume:</CustomText>
+          <CustomText style={styles.statRowText}>
+            {t('exercises.maxVol')}:
+          </CustomText>
           <CustomText style={styles.statRowText}>{maxVolume}</CustomText>
         </View>
         <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
@@ -514,7 +525,9 @@ export default function ExerciseId() {
               { backgroundColor: colors.background },
             ]}
           >
-            <CustomText style={styles.chartTitle}>Maximum Weight</CustomText>
+            <CustomText style={styles.chartTitle}>
+              {t('exercises.maxWeight')}
+            </CustomText>
             {dailyMaxChartData != null && (
               <LineChart
                 data={dailyMaxChartData}
@@ -548,7 +561,7 @@ export default function ExerciseId() {
             )}
             {dailyMaxChartData == null && (
               <CustomText style={styles.emptyChartText}>
-                NO DATA YET!
+                {t('exercises.noData')}
               </CustomText>
             )}
           </View>
@@ -559,7 +572,9 @@ export default function ExerciseId() {
               { backgroundColor: colors.background },
             ]}
           >
-            <CustomText style={styles.chartTitle}>Volume</CustomText>
+            <CustomText style={styles.chartTitle}>
+              {t('exercises.volume')}
+            </CustomText>
             {volumeChartData != null && (
               <LineChart
                 data={volumeChartData}
@@ -592,7 +607,7 @@ export default function ExerciseId() {
             )}
             {volumeChartData == null && (
               <CustomText style={styles.emptyChartText}>
-                NO DATA YET!
+                {t('exercises.noData')}
               </CustomText>
             )}
           </View>
@@ -603,7 +618,9 @@ export default function ExerciseId() {
               { backgroundColor: colors.background },
             ]}
           >
-            <CustomText style={styles.chartTitle}>Total Reps</CustomText>
+            <CustomText style={styles.chartTitle}>
+              {t('exercises.totalReps')}
+            </CustomText>
             {repsChartData != null && (
               <LineChart
                 data={repsChartData}
@@ -638,7 +655,7 @@ export default function ExerciseId() {
             )}
             {repsChartData == null && (
               <CustomText style={styles.emptyChartText}>
-                NO DATA YET!
+                {t('exercises.noData')}
               </CustomText>
             )}
           </View>
@@ -684,7 +701,7 @@ export default function ExerciseId() {
             )}
             {setsChartData == null && (
               <CustomText style={styles.emptyChartText}>
-                NO DATA YET!
+                {t('exercises.noData')}
               </CustomText>
             )}
           </View>

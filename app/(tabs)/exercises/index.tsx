@@ -16,6 +16,8 @@ import useThemeColors from '@/hooks/UseThemeColors';
 import ExerciseCard from '@/components/ExerciseCard';
 import { Exercise, ExerciseParsed } from '@/src/Interfaces/db_interfaces';
 import { db } from '@/src/database';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import DeleteButton from '@/components/Buttons/DeleteButton';
 import FilterButton from '@/components/Buttons/FilterButton';
@@ -27,6 +29,7 @@ import CustomText from '@/components/CustomText';
 export default function ExercisesScreen() {
   const colors = useThemeColors();
   const router = useRouter();
+  const { t } = useTranslation();
   const [exercises, setExercises] = useState<ExerciseParsed[]>([]);
   const [filterSelect, setFilterSelect] = useState<boolean>(false);
   const [favSelect, setFavSelect] = useState<boolean>(false);
@@ -285,7 +288,7 @@ export default function ExercisesScreen() {
               <View>
                 <View>
                   <FilterOptionButton
-                    buttonText="Primary"
+                    buttonText={t('exercises.primary')}
                     data={primaryOptions}
                     activeFilters={activePrimaryFilter}
                     setActiveFilter={setActivePrimaryFilter}
@@ -314,7 +317,7 @@ export default function ExercisesScreen() {
                           style={styles.activeFilterButtonText}
                           key={filterOption}
                         >
-                          {filterOption}
+                          {t('targets.' + filterOption)}
                         </CustomText>
                         <MaterialCommunityIcons
                           style={styles.activeFilterButtonIcon}
@@ -330,7 +333,7 @@ export default function ExercisesScreen() {
               <View>
                 <View>
                   <FilterOptionButton
-                    buttonText="Secondary"
+                    buttonText={t('exercises.secondary')}
                     data={secondaryOptions}
                     activeFilters={activeSecondaryFilter}
                     setActiveFilter={setActiveSecondaryFilter}
@@ -359,7 +362,7 @@ export default function ExercisesScreen() {
                           style={styles.activeFilterButtonText}
                           key={filterOption}
                         >
-                          {filterOption}
+                          {t('targets.' + filterOption)}
                         </CustomText>
                         <MaterialCommunityIcons
                           style={styles.activeFilterButtonIcon}
@@ -377,7 +380,7 @@ export default function ExercisesScreen() {
           <View style={styles.searchBarContainer}>
             <MaterialCommunityIcons name="magnify" size={30} color={'black'} />
             <TextInput
-              placeholder="Search"
+              placeholder={t('exercises.search')}
               placeholderTextColor={colors.text}
               value={text}
               onChangeText={(text) => setText(text)}

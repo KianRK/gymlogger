@@ -1,18 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  StyleSheet,
-  useColorScheme,
-  Platform,
-  Modal,
-  Pressable,
-} from 'react-native';
+import { View, StyleSheet, Platform, Pressable } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/Interfaces/db_interfaces';
-import { Colors } from '@/constants/Colors';
 import CustomText from './CustomText';
 import MenuButton from './Buttons/MenuButton';
 import useThemeColors from '@/hooks/UseThemeColors';
@@ -37,6 +31,7 @@ export default function WorkoutCard({
   onPressDelete,
 }: Props) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   const [workoutExercises, setWorkoutExercises] = useState<WorkoutExercise[]>(
     []
   );
@@ -115,7 +110,9 @@ export default function WorkoutCard({
               ]}
             >
               <Pressable style={{ zIndex: 10 }} onPress={onPressEdit}>
-                <CustomText style={styles.buttonText}>Edit</CustomText>
+                <CustomText style={styles.buttonText}>
+                  {t('buttonLabels.edit')}
+                </CustomText>
               </Pressable>
               <Pressable
                 style={{ zIndex: 10 }}
@@ -124,7 +121,9 @@ export default function WorkoutCard({
                   onPressDelete();
                 }}
               >
-                <CustomText style={styles.buttonText}>Delete</CustomText>
+                <CustomText style={styles.buttonText}>
+                  {t('buttonLabels.delete')}
+                </CustomText>
               </Pressable>
             </View>
           )}
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginBottom: 2,
   },
-  buttonText: { fontSize: 18, padding: 2, zIndex: 10 },
+  buttonText: { fontSize: 18, padding: 2, zIndex: 10, textAlign: 'left' },
   workoutCardExerciseContainer: {
     width: '100%',
     flexDirection: 'row',

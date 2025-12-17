@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import '../../../src/i18n/i18n';
+import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
 import useThemeColors from '@/hooks/UseThemeColors';

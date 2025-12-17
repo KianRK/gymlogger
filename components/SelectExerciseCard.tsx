@@ -1,6 +1,8 @@
 import { View, StyleSheet, FlatList, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import ConfirmButton from './Buttons/ConfirmButton';
 import CustomText from './CustomText';
@@ -21,6 +23,7 @@ export default function SelectExerciseCard({
 }: Props) {
   const colors = useThemeColors();
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const { t } = useTranslation();
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
   const [fontSize, setFontSize] = useState(24);
@@ -76,7 +79,7 @@ export default function SelectExerciseCard({
               },
             ]}
             onChangeText={handleChange}
-            placeholder="Enter Exercise"
+            placeholder={t('buttonLabels.enterExercise')}
             placeholderTextColor={colors.text}
             value={text}
             onPress={() => setTyping(true)}

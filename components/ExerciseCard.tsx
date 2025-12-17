@@ -2,6 +2,8 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import CustomText from './CustomText';
 import useThemeColors from '@/hooks/UseThemeColors';
@@ -26,14 +28,16 @@ export default function ExerciseCard({
   onPressFav,
 }: Props) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
+  const translatedName = t(name);
   const primaryText = primary ? primary[0] : '';
   const secondaryText = secondary ? secondary[0] : '';
   const [fontSize, setFontSize] = useState<number>(18);
 
   useEffect(() => {
     function adjustFontSize() {
-      if (name.length > 21) {
-        let adjustedFontSize = 18 - (name.length - 20) / 2;
+      if (translatedName.length > 21) {
+        let adjustedFontSize = 18 - (translatedName.length - 20) / 2;
 
         if (adjustedFontSize <= 10) {
           setFontSize(10);
@@ -68,9 +72,11 @@ export default function ExerciseCard({
         </Pressable>
         <View style={styles.mainTextContainer}>
           <CustomText style={[styles.exerciseName, { fontSize: fontSize }]}>
-            {name}
+            {translatedName}
           </CustomText>
-          <CustomText style={styles.regionText}>{region}</CustomText>
+          <CustomText style={styles.regionText}>
+            {t('targets.' + region)}
+          </CustomText>
         </View>
         <Pressable style={styles.infoButton} onPress={onPressInfo}>
           <MaterialCommunityIcons
@@ -80,9 +86,11 @@ export default function ExerciseCard({
           />
         </Pressable>
         <View style={styles.targetsContainer}>
-          <CustomText style={styles.primaryTarget}>{primaryText}</CustomText>
+          <CustomText style={styles.primaryTarget}>
+            {t('targets.' + primaryText)}
+          </CustomText>
           <CustomText style={styles.secondaryTarget}>
-            {secondaryText}
+            {t('targets.' + secondaryText)}
           </CustomText>
         </View>
       </View>

@@ -38,7 +38,6 @@ export default function MenuButton({
         style={[
           styles.menuButtonContainer,
           {
-            backgroundColor: colors.background,
             borderColor: colors.borderColor,
           },
           buttonStyle,

@@ -3,6 +3,8 @@ import { useState } from 'react';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import useThemeColors from '@/hooks/UseThemeColors';
 import CustomText from '@/components/CustomText';
 import { useSettings } from '@/src/providers/SettingsProvider';
@@ -11,6 +13,7 @@ import MeasurementsModal from '@/components/ MeasurementsModal';
 
 export default function ProfileScreen() {
   const { settings, updateSetting } = useSettings();
+  const { t } = useTranslation();
   const colors = useThemeColors();
   const [measureModalVisible, setMeasureModalVisible] = useState(false);
 
@@ -45,7 +48,7 @@ export default function ProfileScreen() {
               letterSpacing: 3,
             }}
           >
-            Membership
+            {t('profile.membership')}
           </CustomText>
           <Pressable style={styles.membershipButton}>
             <CustomText style={styles.membershipButtonText}>Premium</CustomText>
@@ -54,7 +57,7 @@ export default function ProfileScreen() {
       </View>
       <View style={styles.profileSettings}>
         <CustomText style={styles.settingSectionHeader}>
-          Profile Settings
+          {t('profile.profileSettings')}
         </CustomText>
         <View style={[styles.settingRow, { backgroundColor: colors.settings }]}>
           <CustomText style={styles.settingText}>Email</CustomText>
@@ -64,17 +67,25 @@ export default function ProfileScreen() {
           <View
             style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
           >
-            <CustomText style={styles.settingText}>Measurements</CustomText>
+            <CustomText style={styles.settingText}>
+              {t('profile.measurements')}
+            </CustomText>
           </View>
         </Pressable>
       </View>
       <View style={styles.accountSettings}>
-        <CustomText style={styles.settingSectionHeader}>Account</CustomText>
+        <CustomText style={styles.settingSectionHeader}>
+          {t('profile.account')}
+        </CustomText>
         <View style={[styles.settingRow, { backgroundColor: colors.settings }]}>
-          <CustomText style={styles.settingText}>Sign out</CustomText>
+          <CustomText style={styles.settingText}>
+            {t('profile.signOut')}
+          </CustomText>
         </View>
         <View style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}>
-          <CustomText style={styles.settingText}>Delete account</CustomText>
+          <CustomText style={styles.settingText}>
+            {t('profile.deleteAccount')}
+          </CustomText>
         </View>
       </View>
       <MeasurementsModal

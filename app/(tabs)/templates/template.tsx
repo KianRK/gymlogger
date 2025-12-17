@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import useThemeColors from '@/hooks/UseThemeColors';
 import TemplateExerciseCard from '@/components/TemplateExerciseCard';
@@ -20,6 +22,7 @@ export default function Workouts() {
   }>();
 
   const [orderIndex, setOrderIndex] = useState(0);
+  const { t } = useTranslation();
   const [refreshKey, setRefreshKey] = useState(0);
   const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
   const [selectionModalVisible, setSelectionModalVisible] = useState(false);
@@ -126,7 +129,9 @@ export default function Workouts() {
         </View>
         <ScrollView
           style={styles.scrollViewContainer}
-          {...(Platform.OS === 'android' ? { fadingEdgeLength: 75 } : {})}
+          {...(Platform.OS === 'android'
+            ? { fadingEdgeLength: { start: 0, end: 10 } }
+            : {})}
         >
           {templateExercises.map((exercise) => (
             <View
@@ -191,7 +196,7 @@ export default function Workouts() {
           </View>
         </Modal>
         <AddButton
-          label="Add exercise"
+          label={t('buttonLabels.addExercise')}
           componentStyle={styles.buttonComponent}
           onPress={handleAddExercise}
         />

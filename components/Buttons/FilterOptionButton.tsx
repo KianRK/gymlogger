@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { useEffect } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 import CustomText from '../CustomText';
 import useThemeColors from '@/hooks/UseThemeColors';
@@ -42,6 +44,7 @@ export default function FilterOptionButton({
   registrationHandler,
 }: Props) {
   const colors = useThemeColors();
+  const { t } = useTranslation();
 
   const filteredData = () => {
     let filtered = data.filter((item) => {
@@ -103,7 +106,9 @@ export default function FilterOptionButton({
             data={filteredData()}
             renderItem={({ item }) => (
               <Pressable onPress={() => updateActiveFilters(item)}>
-                <CustomText style={{ textAlign: 'center' }}>{item}</CustomText>
+                <CustomText style={{ textAlign: 'center' }}>
+                  {t('targets.' + item)}
+                </CustomText>
               </Pressable>
             )}
           />
