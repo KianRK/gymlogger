@@ -11,7 +11,8 @@
     "rename": "Rename",
     "custom": "Custom",
     "template": "Template",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "today": "Today",
 
@@ -432,5 +433,23 @@
     "Rotator Cuff": "Rotator Cuff",
     "Trapezius": "Trapezius",
     "Triceps": "Triceps"
+  },
+  "measurements": {
+    "Weight": "Weight",
+    "BodyFat": "Body fat",
+    "Neck": "Neck",
+    "Shoulders": "Shoulders",
+    "Chest": "Chest",
+    "RightBiceps": "Right biceps",
+    "RightForearm": "Right forearm",
+    "LeftBiceps": "Left biceps",
+    "LeftForearm": "Left forearm",
+    "Waist": "Waist",
+    "Hip": "Hip",
+    "RightThigh": "Right thigh",
+    "RightCalf": "Right calf",
+    "LeftThigh": "Left thigh",
+    "LeftCalf": "Left calf",
+    "nodata": "No data"
   }
 }

@@ -11,7 +11,8 @@
     "rename": "Umbenennen",
     "custom": "Erstellen",
     "template": "Vorlage",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "save": "Speichern"
   },
   "today": "Heute",
 
@@ -425,5 +426,23 @@
     "Shoulder": "Schulter",
     "Trapezius": "Trapez",
     "Triceps": "Trizeps"
+  },
+  "measurements": {
+    "Weight": "Gewicht",
+    "BodyFat": "Körperfett",
+    "Neck": "Nacken",
+    "Shoulders": "Schultern",
+    "Chest": "Brust",
+    "RightBiceps": "Rechter Bizeps",
+    "RightForearm": "Rechter Unterarm",
+    "LeftBiceps": "Linker Bizeps",
+    "LeftForearm": "Linker Unterarm",
+    "Waist": "Tailler",
+    "Hip": "Hüfte",
+    "RightThigh": "Rechter Oberschenkel",
+    "RightCalf": "Rechte Wade",
+    "LeftThigh": "Linker Oberschenkel",
+    "LeftCalf": "Linke Wade",
+    "nodata": "Keine Daten"
   }
 }

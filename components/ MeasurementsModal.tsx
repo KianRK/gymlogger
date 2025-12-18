@@ -1,13 +1,13 @@
 import {
   Modal,
   ModalProps,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   View,
   ViewStyle,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { useSettings } from '@/src/providers/SettingsProvider';
 import MeasurementsRow from './MeasurementRow';
@@ -29,11 +29,14 @@ export default function MeasurementsModal({
   const [tempMeasurements, setTempMeasurements] = useState<Measurements>(
     settings.measurements
   );
+  const { t } = useTranslation();
 
   return (
     <Modal {...otherProps}>
       <View style={[styles.mainContainer, viewStyle]}>
-        <CustomText style={styles.title}>Measurements</CustomText>
+        <CustomText style={styles.title}>
+          {t('profile.measurements')}
+        </CustomText>
         <View style={styles.scrollViewContainer}>
           <ScrollView
             fadingEdgeLength={{ start: 0, end: 20 }}
@@ -61,7 +64,9 @@ export default function MeasurementsModal({
               setMeasureModalVisible(false);
             }}
           >
-            <CustomText style={styles.buttonText}>Cancel</CustomText>
+            <CustomText style={styles.buttonText}>
+              {t('buttonLabels.cancel')}
+            </CustomText>
           </Pressable>
 
           <Pressable
@@ -71,7 +76,9 @@ export default function MeasurementsModal({
               setMeasureModalVisible(false);
             }}
           >
-            <CustomText style={styles.buttonText}>Save</CustomText>
+            <CustomText style={styles.buttonText}>
+              {t('buttonLabels.save')}
+            </CustomText>
           </Pressable>
         </View>
       </View>

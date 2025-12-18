@@ -1,11 +1,11 @@
 import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import CustomText from './CustomText';
 import CustomTextInput from './CustomTextInput';
 
 import { Measurements } from '@/constants/Interfaces';
-import { metricsDict } from '@/constants/Constants';
 
 type Props = {
   metric: keyof Measurements;
@@ -22,7 +22,8 @@ export default function MeasurementsRow({
 }: Props) {
   const [value, setValue] = useState(currentTempMeasurements[metric]);
   const [unit, setUnit] = useState('');
-  const metricName = metricsDict[metric];
+  const { t } = useTranslation();
+  const metricName = t('measurements.' + metric);
   const lengthUnit = units === 'metric' ? 'cm' : 'in';
   const weightUnit = units === 'metric' ? 'kg' : 'lb';
   const textInputRef = useRef<TextInput | null>(null);
@@ -80,7 +81,7 @@ export default function MeasurementsRow({
           onChangeText={(text) => updateMetric(text)}
           returnKeyType="done"
           keyboardType="number-pad"
-          placeholder="no data"
+          placeholder={t('measurements.nodata')}
         >
           {value}
         </CustomTextInput>
