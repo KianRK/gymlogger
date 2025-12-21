@@ -65,7 +65,6 @@ export default function SelectExerciseCard({
           styles.selectExerciseCardContainer,
           {
             borderColor: colors.borderColor,
-            backgroundColor: colors.background,
           },
         ]}
       >
@@ -96,10 +95,7 @@ export default function SelectExerciseCard({
       {typing && (
         <FlatList
           data={filteredExercises}
-          style={[
-            styles.flatListContainer,
-            { backgroundColor: colors.background },
-          ]}
+          style={[styles.flatListContainer]}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <Pressable
