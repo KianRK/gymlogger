@@ -32,7 +32,7 @@ export default function SelectExerciseCard({
   };
 
   const filteredExercises = exercises.filter((item) =>
-    item.name.toLowerCase().includes(text.toLowerCase())
+    t(item.name).toLowerCase().includes(text.toLowerCase())
   );
   const handleChange = (text: string) => {
     if (text.length > 18) {
@@ -104,12 +104,12 @@ export default function SelectExerciseCard({
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
-                handleChange(item.name);
+                handleChange(t(item.name));
                 updateExerciseName(item.name);
                 setTyping(false);
               }}
             >
-              <CustomText style={styles.listItems}>{item.name}</CustomText>
+              <CustomText style={styles.listItems}>{t(item.name)}</CustomText>
             </Pressable>
           )}
         />
