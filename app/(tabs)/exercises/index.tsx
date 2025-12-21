@@ -207,7 +207,7 @@ export default function ExercisesScreen() {
       }
     }
     return ex.filter((item) => {
-      return item.name.toLowerCase().includes(text.toLowerCase());
+      return t(item.name).toLowerCase().includes(text.toLowerCase());
     });
   }
 
