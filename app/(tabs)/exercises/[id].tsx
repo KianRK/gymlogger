@@ -8,6 +8,7 @@ import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
 import useThemeColors from '@/hooks/UseThemeColors';
+import { useSettings } from '@/src/providers/SettingsProvider';
 import { db } from '@/src/database';
 import { Exercise, WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 
@@ -19,19 +20,27 @@ import { Rect, Text as TextSVG, Svg } from 'react-native-svg';
 export default function ExerciseId() {
   const colors = useThemeColors();
   const { t } = useTranslation();
+  const { settings } = useSettings();
   const screenWidth = Dimensions.get('window').width;
   const { id } = useLocalSearchParams<{ id: string }>();
   const [exercise, setExercise] = useState<Exercise>();
 
   const dateDict: DateDictionary = {};
+  const [oneRM, setOneRM] = useState<any>();
+  const [oneRMReps, setOneRMReps] = useState(0);
+  const [oneRMWeight, setOneRMWeight] = useState(0);
   const [dataLabels, setDataLabels] = useState<string[]>([]);
   const [maxWeight, setMaxWeight] = useState<number>(0);
   const [maxVolume, setMaxVolume] = useState<number>(0);
+  const [weightUnit, setWeightUnit] = useState('');
   const [volumeChartData, setVolumeChartData] = useState<any>(null);
   const [dailyMaxChartData, setDailyMaxChartData] = useState<any>(null);
   const [headerFontSize, setHeaderFontSize] = useState<number>(32);
   const [setsChartData, setSetsChartData] = useState<any>(null);
   const [repsChartData, setRepsChartData] = useState<any>(null);
+
+  const chartWidthRatio = 0.9;
+  const chartHeight = 264;
 
   const [tooltipPos, setTooltipPos] = useState({
     x: 0,
@@ -44,9 +53,6 @@ export default function ExerciseId() {
     chartName: '',
     value: 0,
   });
-
-  const chartWidthRatio = 0.9;
-  const chartHeight = 264;
 
   useEffect(() => {
     function adjustFontSize() {
@@ -65,6 +71,39 @@ export default function ExerciseId() {
     }
     adjustFontSize();
   }, []);
+
+  function determineOneRMPercentage(reps: number) {
+    let percentage;
+    if (reps < 3) {
+      percentage = reps == 1 ? 100 : 95;
+    } else if (reps == 3 || reps == 4) {
+      percentage = 90;
+    } else if (reps <= 12) {
+      percentage = 90 - (reps - 4) * 2.5;
+    } else if (reps <= 15) {
+      percentage = 70 - ((reps - 12) * 10) / 3;
+    } else if (reps <= 25) {
+      percentage = 60 - (reps - 15);
+    } else if (reps <= 30) {
+      percentage = 50 - (reps - 25) * 2;
+    } else if (reps <= 40) {
+      percentage = 40 - (reps - 30);
+    } else {
+      percentage = 30;
+    }
+    return percentage;
+  }
+  useEffect(() => {
+    function calcOneRM() {
+      let perc = determineOneRMPercentage(oneRMReps);
+      let oRM =
+        settings.units == 'metric'
+          ? (oneRMWeight * 100) / perc
+          : ((oneRMWeight * 100) / perc) * 2.20462;
+      setOneRM(oRM);
+    }
+    calcOneRM();
+  }, [oneRMWeight, oneRMReps, settings.units]);
 
   function dailyMaxDec() {
     return tooltipPos.dailyMaxVisible ? (
@@ -85,7 +124,7 @@ export default function ExerciseId() {
             fontWeight="bold"
             textAnchor="middle"
           >
-            {tooltipPos.value + ' kg'}
+            {Math.round(tooltipPos.value) + ' ' + weightUnit}
           </TextSVG>
           <TextSVG
             x={tooltipPos.x + 5}
@@ -121,7 +160,7 @@ export default function ExerciseId() {
             fontWeight="bold"
             textAnchor="middle"
           >
-            {tooltipPos.value + ' kg'}
+            {Math.round(tooltipPos.value) + ' ' + weightUnit}
           </TextSVG>
           <TextSVG
             x={tooltipPos.x + 5}
@@ -300,12 +339,24 @@ export default function ExerciseId() {
 
   function prepareData(workoutEx: WorkoutExercise[]) {
     let dDict: DateDictionary = {};
+    let rmReps = 0;
+    let rmWeight = 0;
+    let oneRMVol = 0;
     for (const row of workoutEx) {
-      let volResult = db.getFirstSync<{ vol: number }>(
-        'SELECT SUM(reps * weight) AS vol FROM sets WHERE exercise_id = ?',
+      let volResult = db.getFirstSync<{
+        vol: number;
+      }>('SELECT SUM(reps * weight) AS vol FROM sets WHERE exercise_id = ?', [
+        row.id,
+      ]);
+      let maxVolResult = db.getFirstSync<{ reps: number; weight: number }>(
+        'SELECT reps, weight, MAX(reps*weight) FROM sets where exercise_id = ?',
         [row.id]
       );
       let volume = volResult?.vol ?? 0;
+      if (maxVolResult && maxVolResult.reps * maxVolResult.weight > oneRMVol) {
+        rmReps = maxVolResult.reps;
+        rmWeight = maxVolResult.weight;
+      }
       let maxResult = db.getFirstSync<{ dailyMax: number }>(
         'SELECT MAX(weight) AS dailyMax FROM sets WHERE exercise_id = ?',
         [row.id]
@@ -337,13 +388,22 @@ export default function ExerciseId() {
         };
       }
     }
+    setOneRMReps(rmReps);
+    setOneRMWeight(rmWeight);
     return dDict;
   }
 
   function createChartData(dDict: DateDictionary) {
     setDataLabels(Object.keys(dDict));
-    let vd = Object.values(dDict).map((data) => data.volume);
-    let dmd = Object.values(dDict).map((data) => data.dailyMax);
+    let vd;
+    let dmd;
+    if (settings.units == 'metric') {
+      vd = Object.values(dDict).map((data) => data.volume);
+      dmd = Object.values(dDict).map((data) => data.dailyMax);
+    } else {
+      vd = Object.values(dDict).map((data) => data.volume * 2.20462);
+      dmd = Object.values(dDict).map((data) => data.dailyMax * 2.20462);
+    }
     let sd = Object.values(dDict).map((data) => data.sets);
     let rd = Object.values(dDict).map((data) => data.reps);
 
@@ -411,6 +471,7 @@ export default function ExerciseId() {
       if (dDict != null) {
         createChartData(dDict);
       }
+      settings.units == 'metric' ? setWeightUnit('kg') : setWeightUnit('lb');
       return () => {
         setTooltipPos((previousState) => {
           return {
@@ -422,7 +483,7 @@ export default function ExerciseId() {
           };
         });
       };
-    }, [])
+    }, [settings.units])
   );
 
   return (
@@ -499,19 +560,27 @@ export default function ExerciseId() {
       <View style={styles.statContainer}>
         <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
           <CustomText style={styles.statRowText}>
-            {t('exercises.maxWeight')}:
+            {t('exercises.maxWeight')} ({weightUnit}):
           </CustomText>
-          <CustomText style={styles.statRowText}>{maxWeight}</CustomText>
+          <CustomText style={styles.statRowText}>
+            {Math.round(maxWeight)}
+          </CustomText>
         </View>
         <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
           <CustomText style={styles.statRowText}>
-            {t('exercises.maxVol')}:
+            {t('exercises.maxVol')} ({weightUnit}):
           </CustomText>
-          <CustomText style={styles.statRowText}>{maxVolume}</CustomText>
+          <CustomText style={styles.statRowText}>
+            {Math.round(maxVolume)}
+          </CustomText>
         </View>
         <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-          <CustomText style={styles.statRowText}>1RM:</CustomText>
-          <CustomText style={styles.statRowText}>250</CustomText>
+          <CustomText style={styles.statRowText}>
+            1RM ({weightUnit}):
+          </CustomText>
+          <CustomText style={styles.statRowText}>
+            {Math.round(oneRM)}
+          </CustomText>
         </View>
       </View>
       <View style={{ flex: 1, justifyContent: 'flex-start', width: '95%' }}>
@@ -533,7 +602,7 @@ export default function ExerciseId() {
                 data={dailyMaxChartData}
                 width={screenWidth * chartWidthRatio}
                 height={chartHeight}
-                yAxisSuffix=" kg"
+                yAxisSuffix={' ' + weightUnit}
                 fromZero={true}
                 withOuterLines={false}
                 decorator={() => dailyMaxDec()}
