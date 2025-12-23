@@ -29,10 +29,19 @@ export default function MeasurementsRow({
   const textInputRef = useRef<TextInput | null>(null);
 
   const updateMetric = (text: string) => {
-    setTempMeasurements({
-      ...currentTempMeasurements,
-      [metric]: text,
-    });
+    if (units != 'metric' && metric != 'Weight') {
+      let convertedValue =
+        unit == 'in' ? parseFloat(text) / 0.393701 : parseFloat(text) / 2.20462;
+      setTempMeasurements({
+        ...currentTempMeasurements,
+        [metric]: convertedValue,
+      });
+    } else {
+      setTempMeasurements({
+        ...currentTempMeasurements,
+        [metric]: text,
+      });
+    }
   };
 
   useEffect(() => {}, [currentTempMeasurements]);
@@ -83,7 +92,7 @@ export default function MeasurementsRow({
           keyboardType="number-pad"
           placeholder={t('measurements.nodata')}
         >
-          {value}
+          {value && Math.round(value * 100) / 100}
         </CustomTextInput>
       </View>
     </Pressable>
