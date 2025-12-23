@@ -7,6 +7,7 @@ import ConfirmButton from './Buttons/ConfirmButton';
 import DeleteButton from './Buttons/DeleteButton';
 import CustomText from './CustomText';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { useSettings } from '@/src/providers/SettingsProvider';
 
 import { db } from '@/src/database';
 import { Set } from '@/src/Interfaces/db_interfaces';
@@ -32,13 +33,11 @@ export default function TemplateExerciseCard({
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
+  const { settings } = useSettings();
   const [orderIndex, setOrderIndex] = useState(0);
   const [setList, setSetList] = useState<string[][]>([]);
   const [fontSize, setFontSize] = useState<number>(26);
   const setListRef = useRef<string[]>(['0', '0']);
-  const colorOne = '#b3cbe4ff';
-  const colorOneAlpha = '#b3cbe490';
-  const colorTwo = '#ddeaf6ff';
 
   function deleteExercise(exercise_id: string) {
     try {
@@ -71,10 +70,18 @@ export default function TemplateExerciseCard({
         let id = result.lastInsertRowId.toString();
         setOrderIndex(orderIndex + 1);
         insertSets.map((set, index) => {
-          const result = db.runSync(
-            'INSERT INTO template_sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
-            [id, index + 1, set[0], set[1]]
-          );
+          if (settings.units == 'metric') {
+            const result = db.runSync(
+              'INSERT INTO template_sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
+              [id, index + 1, set[0], set[1]]
+            );
+          } else {
+            let convertedWeight = parseFloat(set[1]) / 2.20462;
+            const result = db.runSync(
+              'INSERT INTO template_sets (exercise_id, order_index, reps, weight) VALUES ( ?, ?, ?, ?)',
+              [id, index + 1, set[0], convertedWeight]
+            );
+          }
         });
       } catch (error) {
         console.error('Could not insert exercise and/or sets', error);
@@ -264,7 +271,9 @@ export default function TemplateExerciseCard({
                 <CustomText
                   style={[styles.setText, { borderColor: colors.borderColor }]}
                 >
-                  {set.weight}
+                  {settings.units == 'metric'
+                    ? Math.round(set.weight)
+                    : Math.round(set.weight * 2.20462)}
                 </CustomText>
               </View>
             ))}
