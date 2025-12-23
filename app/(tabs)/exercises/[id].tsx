@@ -508,13 +508,7 @@ export default function ExerciseId() {
           {exercise?.name && t(exercise.name)}
         </CustomText>
       </View>
-      {/*<View style={styles.imageContainer}>
-            <Image
-              source={require('@/assets/images/latpull_target_muscles.png')}
-              style={styles.exerciseImage}
-            />
-          </View>
-          */}
+
       <View style={{ marginTop: '3%' }}>
         <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
           <CustomText style={styles.factText}>Region:</CustomText>
@@ -589,10 +583,7 @@ export default function ExerciseId() {
           contentContainerStyle={styles.scrollContainer}
         >
           <View
-            style={[
-              styles.chartContainer,
-              { backgroundColor: colors.background },
-            ]}
+            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
           >
             <CustomText style={styles.chartTitle}>
               {t('exercises.maxWeight')}
@@ -619,9 +610,9 @@ export default function ExerciseId() {
                 }}
                 chartConfig={{
                   decimalPlaces: 0,
-                  backgroundGradientFrom: colors.background,
+                  backgroundGradientFrom: colors.mainTwo,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.background,
+                  backgroundGradientTo: colors.mainTwo,
                   backgroundGradientToOpacity: 0.5,
                   color: () => colors.text,
                   useShadowColorFromDataset: false, // optional
@@ -636,10 +627,7 @@ export default function ExerciseId() {
           </View>
 
           <View
-            style={[
-              styles.chartContainer,
-              { backgroundColor: colors.background },
-            ]}
+            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
           >
             <CustomText style={styles.chartTitle}>
               {t('exercises.volume')}
@@ -664,9 +652,9 @@ export default function ExerciseId() {
                 }}
                 chartConfig={{
                   decimalPlaces: 0,
-                  backgroundGradientFrom: colors.background,
+                  backgroundGradientFrom: colors.mainTwo,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.background,
+                  backgroundGradientTo: colors.mainTwo,
                   backgroundGradientToOpacity: 0.5,
                   color: () => colors.text,
                   strokeWidth: 2,
@@ -682,10 +670,7 @@ export default function ExerciseId() {
           </View>
 
           <View
-            style={[
-              styles.chartContainer,
-              { backgroundColor: colors.background },
-            ]}
+            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
           >
             <CustomText style={styles.chartTitle}>
               {t('exercises.totalReps')}
@@ -712,9 +697,9 @@ export default function ExerciseId() {
                   return yValue.split('.')[0];
                 }}
                 chartConfig={{
-                  backgroundGradientFrom: colors.background,
+                  backgroundGradientFrom: colors.mainTwo,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.background,
+                  backgroundGradientTo: colors.mainTwo,
                   backgroundGradientToOpacity: 0.5,
                   color: () => colors.text,
                   strokeWidth: 2,
@@ -730,10 +715,7 @@ export default function ExerciseId() {
           </View>
 
           <View
-            style={[
-              styles.chartContainer,
-              { backgroundColor: colors.background },
-            ]}
+            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
           >
             <CustomText style={styles.chartTitle}>Sets</CustomText>
             {setsChartData != null && (
@@ -742,6 +724,7 @@ export default function ExerciseId() {
                 width={screenWidth * chartWidthRatio}
                 height={chartHeight}
                 fromZero={true}
+                segments={Math.max(...setsChartData.datasets[0].data)}
                 withVerticalLabels={false}
                 onDataPointClick={(data) => handleClickOnDataPoint(data)}
                 decorator={() => setsDec()}
@@ -758,9 +741,9 @@ export default function ExerciseId() {
                   return yValue.split('.')[0];
                 }}
                 chartConfig={{
-                  backgroundGradientFrom: colors.background,
+                  backgroundGradientFrom: colors.mainTwo,
                   backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.background,
+                  backgroundGradientTo: colors.mainTwo,
                   backgroundGradientToOpacity: 0.5,
                   color: () => colors.text,
                   strokeWidth: 2,

@@ -235,7 +235,6 @@ export default function ExercisesScreen() {
               buttonStyle={{ width: 40, height: 40 }}
               selected={favSelect}
             />
-            <EditButton iconSize={25} buttonStyle={{ width: 40, height: 40 }} />
           </View>
           {filterSelect && (
             <View style={styles.filterOptionsContainer}>
