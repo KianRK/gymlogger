@@ -7,6 +7,7 @@ import { StyleSheet } from 'react-native';
 import useThemeColors from '@/hooks/UseThemeColors';
 import SettingsButton from '@/components/Buttons/SettingsButton';
 import ProfileButton from '@/components/Buttons/ProfileButton';
+import DashboardButton from '@/components/Buttons/DashboardButton';
 
 export default function TabLayout() {
   const colors = useThemeColors();
@@ -18,6 +19,7 @@ export default function TabLayout() {
         headerTintColor: colors.text,
         headerTitleAlign: 'center',
         headerTitleStyle: { fontSize: 28, fontFamily: 'Outfit-Regular' },
+        headerLeft: () => <DashboardButton />,
         headerRight: () => (
           <>
             <SettingsButton />
@@ -96,6 +98,13 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Settings',
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="dashboard"
+        options={{
+          title: 'Dashboard',
           href: null,
         }}
       />

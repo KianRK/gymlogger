@@ -29,6 +29,17 @@ export const Colors = {
     tabIconDefault: mediumBrightColor,
     tabIconSelected: darkColor,
     total: '#f9f9f9',
+    pieChartColors: [
+      '#1E4E79', // Deep Navy
+      '#D9534F', // Soft Crimson
+      '#2E8B57', // Sea Green
+      '#F0AD4E', // Muted Amber
+      '#8E44AD', // Amethyst
+      '#FF8C69', // Salmon
+      '#16A085', // Dark Teal
+      '#5BC0DE', // Bright Sky
+      '#2C3E50', // Midnight Blue
+    ],
   },
   dark: {
     text: brightTextColor,
@@ -46,5 +57,16 @@ export const Colors = {
     tabIconDefault: mediumDarkColor,
     tabIconSelected: brightColor,
     total: '#222222',
+    pieChartColors: [
+      '#1A73E8', // Strong Royal Blue
+      '#D93025', // Deep Candy Red
+      '#188038', // Forest Green
+      '#F29900', // Harvest Orange
+      '#A142F4', // Royal Purple
+      '#12B5CB', // Deep Teal
+      '#E52592', // Rich Raspberry
+      '#F9AB00', // Bold Gold
+      '#0097A7', // Dark Cyan
+    ],
   },
 };

@@ -22,3 +22,15 @@ export interface Measurements {
   LeftThigh: number | null;
   LeftCalf: number | null;
 }
+
+export interface RegionCount {
+  Abs: number;
+  Back: number;
+  Biceps: number;
+  Calves: number;
+  Chest: number;
+  Forearm: number;
+  Legs: number;
+  Shoulders: number;
+  Triceps: number;
+}
