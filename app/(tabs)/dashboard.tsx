@@ -441,13 +441,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '30%',
-    height: 112,
+    height: 80,
   },
   statText: {
     textAlign: 'center',
     textAlignVertical: 'center',
     height: '60%',
-    fontSize: 18,
+    fontSize: 14,
   },
   statValue: {
     textAlign: 'center',
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
   pieChartHeader: {
     textAlign: 'center',
     textAlignVertical: 'center',
-    fontSize: 20,
+    fontSize: 18,
     paddingTop: 15,
   },
   favExerciseContainer: {
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   },
   favExerciseColumn: { width: '49%' },
   favExerciseHeader: {
-    fontSize: 22,
+    fontSize: 18,
     textAlign: 'center',
     textAlignVertical: 'center',
     height: 60,
