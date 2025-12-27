@@ -1,4 +1,5 @@
 {
+  "app": { "exercises": "Übungen", "templates": "Vorlagen" },
   "buttonLabels": {
     "addWorkout": "Neues Workout",
     "addTemplate": "Neues Template",

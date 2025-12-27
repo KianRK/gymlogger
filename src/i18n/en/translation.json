@@ -1,4 +1,5 @@
 {
+  "app": { "exercises": "Exercises", "templates": "Templates" },
   "buttonLabels": {
     "addWorkout": "Add workout",
     "addTemplate": "Add template",

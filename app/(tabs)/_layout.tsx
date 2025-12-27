@@ -4,6 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { StyleSheet } from 'react-native';
 
+import { useTranslation } from 'react-i18next';
 import useThemeColors from '@/hooks/UseThemeColors';
 import SettingsButton from '@/components/Buttons/SettingsButton';
 import ProfileButton from '@/components/Buttons/ProfileButton';
@@ -11,6 +12,7 @@ import DashboardButton from '@/components/Buttons/DashboardButton';
 
 export default function TabLayout() {
   const colors = useThemeColors();
+  const { t } = useTranslation();
   return (
     <Tabs
       screenOptions={{
@@ -64,7 +66,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="exercises"
         options={{
-          title: 'Exercises',
+          title: t('app.exercises'),
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name={focused ? 'arm-flex' : 'arm-flex-outline'}
@@ -77,7 +79,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="templates"
         options={{
-          title: 'Templates',
+          title: t('app.templates'),
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name={focused ? 'clipboard-list' : 'clipboard-list-outline'}
