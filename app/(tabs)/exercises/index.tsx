@@ -105,6 +105,7 @@ export default function ExercisesScreen() {
       pathname: '/exercises/[id]',
       params: {
         id: id,
+        source: '/exercises',
       },
     });
   };
