@@ -49,7 +49,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Machine Chest Press', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Pec Deck', '["Chest"]', '["Front Deltoid"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Pin Bench Press', '["Chest", "Front Deltoid"]', '["Triceps"]', 'Chest');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Plank to Push-Up', '["Abs", "Chest", "Front Deltoids", "Triceps"]', '["Obliques"]', 'Chest');
+    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Plank to Push-Up', '["Abs", "Chest", "Front Deltoid", "Triceps"]', '["Obliques"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Push-Up', '["Chest", "Front Deltoid"]', '["Triceps", "Abs"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Push-Up Against Wall', '["Chest", "Front Deltoid"]', '["Triceps", "Abs"]', 'Chest');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Push-Ups With Feet in Rings', '["Chest", "Front Deltoid"]', '["Triceps", "Abs"]', 'Chest');
@@ -161,7 +161,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Front Squat', '["Quads", "Glutes", "Adductors", "Lower Back"]', '["Calves"]', 'Leg');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Glute Ham Raise', '["Hamstrings"]', '["Glutes", "Lower Back"]', 'Leg');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Goblet Squat', '["Quads", "Glutes", "Adductors"]', '["Lower Back", "Calves"]', 'Leg');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Ground to Overhead', '["Adductors", "Front Deltoids", "Glutes", "Lower Back", "Quads"]', '["Calves", "Forearm Flexors", "Hamstrings", "Lateral Deltoids", "Trapezius", "Triceps"]', 'Leg');
+    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Ground to Overhead', '["Adductors", "Front Deltoid", "Glutes", "Lower Back", "Quads"]', '["Calves", "Forearm Flexors", "Hamstrings", "Lateral Deltoids", "Trapezius", "Triceps"]', 'Leg');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Hack Squat Machine', '["Quads", "Glutes", "Adductors"]', NULL, 'Leg');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Half Air Squat', '["Quads", "Glutes", "Adductors"]', '["Calves"]', 'Leg');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Hip Adduction Against Band', '["Adductors"]', NULL, 'Leg');
@@ -290,7 +290,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Hip Thrust', '["Glutes"]', '["Adductors", "Quads"]', 'Glute');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Hip Thrust Machine', '["Glutes"]', '["Adductors", "Quads"]', 'Glute');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Hip Thrust With Band Around Knees', '["Glutes"]', '["Adductors", "Abductors", "Quads"]', 'Glute');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kettlebell Windmill', '["Glutes", "Front Deltoids", "Lateral Deltoids", "Rear Deltoids", "Hamstrings"]', '["Lower Back", "Abs", "Rotator Cuff", "Lats", "Traps"]', 'Glute');
+    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kettlebell Windmill', '["Glutes", "Front Deltoid", "Lateral Deltoids", "Rear Deltoids", "Hamstrings"]', '["Lower Back", "Abs", "Rotator Cuff", "Lats", "Traps"]', 'Glute');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Lateral Walk With Band', '["Abductors"]', '["Glutes"]', 'Glute');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('One-Legged Glute Bridge', '["Glutes"]', '["Adductors", "Abductors", "Quads"]', 'Glute');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('One-Legged Hip Thrust ', '["Glutes"]', '["Adductors", "Abductors", "Quads"]', 'Glute');
@@ -299,7 +299,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Smith Machine Hip Thrust', '["Glutes"]', '["Adductors", "Quads"]', 'Glute');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Single Leg Romanian Deadlift', '["Glutes", "Lower Back", "Hamstrings"]', '["Adductors", "Trapezius", "Forearm Flexors"]', 'Glute');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Standing Hip Abduction Against Band', '["Abductors"]', '["Glutes"]', 'Glute');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Ball Slams', '["Lats", "Abs", "Obliques"]', '["Glutes", "Front Deltoids"]', 'Abs');
+    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Ball Slams', '["Lats", "Abs", "Obliques"]', '["Glutes", "Front Deltoid"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Bicycle Crunch', '["Obliques"]', '["Abs"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Cable Crunch', '["Abs"]', '["Obliques"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Copenhagen Plank', '["Adductors"]', '["Abductors", "Abs", "Obliques"]', 'Abs');
@@ -324,7 +324,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kneeling Ab Wheel Roll-Out', '["Abs"]', '["Obliques"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kneeling Plank', '["Abs"]', '["Obliques"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Kneeling Side Plank', '["Obliques"]', '["Abs"]', 'Abs');
-    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Landmine Rotation', '["Obliques", "Abs"]', '["Front deltoids"]', 'Abs');
+    INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Landmine Rotation', '["Obliques", "Abs"]', '["Front Deltoid"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('L-Sit', '["Abs", "Hip Flexors"]', '["Chest", "Front Deltoid", "Triceps", "Obliques", "Quads"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Lying Leg Raise', '["Abs", "Hip Flexors"]', '["Obliques"]', 'Abs');
     INSERT OR IGNORE INTO exercises (name, primary_target, secondary_target, region) VALUES ('Lying Windshield Wiper', '["Obliques"]', '["Abs"]', 'Abs');
