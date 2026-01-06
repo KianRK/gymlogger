@@ -1,7 +1,7 @@
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { useLocalSearchParams } from 'expo-router';
+import { RelativePathString, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { LineChart } from 'react-native-chart-kit';
 import '@/src/i18n/i18n';
@@ -22,7 +22,10 @@ export default function ExerciseId() {
   const { t } = useTranslation();
   const { settings } = useSettings();
   const screenWidth = Dimensions.get('window').width;
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, source } = useLocalSearchParams<{
+    id: string;
+    source: RelativePathString;
+  }>();
   const [exercise, setExercise] = useState<Exercise>();
 
   const dateDict: DateDictionary = {};
@@ -495,7 +498,10 @@ export default function ExerciseId() {
         style={StyleSheet.absoluteFillObject}
       />
       <View style={styles.pageHeader}>
-        <BackButton componentStyle={{ position: 'absolute', right: '85%' }} />
+        <BackButton
+          componentStyle={{ position: 'absolute', right: '85%' }}
+          sourceRoute={source}
+        />
         <CustomText
           style={{
             fontSize: headerFontSize,
@@ -509,79 +515,92 @@ export default function ExerciseId() {
         </CustomText>
       </View>
 
-      <View style={{ marginTop: '3%' }}>
-        <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
-          <CustomText style={styles.factText}>Region:</CustomText>
-          <CustomText style={styles.factValueText}>
-            {exercise?.region}
-          </CustomText>
-        </View>
-        {exercise?.primary_target && (
-          <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
-            <CustomText style={styles.factText}>
-              {t('exercises.primary')}:
-            </CustomText>
-            <CustomText style={styles.factValueText}>
-              {JSON.parse(exercise?.primary_target).map(
-                (target: string, index: number) => {
-                  return index ===
-                    JSON.parse(exercise.primary_target).length - 1
-                    ? target
-                    : target + '\n';
-                }
-              )}
-            </CustomText>
-          </View>
-        )}
-        {exercise?.secondary_target && (
-          <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
-            <CustomText style={styles.factText}>
-              {t('exercises.secondary')}:
-            </CustomText>
-            <CustomText style={styles.factValueText}>
-              {JSON.parse(exercise?.secondary_target).map(
-                (target: string, index: number) => {
-                  return index ==
-                    JSON.parse(exercise.secondary_target).length - 1
-                    ? target
-                    : target + '\n';
-                }
-              )}
-            </CustomText>
-          </View>
-        )}
-      </View>
-      <View style={styles.statContainer}>
-        <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-          <CustomText style={styles.statRowText}>
-            {t('exercises.maxWeight')} ({weightUnit}):
-          </CustomText>
-          <CustomText style={styles.statRowText}>
-            {Math.round(maxWeight)}
-          </CustomText>
-        </View>
-        <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-          <CustomText style={styles.statRowText}>
-            {t('exercises.maxVol')} ({weightUnit}):
-          </CustomText>
-          <CustomText style={styles.statRowText}>
-            {Math.round(maxVolume)}
-          </CustomText>
-        </View>
-        <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-          <CustomText style={styles.statRowText}>
-            1RM ({weightUnit}):
-          </CustomText>
-          <CustomText style={styles.statRowText}>
-            {Math.round(oneRM)}
-          </CustomText>
-        </View>
-      </View>
-      <View style={{ flex: 1, justifyContent: 'flex-start', width: '95%' }}>
-        <ScrollView
-          style={{ height: '100%' }}
-          contentContainerStyle={styles.scrollContainer}
+      <ScrollView
+        style={{ width: '100%' }}
+        contentContainerStyle={{ alignItems: 'center' }}
+      >
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginBottom: '3%',
+          }}
         >
+          <View style={{ marginTop: '3%' }}>
+            <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
+              <CustomText style={styles.factText}>Region:</CustomText>
+              <CustomText style={styles.factValueText}>
+                {exercise ? t('targets.' + exercise.region) : undefined}
+              </CustomText>
+            </View>
+            {exercise?.primary_target && (
+              <View
+                style={[styles.factRow, { borderColor: colors.borderColor }]}
+              >
+                <CustomText style={styles.factText}>
+                  {t('exercises.primary')}:
+                </CustomText>
+                <CustomText style={styles.factValueText}>
+                  {JSON.parse(exercise?.primary_target).map(
+                    (target: string, index: number) => {
+                      return index ===
+                        JSON.parse(exercise.primary_target).length - 1
+                        ? t('targets.' + target)
+                        : t('targets.' + target) + '\n';
+                    }
+                  )}
+                </CustomText>
+              </View>
+            )}
+            {exercise?.secondary_target && (
+              <View
+                style={[styles.factRow, { borderColor: colors.borderColor }]}
+              >
+                <CustomText style={styles.factText}>
+                  {t('exercises.secondary')}:
+                </CustomText>
+                <CustomText style={styles.factValueText}>
+                  {JSON.parse(exercise?.secondary_target).map(
+                    (target: string, index: number) => {
+                      return index ==
+                        JSON.parse(exercise.secondary_target).length - 1
+                        ? t('targets.' + target)
+                        : t('targets.' + target) + '\n';
+                    }
+                  )}
+                </CustomText>
+              </View>
+            )}
+          </View>
+          <View style={styles.statContainer}>
+            <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
+              <CustomText style={styles.statRowText}>
+                {t('exercises.maxWeight')} ({weightUnit}):
+              </CustomText>
+              <CustomText style={styles.statRowText}>
+                {Math.round(maxWeight)}
+              </CustomText>
+            </View>
+            <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
+              <CustomText style={styles.statRowText}>
+                {t('exercises.maxVol')} ({weightUnit}):
+              </CustomText>
+              <CustomText style={styles.statRowText}>
+                {Math.round(maxVolume)}
+              </CustomText>
+            </View>
+            <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
+              <CustomText style={styles.statRowText}>
+                1RM ({weightUnit}):
+              </CustomText>
+              <CustomText style={styles.statRowText}>
+                {Math.round(oneRM)}
+              </CustomText>
+            </View>
+          </View>
+        </View>
+        <View style={{ flex: 1, justifyContent: 'flex-start', width: '95%' }}>
           <View
             style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
           >
@@ -757,8 +776,8 @@ export default function ExerciseId() {
               </CustomText>
             )}
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }

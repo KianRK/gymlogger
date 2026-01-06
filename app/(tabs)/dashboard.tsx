@@ -1,7 +1,14 @@
-import { Dimensions, View, StyleSheet, ScrollView, Image } from 'react-native';
+import {
+  Dimensions,
+  View,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Pressable,
+} from 'react-native';
 import { ImageSourcePropType } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 import { PieChart } from 'react-native-chart-kit';
@@ -22,6 +29,7 @@ import { db } from '@/src/database';
 export default function Dashboard() {
   const colors = useThemeColors();
   const { t } = useTranslation();
+  const router = useRouter();
   const screenWidth = Dimensions.get('window').width;
   const [totalWorkouts, setTotalWorkouts] = useState<number | null>();
   const [firstWorkoutDate, setFirstWorkoutDate] = useState<Date | null>();
@@ -357,7 +365,16 @@ export default function Dashboard() {
             {favFreqExercises &&
               favFreqExercises.map((item: any, index: number) => {
                 return (
-                  <View
+                  <Pressable
+                    onPress={() =>
+                      router.push({
+                        pathname: '/exercises/[id]',
+                        params: {
+                          id: item.id,
+                          source: '/dashboard',
+                        },
+                      })
+                    }
                     key={item.id}
                     style={[
                       styles.favExercise,
@@ -381,7 +398,7 @@ export default function Dashboard() {
                     >
                       {t(item.name)}
                     </CustomText>
-                  </View>
+                  </Pressable>
                 );
               })}
           </View>
@@ -392,8 +409,17 @@ export default function Dashboard() {
             {favSetExercises &&
               favSetExercises.map((item: any, index: number) => {
                 return (
-                  <View
+                  <Pressable
                     key={item.id}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/exercises/[id]',
+                        params: {
+                          id: item.id,
+                          source: '/dashboard',
+                        },
+                      })
+                    }
                     style={[
                       styles.favExercise,
                       { backgroundColor: colors.mainTwo },
@@ -416,7 +442,7 @@ export default function Dashboard() {
                     >
                       {t(item.name)}
                     </CustomText>
-                  </View>
+                  </Pressable>
                 );
               })}
           </View>
