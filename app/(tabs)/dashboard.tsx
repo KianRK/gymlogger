@@ -262,10 +262,10 @@ export default function Dashboard() {
             ]}
           >
             <CustomText style={styles.statText}>
-              {t('dashboard.trainingSince')}
+              {t('dashboard.weeksTraining')}
             </CustomText>
             <CustomText style={styles.statValue}>
-              {firstWorkoutDate?.getDate()}
+              {weeksTraining && Math.floor(weeksTraining)}
             </CustomText>
           </View>
           <View

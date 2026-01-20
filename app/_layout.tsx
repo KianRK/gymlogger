@@ -5,10 +5,13 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import DatabaseProvider from '@/src/providers/DatabaseProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
+import { useAuthContext } from '@/hooks/UseAuthContext';
+import AuthProvider from '@/src/providers/AuthProvider';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { isLoading } = useAuthContext();
   const [loaded, error] = Font.useFonts({
     'Outfit-Black': require('@/assets/fonts/Outfit-Black.ttf'),
     'Outfit-Bold': require('@/assets/fonts/Outfit-Bold.ttf'),
@@ -21,27 +24,29 @@ export default function RootLayout() {
     'Outfit-Thin': require('@/assets/fonts/Outfit-Thin.ttf'),
   });
   useEffect(() => {
-    if (loaded || error) {
+    if (loaded || error || !isLoading) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [loaded, error, isLoading]);
 
   if (!loaded && !error) {
     return null;
   }
   return (
-    <DatabaseProvider>
-      <SettingsProvider>
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack>
-        <StatusBar style="light" />
-      </SettingsProvider>
-    </DatabaseProvider>
+    <AuthProvider>
+      <DatabaseProvider>
+        <SettingsProvider>
+          <Stack>
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack>
+          <StatusBar style="light" />
+        </SettingsProvider>
+      </DatabaseProvider>
+    </AuthProvider>
   );
 }

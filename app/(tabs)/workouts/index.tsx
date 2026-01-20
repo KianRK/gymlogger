@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import '../../../src/i18n/i18n';
 import i18n from '../../../src/i18n/i18n';
+import { useAuthContext } from '@/hooks/UseAuthContext';
 
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -46,6 +47,7 @@ export default function Index() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const { profile } = useAuthContext();
   const [dropDownNumber, setDropDownNumber] = useState<{ num: number }>({
     num: 0,
   });
@@ -186,6 +188,8 @@ export default function Index() {
 
   useFocusEffect(
     useCallback(() => {
+      console.log('PROFILE: ', profile);
+      console.log('IS LOGGED IN?: ', profile?.isLoggedIn);
       setRefreshWorkoutKey(refreshWorkoutKey + 1);
       function fetchWorkouts() {
         try {
@@ -304,8 +308,8 @@ export default function Index() {
             >
               <Pressable
                 onPress={() => {
-                  deleteWorkout(activeWorkoutId),
-                    setDeleteConfirmationVisible(false);
+                  (deleteWorkout(activeWorkoutId),
+                    setDeleteConfirmationVisible(false));
                 }}
                 style={[
                   styles.deleteConfirmationButton,

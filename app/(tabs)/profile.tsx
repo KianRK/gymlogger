@@ -10,6 +10,7 @@ import CustomText from '@/components/CustomText';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import ProfileButton from '@/components/Buttons/ProfileButton';
 import MeasurementsModal from '@/components/ MeasurementsModal';
+import Auth from '@/components/Auth';
 
 export default function ProfileScreen() {
   const { settings, updateSetting } = useSettings();
@@ -51,10 +52,11 @@ export default function ProfileScreen() {
             {t('profile.membership')}
           </CustomText>
           <Pressable style={styles.membershipButton}>
-            <CustomText style={styles.membershipButtonText}>Premium</CustomText>
+            <CustomText style={styles.membershipButtonText}>Basic</CustomText>
           </Pressable>
         </View>
       </View>
+      <Auth />
       <View style={styles.profileSettings}>
         <CustomText style={styles.settingSectionHeader}>
           {t('profile.profileSettings')}

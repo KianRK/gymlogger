@@ -68,7 +68,7 @@
   },
   "dashboard": {
     "totalWorkouts": "Workouts insgesamt",
-    "trainingSince": "Trainingsdauer in Wochen",
+    "weeksTraining": "Wochen im Training",
     "workoutsPerWeek": "Workouts pro Woche",
     "regionsAfterExercises": "Lieblingsregionen nach Häufigkeit",
     "regionsAfterSets": "Lieblingsregionen nach Sets",
