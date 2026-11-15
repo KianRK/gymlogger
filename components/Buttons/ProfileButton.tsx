@@ -6,8 +6,10 @@ import {
   ImageStyle,
   ViewStyle,
 } from 'react-native';
-
 import { useRouter } from 'expo-router';
+
+import useThemeColors from '@/hooks/UseThemeColors';
+import { Radius, Spacing } from '@/constants/Theme';
 
 type Props = {
   componentStyle?: ViewStyle;
@@ -21,6 +23,7 @@ export default function ProfileButton({
   onPress,
 }: Props) {
   const router = useRouter();
+  const colors = useThemeColors();
 
   const goToProfile = () => {
     router.push({
@@ -31,12 +34,18 @@ export default function ProfileButton({
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       <Pressable
-        style={styles.profileButton}
+        accessibilityRole="button"
+        accessibilityLabel="Profile"
+        style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
         onPress={onPress ? () => onPress() : goToProfile}
       >
         <Image
           source={require('@/assets/images/comic_style_img.png')}
-          style={[styles.profileImage, imageStyle]}
+          style={[
+            styles.profileImage,
+            { borderColor: colors.border },
+            imageStyle,
+          ]}
         />
       </Pressable>
     </View>
@@ -45,23 +54,16 @@ export default function ProfileButton({
 
 const styles = StyleSheet.create({
   componentContainer: {
-    width: 45,
-    height: 45,
-    position: 'relative',
     justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-    marginRight: 10,
-  },
-  profileButton: {
-    justifyContent: 'center',
-    alignContent: 'center',
     alignItems: 'center',
+    marginLeft: Spacing.xs,
+    marginRight: Spacing.lg,
   },
   profileImage: {
-    width: 35,
-    height: 35,
-    borderRadius: 23,
+    width: 34,
+    height: 34,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
     resizeMode: 'cover',
   },
 });

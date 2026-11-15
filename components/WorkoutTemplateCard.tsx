@@ -1,14 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  Platform,
-  Modal,
-  Pressable,
-  TextInput,
-} from 'react-native';
+import { View, StyleSheet, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +11,9 @@ import CustomText from './CustomText';
 import CustomTextInput from './CustomTextInput';
 import MenuButton from './Buttons/MenuButton';
 import useThemeColors from '@/hooks/UseThemeColors';
-import i18n from '@/src/i18n/i18n';
+import Card from './Card';
+import ActionDialog from './ActionDialog';
+import { Fonts, FontSize, Radius, Spacing } from '@/constants/Theme';
 
 type Props = {
   template_id: string;
@@ -121,259 +116,143 @@ export default function WorkoutTemplateCard({
     }
   }
 
+  const displayName = name
+    ? name
+    : `${t('buttonLabels.template')} ${template_number}`;
+
   return (
-    <View style={styles.WorkoutCardContainer}>
-      <LinearGradient
-        start={{ x: 0.375, y: 0.375 }}
-        end={{ x: 0.75, y: 0.75 }}
-        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
-        style={[StyleSheet.absoluteFill, styles.gradientStyle]}
-      />
-      <View style={styles.workoutCardHeaderContainer}>
-        {name && (
-          <CustomTextInput
-            onEndEditing={() => {
-              setNameEditable(false);
-              updateName(text);
-            }}
-            enterKeyHint="done"
-            ref={textInputRef}
-            editable={nameEditable}
-            onChangeText={(text) => setText(text)}
-            style={styles.workoutCardLabel}
-          >
-            {name}
-          </CustomTextInput>
-        )}
-        {!name && (
-          <CustomTextInput
-            onEndEditing={() => {
-              setNameEditable(false);
-              updateName(text);
-            }}
-            enterKeyHint="done"
-            ref={textInputRef}
-            editable={nameEditable}
-            onChangeText={(text) => setText(text)}
-            style={styles.workoutCardLabel}
-          >
-            {t('buttonLabels.template')} {template_number}
-          </CustomTextInput>
-        )}
-        <View style={styles.menuDropDownContainer}>
-          <MenuButton
-            componentStyle={styles.deletebuttonComponent}
-            buttonStyle={{ width: 40, height: 40 }}
-            iconSize={25}
-            onPress={onPress}
-          />
-          {dropDownVisible && (
-            <View
-              style={[
-                styles.dropDownContainer,
-                {
-                  backgroundColor: colors.background,
-                  width: i18n.language == 'de' ? 110 : 80,
-                  right: i18n.language == 'de' ? '1%' : undefined,
-                },
-              ]}
-            >
-              <Pressable style={{ zIndex: 999 }} onPress={onPressEdit}>
-                <CustomText style={styles.buttonText}>
-                  {t('buttonLabels.edit')}
-                </CustomText>
-              </Pressable>
-              <Pressable
-                style={{ zIndex: 999 }}
-                onPress={() => {
-                  setNameEditable(true);
-                  setDropDownVisible(false);
-                  handleFocus();
-                }}
-              >
-                <CustomText style={styles.buttonText}>
-                  {t('buttonLabels.rename')}
-                </CustomText>
-              </Pressable>
-              <Pressable
-                style={{ zIndex: 999 }}
-                onPress={() => {
-                  setDropDownVisible(false);
-                  setDeleteConfirmationVisible(!deleteConfirmationVisible);
-                }}
-              >
-                <CustomText style={styles.buttonText}>
-                  {t('buttonLabels.delete')}
-                </CustomText>
-              </Pressable>
-            </View>
-          )}
-        </View>
-      </View>
-      <Modal transparent={true} visible={deleteConfirmationVisible}>
+    <Card style={styles.card}>
+      <View style={styles.header}>
         <View
+          style={[styles.iconBadge, { backgroundColor: colors.primarySoft }]}
+        >
+          <Ionicons name="clipboard-outline" size={18} color={colors.primary} />
+        </View>
+        <CustomTextInput
+          onEndEditing={() => {
+            setNameEditable(false);
+            updateName(text);
+          }}
+          enterKeyHint="done"
+          ref={textInputRef}
+          editable={nameEditable}
+          onChangeText={(text) => setText(text)}
           style={[
-            styles.confirmationContainer,
-            { backgroundColor: colors.background },
+            styles.title,
+            nameEditable && {
+              backgroundColor: colors.surfaceAlt,
+              borderColor: colors.primary,
+              borderWidth: 1,
+            },
           ]}
         >
-          <CustomText
-            style={{
-              height: '50%',
-              width: '100%',
-              alignSelf: 'center',
-              borderBottomWidth: 1,
-              textAlign: 'center',
-              textAlignVertical: 'center',
-              fontSize: 24,
-            }}
-          >
-            {t('templates.deleteTemplate')}
+          {displayName}
+        </CustomTextInput>
+        <MenuButton onPress={onPress} />
+      </View>
+      {templateExercises.length > 0 && (
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
+      )}
+      {templateExercises.map((exercise) => (
+        <View key={exercise.id} style={styles.exerciseRow}>
+          <CustomText style={styles.exerciseName} numberOfLines={1}>
+            {t(exercise.name)}
           </CustomText>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              width: '100%',
-              flex: 1,
-            }}
-          >
-            <Pressable
-              onPress={() => deleteTemplate(template_id)}
-              style={[styles.deleteConfirmationButton, { borderRightWidth: 1 }]}
-            >
-              <CustomText
-                style={{
-                  fontSize: 20,
-                  textAlign: 'center',
-                  textAlignVertical: 'center',
-                }}
-              >
-                {t('buttonLabels.delete')}
-              </CustomText>
-            </Pressable>
-            <Pressable
-              onPress={() => setDeleteConfirmationVisible(false)}
-              style={styles.deleteConfirmationButton}
-            >
-              <CustomText
-                style={{
-                  fontSize: 20,
-                  textAlign: 'center',
-                  textAlignVertical: 'center',
-                }}
-              >
-                {t('buttonLabels.cancel')}
-              </CustomText>
-            </Pressable>
+          <View style={[styles.badge, { backgroundColor: colors.surfaceAlt }]}>
+            <CustomText style={[styles.badgeText, { color: colors.textMuted }]}>
+              {countSets(exercise.id)} Sets
+            </CustomText>
           </View>
         </View>
-      </Modal>
-      {templateExercises.map((exercise) => (
-        <View key={exercise.id} style={styles.workoutCardExerciseContainer}>
-          <CustomText style={styles.workoutCardExerciseName}>
-            {exercise.name}
-          </CustomText>
-          <CustomText style={styles.workoutCardExerciseSets}>
-            Sets: {countSets(exercise.id)}
-          </CustomText>
-        </View>
       ))}
-    </View>
+      <ActionDialog
+        visible={dropDownVisible}
+        title={displayName}
+        onRequestClose={() => setDropDownVisible(false)}
+        actions={[
+          {
+            label: t('buttonLabels.edit'),
+            variant: 'primary',
+            onPress: () => {
+              setDropDownVisible(false);
+              onPressEdit();
+            },
+          },
+          {
+            label: t('buttonLabels.rename'),
+            onPress: () => {
+              setNameEditable(true);
+              setDropDownVisible(false);
+              handleFocus();
+            },
+          },
+          {
+            label: t('buttonLabels.delete'),
+            variant: 'danger',
+            onPress: () => {
+              setDropDownVisible(false);
+              setDeleteConfirmationVisible(!deleteConfirmationVisible);
+            },
+          },
+        ]}
+      />
+      <ActionDialog
+        visible={deleteConfirmationVisible}
+        title={t('templates.deleteTemplate')}
+        onRequestClose={() => setDeleteConfirmationVisible(false)}
+        actions={[
+          {
+            label: t('buttonLabels.cancel'),
+            onPress: () => setDeleteConfirmationVisible(false),
+          },
+          {
+            label: t('buttonLabels.delete'),
+            variant: 'danger',
+            onPress: () => deleteTemplate(template_id),
+          },
+        ]}
+      />
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  WorkoutCardContainer: {
-    width: '95%',
-    justifyContent: 'center',
+  card: { width: '100%', paddingVertical: Spacing.md },
+  header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  iconBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: Radius.sm,
     alignItems: 'center',
-    borderColor: 'black',
-    borderRadius: 8,
-    overflow: 'visible',
-    margin: 8,
-    padding: 5,
-  },
-  gradientStyle: {
     justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: 'black',
-    borderRadius: 8,
   },
-  workoutCardHeaderContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    padding: 4,
-    zIndex: 7,
-    overflow: 'visible',
-  },
-  workoutCardLabel: {
-    position: 'absolute',
-    marginRight: 'auto',
-    alignSelf: 'center',
-    textAlign: 'center',
-    fontSize: 22,
-  },
-  menuDropDownContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 'auto',
-    marginRight: 3,
-    marginBottom: 2,
-    overflow: 'visible',
-    zIndex: 9999,
-  },
-  dropDownContainer: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: 80,
-    top: 40,
-    marginLeft: 'auto',
-    backgroundColor: '#f9f9f9',
-    overflow: 'visible',
-    zIndex: 9999,
-  },
-  deletebuttonComponent: {
-    marginLeft: 'auto',
-    marginRight: 3,
-    marginBottom: 2,
-  },
-  buttonText: { textAlign: 'left', fontSize: 17, padding: 1, zIndex: 9999 },
-  workoutCardExerciseContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignContent: 'space-between',
-    padding: 2,
-    zIndex: Platform.OS === 'ios' ? 0 : undefined,
-  },
-  workoutCardExerciseName: {
-    fontWeight: 600,
-    marginLeft: 3,
-    fontSize: 16,
-  },
-  workoutCardExerciseSets: {
-    marginRight: 3,
-    fontSize: 16,
-  },
-  confirmationContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'static',
+  title: {
+    flex: 1,
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.bodyLarge,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    borderRadius: Radius.sm,
     borderWidth: 1,
-    borderRadius: 3,
-    width: '60%',
-    height: '10%',
-    backgroundColor: '#f9f9f9',
-    margin: 'auto',
+    borderColor: 'transparent',
   },
-  deleteConfirmationButton: {
-    justifyContent: 'center',
-    width: '50%',
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: Spacing.sm },
+  exerciseRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.xs + 2,
   },
+  exerciseName: {
+    flex: 1,
+    fontFamily: Fonts.medium,
+    fontSize: FontSize.body,
+    marginRight: Spacing.md,
+  },
+  badge: {
+    borderRadius: Radius.pill,
+    paddingHorizontal: Spacing.sm + 2,
+    paddingVertical: 2,
+  },
+  badgeText: { fontFamily: Fonts.medium, fontSize: FontSize.caption },
 });

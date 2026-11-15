@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Fonts, FontSize } from '@/constants/Theme';
 
 import { useTranslation } from 'react-i18next';
 import useThemeColors from '@/hooks/UseThemeColors';
@@ -17,37 +17,48 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.tabIconSelected,
+        tabBarInactiveTintColor: colors.tabIconDefault,
         headerShadowVisible: false,
         headerTintColor: colors.text,
         headerTitleAlign: 'center',
-        headerTitleStyle: { fontSize: 28, fontFamily: 'Outfit-Regular' },
+        headerTitleStyle: {
+          fontSize: FontSize.title,
+          fontFamily: Fonts.semiBold,
+          color: colors.text,
+        },
         headerLeft: () => <DashboardButton />,
         headerRight: () => (
-          <>
+          <View style={styles.headerRight}>
             <SettingsButton />
             <ProfileButton />
-          </>
+          </View>
         ),
+        headerStyle: {
+          backgroundColor: colors.surface,
+        },
         headerBackground: () => (
-          <LinearGradient
-            style={StyleSheet.absoluteFill}
-            start={{ x: 0.5, y: 1 }}
-            end={{ x: 0.5, y: 0 }}
-            colors={[colors.tabBarBackgroundOne, colors.tabBarBackgroundTwo]}
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              {
+                backgroundColor: colors.surface,
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                borderBottomColor: colors.border,
+              },
+            ]}
           />
         ),
+        sceneStyle: { backgroundColor: colors.background },
+        tabBarLabelStyle: {
+          fontFamily: Fonts.medium,
+          fontSize: FontSize.caption,
+        },
         tabBarStyle: {
-          backgroundColor: 'transparent',
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          borderTopWidth: StyleSheet.hairlineWidth,
           elevation: 0,
         },
-        tabBarBackground: () => (
-          <LinearGradient
-            style={StyleSheet.absoluteFill}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            colors={[colors.tabBarBackgroundOne, colors.tabBarBackgroundTwo]}
-          />
-        ),
       }}
     >
       <Tabs.Screen
@@ -56,7 +67,7 @@ export default function TabLayout() {
           title: 'Workouts',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? 'play-sharp' : 'play-outline'}
+              name={focused ? 'barbell' : 'barbell-outline'}
               color={color}
               size={24}
             />
@@ -113,3 +124,7 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  headerRight: { flexDirection: 'row', alignItems: 'center' },
+});

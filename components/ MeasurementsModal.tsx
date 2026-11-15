@@ -14,6 +14,8 @@ import MeasurementsRow from './MeasurementRow';
 import { Measurements } from '@/constants/Interfaces';
 import { useState } from 'react';
 import CustomText from './CustomText';
+import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 interface CustomModalProps extends ModalProps {
   viewStyle?: ViewStyle;
@@ -31,19 +33,25 @@ export default function MeasurementsModal({
   );
   const { t } = useTranslation();
 
+  const colors = useThemeColors();
+
   return (
     <Modal {...otherProps}>
-      <View style={[styles.mainContainer, viewStyle]}>
-        <CustomText style={styles.title}>
-          {t('profile.measurements')}
-        </CustomText>
-        <View style={styles.scrollViewContainer}>
+      <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
+        <View
+          style={[
+            styles.sheet,
+            { backgroundColor: colors.surface },
+            shadow(colors.shadow, 3),
+            viewStyle,
+          ]}
+        >
+          <CustomText style={styles.title}>
+            {t('profile.measurements')}
+          </CustomText>
           <ScrollView
-            fadingEdgeLength={{ start: 0, end: 20 }}
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={styles.scrollView}
+            keyboardShouldPersistTaps="handled"
           >
             {Object.keys(settings.measurements).map((key, index) => (
               <MeasurementsRow
@@ -55,31 +63,33 @@ export default function MeasurementsModal({
               />
             ))}
           </ScrollView>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Pressable
-            style={styles.button}
-            onPress={() => {
-              setTempMeasurements({ ...settings.measurements });
-              setMeasureModalVisible(false);
-            }}
-          >
-            <CustomText style={styles.buttonText}>
-              {t('buttonLabels.cancel')}
-            </CustomText>
-          </Pressable>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              style={[styles.button, { backgroundColor: colors.surfaceAlt }]}
+              onPress={() => {
+                setTempMeasurements({ ...settings.measurements });
+                setMeasureModalVisible(false);
+              }}
+            >
+              <CustomText style={styles.buttonText}>
+                {t('buttonLabels.cancel')}
+              </CustomText>
+            </Pressable>
 
-          <Pressable
-            style={styles.button}
-            onPress={() => {
-              updateSetting('measurements', tempMeasurements);
-              setMeasureModalVisible(false);
-            }}
-          >
-            <CustomText style={styles.buttonText}>
-              {t('buttonLabels.save')}
-            </CustomText>
-          </Pressable>
+            <Pressable
+              style={[styles.button, { backgroundColor: colors.primary }]}
+              onPress={() => {
+                updateSetting('measurements', tempMeasurements);
+                setMeasureModalVisible(false);
+              }}
+            >
+              <CustomText
+                style={[styles.buttonText, { color: colors.onPrimary }]}
+              >
+                {t('buttonLabels.save')}
+              </CustomText>
+            </Pressable>
+          </View>
         </View>
       </View>
     </Modal>
@@ -87,41 +97,35 @@ export default function MeasurementsModal({
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    height: '80%',
-    alignItems: 'center',
+  overlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    maxHeight: '88%',
+    borderTopLeftRadius: Radius.xl,
+    borderTopRightRadius: Radius.xl,
+    paddingHorizontal: Spacing.xl,
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.xxl,
   },
   title: {
-    fontSize: 28,
-    color: '#222222',
-    marginTop: '8%',
-    marginBottom: '10%',
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.heading,
+    marginBottom: Spacing.md,
   },
-  scrollViewContainer: { height: '70%', width: '100%' },
+  scrollView: { flexGrow: 0 },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '80%',
-    marginTop: 'auto',
-    marginBottom: '8%',
+    gap: Spacing.sm,
+    marginTop: Spacing.xl,
   },
   button: {
-    justifyContent: 'center',
+    flex: 1,
+    height: 48,
+    borderRadius: Radius.md,
     alignItems: 'center',
-    height: 40,
-    width: 108,
-    backgroundColor: '#f9f9f9',
-    borderWidth: 1,
-    borderRadius: 24,
-    paddingTop: 6,
-    paddingBottom: 8,
+    justifyContent: 'center',
   },
-  buttonText: {
-    fontSize: 18,
-    fontFamily: 'Outfit-SemiBold',
-    color: '#222222',
-    textAlign: 'center',
-    textAlignVertical: 'top',
-  },
+  buttonText: { fontFamily: Fonts.semiBold, fontSize: FontSize.body },
 });

@@ -1,15 +1,10 @@
-import {
-  Pressable,
-  Text,
-  View,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { View, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import CustomText from '../CustomText';
+import IconButton from '../IconButton';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { FontSize, Spacing } from '@/constants/Theme';
 
 type Props = {
   label?: string;
@@ -26,59 +21,32 @@ export default function EditButton({
   componentStyle,
   buttonStyle,
   labelStyle,
-  iconSize = 35,
+  iconSize = 20,
 }: Props) {
   const colors = useThemeColors();
 
   return (
     <View style={[styles.componentContainer, componentStyle]}>
-      {label && (
-        <CustomText style={[styles.editButtonLabel, labelStyle]}>
-          {label}
-        </CustomText>
-      )}
-      <View
-        style={[
-          styles.editButtonContainer,
-          { borderColor: colors.borderColor },
-          buttonStyle,
-        ]}
+      <IconButton
+        onPress={onPress}
+        variant="soft"
+        style={buttonStyle}
+        accessibilityLabel={label ?? 'Edit'}
       >
-        <Pressable style={styles.editButton} onPress={onPress}>
-          <MaterialCommunityIcons
-            name="circle-edit-outline"
-            size={iconSize}
-            color={colors.icon}
-          />
-        </Pressable>
-      </View>
+        <MaterialCommunityIcons
+          name="pencil-outline"
+          size={Math.min(iconSize, 24)}
+          color={colors.icon}
+        />
+      </IconButton>
+      {label && (
+        <CustomText style={[styles.label, labelStyle]}>{label}</CustomText>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  componentContainer: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  editButtonContainer: {
-    width: 30,
-    height: 30,
-    position: 'relative',
-    borderWidth: 2,
-    borderRadius: 25,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-  },
-
-  editButton: { alignItems: 'center' },
-  editButtonLabel: {
-    width: 140,
-    textAlign: 'center',
-    color: 'black',
-    fontSize: 18,
-  },
+  componentContainer: { alignItems: 'center', justifyContent: 'center' },
+  label: { fontSize: FontSize.small, marginTop: Spacing.xs },
 });

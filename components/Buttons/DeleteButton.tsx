@@ -1,15 +1,10 @@
-import {
-  Pressable,
-  View,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { View, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import CustomText from '../CustomText';
+import IconButton from '../IconButton';
 import useThemeColors from '@/hooks/UseThemeColors';
-import { useTheme } from '@react-navigation/native';
+import { FontSize, Spacing } from '@/constants/Theme';
 
 type Props = {
   label?: string;
@@ -26,56 +21,32 @@ export default function DeleteButton({
   componentStyle,
   buttonStyle,
   labelStyle,
-  iconSize = 35,
+  iconSize = 20,
 }: Props) {
   const colors = useThemeColors();
 
   return (
     <View style={[styles.componentContainer, componentStyle]}>
-      {label && (
-        <CustomText style={[styles.deleteButtonLabel, labelStyle]}>
-          {label}
-        </CustomText>
-      )}
-      <View
-        style={[
-          styles.deleteButtonContainer,
-          {
-            borderColor: colors.borderColor,
-          },
-          buttonStyle,
-        ]}
+      <IconButton
+        onPress={onPress}
+        size={36}
+        style={buttonStyle}
+        accessibilityLabel={label ?? 'Delete'}
       >
-        <Pressable onPress={onPress}>
-          <Ionicons name="trash-outline" size={iconSize} color={colors.icon} />
-        </Pressable>
-      </View>
+        <Ionicons
+          name="trash-outline"
+          size={Math.min(iconSize, 22)}
+          color={colors.danger}
+        />
+      </IconButton>
+      {label && (
+        <CustomText style={[styles.label, labelStyle]}>{label}</CustomText>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  componentContainer: {
-    position: 'relative',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  deleteButtonContainer: {
-    width: 30,
-    height: 30,
-    position: 'relative',
-    borderWidth: 2,
-    borderRadius: 25,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-  },
-  deleteButton: { alignItems: 'center' },
-  deleteButtonLabel: {
-    width: 140,
-    textAlign: 'center',
-    color: 'black',
-    fontSize: 18,
-  },
+  componentContainer: { alignItems: 'center', justifyContent: 'center' },
+  label: { fontSize: FontSize.small, marginTop: Spacing.xs },
 });

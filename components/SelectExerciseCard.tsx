@@ -1,6 +1,6 @@
 import { View, StyleSheet, FlatList, Pressable } from 'react-native';
 import { useEffect, useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +11,7 @@ import CustomTextInput from './CustomTextInput';
 import { db } from '@/src/database';
 import { Exercise } from '@/src/Interfaces/db_interfaces';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 type Props = {
   onConfirm: () => void;
@@ -26,7 +27,6 @@ export default function SelectExerciseCard({
   const { t } = useTranslation();
   const [text, setText] = useState('');
   const [typing, setTyping] = useState(false);
-  const [fontSize, setFontSize] = useState(24);
   const handleConfirm = () => {
     onConfirm();
   };
@@ -35,14 +35,6 @@ export default function SelectExerciseCard({
     t(item.name).toLowerCase().includes(text.toLowerCase())
   );
   const handleChange = (text: string) => {
-    if (text.length > 18) {
-      let adjustedFontSize = 26 - (text.length - 16);
-      if (adjustedFontSize <= 16) {
-        setFontSize(16);
-      } else {
-        setFontSize(adjustedFontSize);
-      }
-    }
     setText(text);
   };
 
@@ -59,53 +51,61 @@ export default function SelectExerciseCard({
   }, []);
 
   return (
-    <View style={styles.cardWrapper}>
-      <View
-        style={[
-          styles.selectExerciseCardContainer,
-          {
-            borderColor: colors.borderColor,
-          },
-        ]}
-      >
-        <View style={styles.selectionContainer}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: colors.surface },
+        shadow(colors.shadow, 3),
+      ]}
+    >
+      <CustomText style={styles.title}>{t('buttonLabels.addExercise')}</CustomText>
+      <View style={styles.inputRow}>
+        <View
+          style={[
+            styles.searchField,
+            {
+              backgroundColor: colors.surfaceAlt,
+              borderColor: typing ? colors.primary : 'transparent',
+            },
+          ]}
+        >
+          <Ionicons name="search" size={18} color={colors.textMuted} />
           <CustomTextInput
-            style={[
-              styles.inputText,
-              {
-                fontSize: fontSize,
-                borderColor: colors.borderColor,
-              },
-            ]}
+            style={styles.input}
             onChangeText={handleChange}
             placeholder={t('buttonLabels.enterExercise')}
-            placeholderTextColor={colors.text}
+            placeholderTextColor={colors.textMuted}
             value={text}
             onPress={() => setTyping(true)}
+            onFocus={() => setTyping(true)}
           />
         </View>
-        <ConfirmButton
-          onPress={handleConfirm}
-          componentStyle={styles.confirmButtonContainer}
-          buttonStyle={styles.confirmButton}
-          labelStyle={styles.confirmButtonLabel}
-        />
+        <ConfirmButton onPress={handleConfirm} />
       </View>
 
       {typing && (
         <FlatList
           data={filteredExercises}
-          style={[styles.flatListContainer]}
+          style={[styles.list, { borderColor: colors.border }]}
+          keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <Pressable
+              style={({ pressed }) => [
+                styles.listItem,
+                index > 0 && {
+                  borderTopWidth: StyleSheet.hairlineWidth,
+                  borderTopColor: colors.border,
+                },
+                pressed && { backgroundColor: colors.surfaceAlt },
+              ]}
               onPress={() => {
                 handleChange(t(item.name));
                 updateExerciseName(item.name);
                 setTyping(false);
               }}
             >
-              <CustomText style={styles.listItems}>{t(item.name)}</CustomText>
+              <CustomText style={styles.listItemText}>{t(item.name)}</CustomText>
             </Pressable>
           )}
         />
@@ -115,45 +115,45 @@ export default function SelectExerciseCard({
 }
 
 const styles = StyleSheet.create({
-  cardWrapper: {
-    width: '80%',
-    position: 'relative',
+  card: {
+    width: '88%',
+    borderRadius: Radius.xl,
+    padding: Spacing.xl,
   },
-  selectExerciseCardContainer: {
-    width: '100%',
+  title: {
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.title,
+    marginBottom: Spacing.lg,
+  },
+  inputRow: {
     flexDirection: 'row',
-    maxHeight: 120,
-    borderRadius: 36,
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  searchField: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    height: 48,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.md,
     borderWidth: 1,
-    padding: 5,
-    justifyContent: 'space-between',
-    alignContent: 'space-between',
   },
-  selectionContainer: { width: '75%' },
-  flatListContainer: {
-    width: '70%',
-    marginLeft: 10,
-    maxHeight: 150,
-    borderWidth: 1,
-    zIndex: 999999,
+  input: {
+    flex: 1,
+    fontSize: FontSize.body,
+    paddingVertical: 0,
   },
-  inputText: {
-    borderWidth: 1,
-    width: '100%',
-    borderRadius: 36,
-    paddingLeft: 10,
-    fontSize: 26,
-    fontFamily: 'Outfit-Regular',
-    textAlign: 'left',
-    padding: 5,
+  list: {
+    marginTop: Spacing.md,
+    maxHeight: 240,
+    borderRadius: Radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
   },
-  listItems: {
-    borderWidth: 1,
-    fontSize: 18,
+  listItem: {
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
   },
-  confirmButton: { width: 40, height: 40 },
-  confirmButtonContainer: {
-    marginRight: '5%',
-  },
-  confirmButtonLabel: { fontFamily: 'Outfit-Regular' },
+  listItemText: { fontSize: FontSize.body },
 });

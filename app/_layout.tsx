@@ -5,6 +5,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import DatabaseProvider from '@/src/providers/DatabaseProvider';
 import { SettingsProvider } from '@/src/providers/SettingsProvider';
+import useThemeColors from '@/hooks/UseThemeColors';
+
+function ThemedStatusBar() {
+  const colors = useThemeColors();
+  return <StatusBar style={colors.statusBar} />;
+}
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,7 +46,7 @@ export default function RootLayout() {
             }}
           />
         </Stack>
-        <StatusBar style="light" />
+        <ThemedStatusBar />
       </SettingsProvider>
     </DatabaseProvider>
   );

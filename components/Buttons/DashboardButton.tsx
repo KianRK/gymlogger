@@ -1,38 +1,27 @@
-import { Pressable, View, StyleSheet } from 'react-native';
-
+import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
+import IconButton from '../IconButton';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Spacing } from '@/constants/Theme';
 
 export default function DashboardButton() {
   const router = useRouter();
   const colors = useThemeColors();
 
-  const goToDashboard = () => {
-    router.push({
-      pathname: '/dashboard',
-    });
-  };
-
   return (
     <View style={styles.componentContainer}>
-      <Pressable style={styles.settingsButton} onPress={goToDashboard}>
-        <Ionicons name="stats-chart-sharp" size={30} color={colors.icon} />
-      </Pressable>
+      <IconButton
+        accessibilityLabel="Dashboard"
+        onPress={() => router.push({ pathname: '/dashboard' })}
+      >
+        <Ionicons name="stats-chart-outline" size={22} color={colors.icon} />
+      </IconButton>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  componentContainer: {
-    width: 45,
-    height: 45,
-    position: 'relative',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-  },
-  settingsButton: { alignItems: 'center' },
+  componentContainer: { marginLeft: Spacing.md },
 });

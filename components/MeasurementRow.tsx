@@ -1,4 +1,4 @@
-import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,6 +6,8 @@ import CustomText from './CustomText';
 import CustomTextInput from './CustomTextInput';
 
 import { Measurements } from '@/constants/Interfaces';
+import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing } from '@/constants/Theme';
 
 type Props = {
   metric: keyof Measurements;
@@ -23,6 +25,7 @@ export default function MeasurementsRow({
   const [value, setValue] = useState(currentTempMeasurements[metric]);
   const [unit, setUnit] = useState('');
   const { t } = useTranslation();
+  const colors = useThemeColors();
   const metricName = t('measurements.' + metric);
   const lengthUnit = units === 'metric' ? 'cm' : 'in';
   const weightUnit = units === 'metric' ? 'kg' : 'lb';
@@ -80,20 +83,26 @@ export default function MeasurementsRow({
 
   return (
     <Pressable onPress={handleFocus}>
-      <View style={styles.rowContainer}>
-        <CustomText style={styles.settingsText}>
-          {metricName} ({unit})
-        </CustomText>
-        <CustomTextInput
-          ref={textInputRef}
-          style={[styles.settingsText, { textAlign: 'right' }]}
-          onChangeText={(text) => updateMetric(text)}
-          returnKeyType="done"
-          keyboardType="number-pad"
-          placeholder={t('measurements.nodata')}
+      <View style={[styles.rowContainer, { borderBottomColor: colors.border }]}>
+        <CustomText style={styles.label}>{metricName}</CustomText>
+        <View
+          style={[styles.inputWrapper, { backgroundColor: colors.surfaceAlt }]}
         >
-          {value && Math.round(value * 100) / 100}
-        </CustomTextInput>
+          <CustomTextInput
+            ref={textInputRef}
+            style={styles.input}
+            onChangeText={(text) => updateMetric(text)}
+            returnKeyType="done"
+            keyboardType="number-pad"
+            placeholder={t('measurements.nodata')}
+            placeholderTextColor={colors.textMuted}
+          >
+            {value && Math.round(value * 100) / 100}
+          </CustomTextInput>
+          <CustomText style={[styles.unit, { color: colors.textMuted }]}>
+            {unit}
+          </CustomText>
+        </View>
       </View>
     </Pressable>
   );
@@ -104,13 +113,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '80%',
-    borderBottomWidth: 1,
-    marginBottom: Platform.OS === 'ios' ? '3%' : undefined,
+    width: '100%',
+    paddingVertical: Spacing.sm + 2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  settingsText: {
-    fontSize: 18,
-    textAlignVertical: 'bottom',
-    color: '#222222',
+  label: { fontFamily: Fonts.medium, fontSize: FontSize.body },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    minWidth: 110,
+    height: 40,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.sm,
   },
+  input: {
+    flex: 1,
+    textAlign: 'right',
+    fontSize: FontSize.body,
+    paddingVertical: 0,
+  },
+  unit: { fontSize: FontSize.small },
 });

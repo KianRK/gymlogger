@@ -1,15 +1,6 @@
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  TextInput,
-  Pressable,
-  ScrollView,
-} from 'react-native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { View, StyleSheet, FlatList, TextInput, Pressable } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import useThemeColors from '@/hooks/UseThemeColors';
@@ -19,12 +10,11 @@ import { db } from '@/src/database';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
-import DeleteButton from '@/components/Buttons/DeleteButton';
 import FilterButton from '@/components/Buttons/FilterButton';
 import FavoritesButton from '@/components/Buttons/FavoritesButton';
-import EditButton from '@/components/Buttons/EditButton';
 import FilterOptionButton from '@/components/Buttons/FilterOptionButton';
 import CustomText from '@/components/CustomText';
+import { Fonts, FontSize, Radius, Spacing } from '@/constants/Theme';
 
 export default function ExercisesScreen() {
   const colors = useThemeColors();
@@ -212,264 +202,214 @@ export default function ExercisesScreen() {
     });
   }
 
+  const renderActiveChips = (
+    active: string[],
+    setActive: (filters: string[]) => void,
+    translate: boolean
+  ) =>
+    active.map((filterOption) => (
+      <Pressable
+        key={filterOption}
+        style={[styles.activeChip, { backgroundColor: colors.primarySoft }]}
+        onPress={() =>
+          setActive(active.filter((item) => item !== filterOption))
+        }
+      >
+        <CustomText style={[styles.activeChipText, { color: colors.primary }]}>
+          {translate ? t('targets.' + filterOption) : filterOption}
+        </CustomText>
+        <MaterialCommunityIcons name="close" size={14} color={colors.primary} />
+      </Pressable>
+    ));
+
+  const allActive = [
+    ...activeRegionFilter,
+    ...activePrimaryFilter,
+    ...activeSecondaryFilter,
+  ];
+
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.safeViewContainer}>
-        <LinearGradient
-          start={{ x: 0.5, y: 0.5 }}
-          end={{ x: 1, y: 1 }}
-          colors={[colors.mainOne, colors.mainTwo]}
-          style={[{ overflow: 'visible' }]}
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+      <View style={styles.toolbar}>
+        <View
+          style={[
+            styles.searchBar,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+          ]}
         >
-          <View style={styles.filterBarContainer}>
-            <FilterButton
-              onPress={() => {
-                setFilterSelect(!filterSelect);
-              }}
-              iconSize={25}
-              selected={filterSelect}
-              buttonStyle={{ width: 40, height: 40 }}
+          <MaterialCommunityIcons
+            name="magnify"
+            size={20}
+            color={colors.textMuted}
+          />
+          <TextInput
+            placeholder={t('exercises.search')}
+            placeholderTextColor={colors.textMuted}
+            value={text}
+            onChangeText={(text) => setText(text)}
+            style={[styles.searchInput, { color: colors.text }]}
+          />
+          {text.length > 0 && (
+            <Pressable hitSlop={8} onPress={() => setText('')}>
+              <MaterialCommunityIcons
+                name="close-circle"
+                size={18}
+                color={colors.textMuted}
+              />
+            </Pressable>
+          )}
+        </View>
+        <FilterButton
+          onPress={() => {
+            setFilterSelect(!filterSelect);
+          }}
+          selected={filterSelect}
+          buttonStyle={styles.toolbarButton}
+        />
+        <FavoritesButton
+          onPress={() => setFavSelect(!favSelect)}
+          selected={favSelect}
+          buttonStyle={styles.toolbarButton}
+        />
+      </View>
+      {filterSelect && (
+        <View
+          style={[
+            styles.filterPanel,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+          ]}
+        >
+          <View style={styles.filterRow}>
+            <FilterOptionButton
+              buttonText="Region"
+              data={regionOptions}
+              activeFilters={activeRegionFilter}
+              setActiveFilter={setActiveRegionFilter}
+              dropDownVisible={regionDropDownVisible}
+              visibilitySetter={setRegionDropDownVisible}
+              registrationHandler={() => setCurrentDropDownVisible('Region')}
             />
-            <FavoritesButton
-              onPress={() => setFavSelect(!favSelect)}
-              iconSize={25}
-              buttonStyle={{ width: 40, height: 40 }}
-              selected={favSelect}
+            <FilterOptionButton
+              buttonText={t('exercises.primary')}
+              data={primaryOptions}
+              activeFilters={activePrimaryFilter}
+              setActiveFilter={setActivePrimaryFilter}
+              dropDownVisible={primaryDropDownVisible}
+              visibilitySetter={setPrimaryDropDownVisible}
+              registrationHandler={() => setCurrentDropDownVisible('Primary')}
+            />
+            <FilterOptionButton
+              buttonText={t('exercises.secondary')}
+              data={secondaryOptions}
+              activeFilters={activeSecondaryFilter}
+              setActiveFilter={setActiveSecondaryFilter}
+              dropDownVisible={secondaryDropDownVisible}
+              visibilitySetter={setSecondaryDropDownVisible}
+              registrationHandler={() =>
+                setCurrentDropDownVisible('Secondary')
+              }
             />
           </View>
-          {filterSelect && (
-            <View style={styles.filterOptionsContainer}>
-              <View style={{ flexDirection: 'column' }}>
-                <View>
-                  <FilterOptionButton
-                    buttonText="Region"
-                    data={regionOptions}
-                    activeFilters={activeRegionFilter}
-                    setActiveFilter={setActiveRegionFilter}
-                    dropDownVisible={regionDropDownVisible}
-                    visibilitySetter={setRegionDropDownVisible}
-                    registrationHandler={() =>
-                      setCurrentDropDownVisible('Region')
-                    }
-                  />
-                </View>
-                <ScrollView style={styles.activeFilterScrollView}>
-                  {activeRegionFilter.map((filterOption) => (
-                    <Pressable
-                      key={filterOption}
-                      style={styles.activeFilterButton}
-                      onPress={() => {
-                        setActiveRegionFilter(
-                          activeRegionFilter.filter(
-                            (item) => item !== filterOption
-                          )
-                        );
-                      }}
-                    >
-                      <View style={styles.activeFilterButtonContent}>
-                        <CustomText
-                          style={styles.activeFilterButtonText}
-                          key={filterOption}
-                        >
-                          {filterOption}
-                        </CustomText>
-                        <MaterialCommunityIcons
-                          style={styles.activeFilterButtonIcon}
-                          name="close"
-                          size={15}
-                          color={'black'}
-                        />
-                      </View>
-                    </Pressable>
-                  ))}
-                </ScrollView>
-              </View>
-
-              <View>
-                <View>
-                  <FilterOptionButton
-                    buttonText={t('exercises.primary')}
-                    data={primaryOptions}
-                    activeFilters={activePrimaryFilter}
-                    setActiveFilter={setActivePrimaryFilter}
-                    dropDownVisible={primaryDropDownVisible}
-                    visibilitySetter={setPrimaryDropDownVisible}
-                    registrationHandler={() =>
-                      setCurrentDropDownVisible('Primary')
-                    }
-                  />
-                </View>
-                <ScrollView style={styles.activeFilterScrollView}>
-                  {activePrimaryFilter.map((filterOption) => (
-                    <Pressable
-                      key={filterOption}
-                      style={styles.activeFilterButton}
-                      onPress={() => {
-                        setActivePrimaryFilter(
-                          activePrimaryFilter.filter(
-                            (item) => item !== filterOption
-                          )
-                        );
-                      }}
-                    >
-                      <View style={styles.activeFilterButtonContent}>
-                        <CustomText
-                          style={styles.activeFilterButtonText}
-                          key={filterOption}
-                        >
-                          {t('targets.' + filterOption)}
-                        </CustomText>
-                        <MaterialCommunityIcons
-                          style={styles.activeFilterButtonIcon}
-                          name="close"
-                          size={15}
-                          color={'black'}
-                        />
-                      </View>
-                    </Pressable>
-                  ))}
-                </ScrollView>
-              </View>
-              <View>
-                <View>
-                  <FilterOptionButton
-                    buttonText={t('exercises.secondary')}
-                    data={secondaryOptions}
-                    activeFilters={activeSecondaryFilter}
-                    setActiveFilter={setActiveSecondaryFilter}
-                    dropDownVisible={secondaryDropDownVisible}
-                    visibilitySetter={setSecondaryDropDownVisible}
-                    registrationHandler={() =>
-                      setCurrentDropDownVisible('Secondary')
-                    }
-                  />
-                </View>
-                <ScrollView style={styles.activeFilterScrollView}>
-                  {activeSecondaryFilter.map((filterOption) => (
-                    <Pressable
-                      style={styles.activeFilterButton}
-                      key={filterOption}
-                      onPress={() => {
-                        setActiveSecondaryFilter(
-                          activeSecondaryFilter.filter(
-                            (item) => item !== filterOption
-                          )
-                        );
-                      }}
-                    >
-                      <View style={styles.activeFilterButtonContent}>
-                        <CustomText
-                          style={styles.activeFilterButtonText}
-                          key={filterOption}
-                        >
-                          {t('targets.' + filterOption)}
-                        </CustomText>
-                        <MaterialCommunityIcons
-                          style={styles.activeFilterButtonIcon}
-                          name="close"
-                          size={15}
-                          color={'black'}
-                        />
-                      </View>
-                    </Pressable>
-                  ))}
-                </ScrollView>
-              </View>
+          {allActive.length > 0 && (
+            <View style={styles.activeChipRow}>
+              {renderActiveChips(
+                activeRegionFilter,
+                setActiveRegionFilter,
+                false
+              )}
+              {renderActiveChips(
+                activePrimaryFilter,
+                setActivePrimaryFilter,
+                true
+              )}
+              {renderActiveChips(
+                activeSecondaryFilter,
+                setActiveSecondaryFilter,
+                true
+              )}
             </View>
           )}
-          <View style={styles.searchBarContainer}>
-            <MaterialCommunityIcons name="magnify" size={30} color={'black'} />
-            <TextInput
-              placeholder={t('exercises.search')}
-              placeholderTextColor={colors.text}
-              value={text}
-              onChangeText={(text) => setText(text)}
-              style={{
-                fontFamily: 'Outfit-Regular',
-                fontSize: 20,
-                flexGrow: 1,
-              }}
-            ></TextInput>
-          </View>
-          <FlatList
-            data={filteredExercises()}
-            renderItem={({ item }) => (
-              <ExerciseCard
-                name={item.name}
-                is_favorite={Boolean(item.favorite)}
-                region={item.region}
-                primary={item.primary_target}
-                secondary={item.secondary_target}
-                onPressInfo={() => goToDetailPage(item.id)}
-                onPressFav={() => updateFav(item)}
-              />
-            )}
+        </View>
+      )}
+      <FlatList
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
+        data={filteredExercises()}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <ExerciseCard
+            name={item.name}
+            is_favorite={Boolean(item.favorite)}
+            region={item.region}
+            primary={item.primary_target}
+            secondary={item.secondary_target}
+            onPressInfo={() => goToDetailPage(item.id)}
+            onPressFav={() => updateFav(item)}
           />
-        </LinearGradient>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safeViewContainer: {
+  screen: { flex: 1 },
+  toolbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
+  },
+  searchBar: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  filterBarContainer: {
     flexDirection: 'row',
-    height: 50,
-    width: '100%',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 10,
-    padding: 20,
+    gap: Spacing.sm,
+    height: 44,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
   },
-  filterOptionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-    padding: 10,
-    marginLeft: '3%',
-    marginRight: '3%',
-    borderLeftWidth: 1,
-    borderBottomWidth: 1,
-    borderRightWidth: 1,
+  searchInput: {
+    flex: 1,
+    fontFamily: Fonts.regular,
+    fontSize: FontSize.body,
+    paddingVertical: 0,
+  },
+  toolbarButton: { width: 44, height: 44 },
+  filterPanel: {
+    marginHorizontal: Spacing.lg,
+    marginBottom: Spacing.sm,
+    padding: Spacing.md,
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
     zIndex: 999,
   },
-  searchBarContainer: {
+  filterRow: {
     flexDirection: 'row',
-    width: '95%',
-    borderWidth: 1,
-    borderRadius: 36,
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+    zIndex: 999,
+  },
+  activeChipRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.xs + 2,
+    marginTop: Spacing.md,
+  },
+  activeChip: {
+    flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: '5%',
-    marginBottom: '5%',
-    padding: 5,
-    paddingLeft: 12,
-    backgroundColor: '#cfcecfff',
+    gap: 4,
+    borderRadius: Radius.pill,
+    paddingVertical: 4,
+    paddingLeft: Spacing.sm + 2,
+    paddingRight: Spacing.sm,
   },
-  activeFilterScrollView: {
-    maxHeight: 120,
-  },
-  activeFilterButton: {
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'center',
-  },
-  activeFilterButtonContent: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignSelf: 'flex-start',
-    borderRadius: 8,
-    backgroundColor: '#b8b8b8ff',
-    margin: 2,
-    padding: 2,
-  },
-  activeFilterButtonText: { textAlignVertical: 'center' },
-  activeFilterButtonIcon: { alignSelf: 'center' },
+  activeChipText: { fontFamily: Fonts.medium, fontSize: FontSize.caption },
+  list: { flex: 1 },
+  listContent: { paddingTop: Spacing.xs, paddingBottom: Spacing.xxl },
 });

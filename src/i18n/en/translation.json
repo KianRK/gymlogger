@@ -57,14 +57,21 @@
     "maxVol": "Maximum volume",
     "volume": "Volume",
     "totalReps": "Total reps",
-    "noData": "NO DATA !"
+    "noData": "No data yet"
   },
   "workouts": {
-    "addWorkoutFrom": "Add Workout from ?",
-    "deleteWorkout": "Delete Workout ?"
+    "addWorkoutFrom": "Start a workout from",
+    "deleteWorkout": "Delete this workout?",
+    "empty": "No workouts on this day",
+    "emptyHint": "Tap “Add workout” to log your training.",
+    "chooseTemplate": "Choose a template",
+    "noTemplates": "You have no templates yet.",
+    "emptyExercises": "Add your first exercise to get started."
   },
   "templates": {
-    "deleteTemplate": "Delete Template ?"
+    "deleteTemplate": "Delete this template?",
+    "empty": "No templates yet",
+    "emptyHint": "Save routines you repeat often as templates."
   },
   "dashboard": {
     "totalWorkouts": "Total Workouts",
@@ -72,8 +79,8 @@
     "workoutsPerWeek": "Workouts per week",
     "regionsAfterExercises": "Favorite regions after exercises",
     "regionsAfterSets": "Favorite regions after sets",
-    "favoriteExerciseFrequency": "Favorice exercise after frequency",
-    "favoriteExerciseSets": "Favorite exercise after sets"
+    "favoriteExerciseFrequency": "Most frequent exercises",
+    "favoriteExerciseSets": "Most sets logged"
   },
   "targets": {
     "Abductors": "Abductors",

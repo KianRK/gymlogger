@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, Platform, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -10,6 +9,9 @@ import { WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 import CustomText from './CustomText';
 import MenuButton from './Buttons/MenuButton';
 import useThemeColors from '@/hooks/UseThemeColors';
+import Card from './Card';
+import ActionDialog from './ActionDialog';
+import { Fonts, FontSize, Radius, Spacing } from '@/constants/Theme';
 
 type Props = {
   workout_id: string;
@@ -78,158 +80,93 @@ export default function WorkoutCard({
   }
 
   return (
-    <View
-      style={[styles.WorkoutCardContainer, { borderColor: colors.borderColor }]}
-    >
-      <LinearGradient
-        start={{ x: 0.375, y: 0.375 }}
-        end={{ x: 0.75, y: 0.75 }}
-        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
-        style={[
-          StyleSheet.absoluteFill,
-          { borderColor: colors.borderColor },
-          styles.gradientStyle,
-        ]}
-      />
-      <View style={styles.workoutCardHeaderContainer}>
-        <CustomText style={styles.workoutCardLabel}>
-          Workout {workout_number}
-        </CustomText>
-        <View style={styles.menuDropDownContainer}>
-          <MenuButton
-            componentStyle={styles.deletebuttonComponent}
-            buttonStyle={{ width: 40, height: 40 }}
-            iconSize={25}
-            onPress={onPressMenu}
-          />
-          {dropDownVisible && (
-            <View
-              style={[
-                styles.dropDownContainer,
-                { backgroundColor: colors.background },
-              ]}
-            >
-              <Pressable style={{ zIndex: 10 }} onPress={onPressEdit}>
-                <CustomText style={styles.buttonText}>
-                  {t('buttonLabels.edit')}
-                </CustomText>
-              </Pressable>
-              <Pressable
-                style={{ zIndex: 10 }}
-                onPress={() => {
-                  setDropDownVisible(false);
-                  onPressDelete();
-                }}
-              >
-                <CustomText style={styles.buttonText}>
-                  {t('buttonLabels.delete')}
-                </CustomText>
-              </Pressable>
-            </View>
-          )}
+    <Card style={styles.card}>
+      <View style={styles.header}>
+        <View style={styles.headerText}>
+          <CustomText style={styles.title}>Workout {workout_number}</CustomText>
+          <CustomText style={[styles.subtitle, { color: colors.textMuted }]}>
+            {workoutExercises.length}{' '}
+            {t('app.exercises')}
+          </CustomText>
         </View>
+        <MenuButton onPress={onPressMenu} />
       </View>
+      {workoutExercises.length > 0 && (
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
+      )}
       {workoutExercises.map((exercise) => (
-        <View key={exercise.id} style={styles.workoutCardExerciseContainer}>
-          <CustomText style={styles.workoutCardExerciseName}>
-            {exercise.name}
+        <View key={exercise.id} style={styles.exerciseRow}>
+          <CustomText style={styles.exerciseName} numberOfLines={1}>
+            {t(exercise.name)}
           </CustomText>
-          <CustomText style={styles.workoutCardExerciseSets}>
-            Sets: {countSets(exercise.id)}
-          </CustomText>
+          <View style={[styles.badge, { backgroundColor: colors.surfaceAlt }]}>
+            <CustomText style={[styles.badgeText, { color: colors.textMuted }]}>
+              {countSets(exercise.id)} Sets
+            </CustomText>
+          </View>
         </View>
       ))}
-    </View>
+      <ActionDialog
+        visible={dropDownVisible}
+        title={`Workout ${workout_number}`}
+        onRequestClose={() => setDropDownVisible(false)}
+        actions={[
+          {
+            label: t('buttonLabels.edit'),
+            variant: 'primary',
+            onPress: () => {
+              setDropDownVisible(false);
+              onPressEdit();
+            },
+          },
+          {
+            label: t('buttonLabels.delete'),
+            variant: 'danger',
+            onPress: () => {
+              setDropDownVisible(false);
+              onPressDelete();
+            },
+          },
+          {
+            label: t('buttonLabels.cancel'),
+            onPress: () => setDropDownVisible(false),
+          },
+        ]}
+      />
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  WorkoutCardContainer: {
-    width: '95%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    overflow: 'visible',
-    margin: 8,
-    padding: 5,
-  },
-  gradientStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  workoutCardHeaderContainer: {
-    width: '100%',
+  card: { width: '100%', paddingVertical: Spacing.md },
+  header: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    padding: 4,
-    zIndex: 7,
-    overflow: 'visible',
-  },
-  workoutCardLabel: {
-    position: 'absolute',
-    marginRight: 'auto',
-    alignSelf: 'center',
-    textAlign: 'center',
-    fontSize: 22,
-  },
-  menuDropDownContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 'auto',
-    marginRight: 3,
-    marginBottom: 2,
-    overflow: 'visible',
-    zIndex: 8,
-  },
-  dropDownContainer: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    width: 80,
-    top: 40,
-    marginLeft: 'auto',
-    overflow: 'visible',
-    zIndex: 9,
-  },
-  deletebuttonComponent: {
-    marginLeft: 'auto',
-    marginRight: 3,
-    marginBottom: 2,
-  },
-  buttonText: { fontSize: 18, padding: 2, zIndex: 10, textAlign: 'left' },
-  workoutCardExerciseContainer: {
-    width: '100%',
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignContent: 'space-between',
-    padding: 2,
-    zIndex: Platform.OS === 'ios' ? 0 : undefined,
   },
-  workoutCardExerciseName: {
-    fontWeight: 600,
-    marginLeft: 3,
-    fontSize: 16,
+  headerText: { flex: 1 },
+  title: { fontFamily: Fonts.semiBold, fontSize: FontSize.bodyLarge },
+  subtitle: { fontSize: FontSize.small, marginTop: 2 },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    marginVertical: Spacing.sm,
   },
-  workoutCardExerciseSets: {
-    marginRight: 3,
-    fontSize: 16,
-  },
-  confirmationContainer: {
-    justifyContent: 'center',
+  exerciseRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    position: 'static',
-    borderWidth: 1,
-    borderRadius: 3,
-    width: '60%',
-    height: '10%',
-    margin: 'auto',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.xs + 2,
   },
-  confirmationButton: {
-    justifyContent: 'center',
-    width: '50%',
+  exerciseName: {
+    flex: 1,
+    fontFamily: Fonts.medium,
+    fontSize: FontSize.body,
+    marginRight: Spacing.md,
   },
+  badge: {
+    borderRadius: Radius.pill,
+    paddingHorizontal: Spacing.sm + 2,
+    paddingVertical: 2,
+  },
+  badgeText: { fontFamily: Fonts.medium, fontSize: FontSize.caption },
 });

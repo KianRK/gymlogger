@@ -2,7 +2,6 @@ import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 import { useEffect, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { RelativePathString, useLocalSearchParams } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { LineChart } from 'react-native-chart-kit';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +14,7 @@ import { Exercise, WorkoutExercise } from '@/src/Interfaces/db_interfaces';
 import { DateDictionary } from '@/constants/DataTypes';
 import CustomText from '@/components/CustomText';
 import BackButton from '@/components/Buttons/BackButton';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 import { Rect, Text as TextSVG, Svg } from 'react-native-svg';
 
 export default function ExerciseId() {
@@ -38,12 +38,10 @@ export default function ExerciseId() {
   const [weightUnit, setWeightUnit] = useState('');
   const [volumeChartData, setVolumeChartData] = useState<any>(null);
   const [dailyMaxChartData, setDailyMaxChartData] = useState<any>(null);
-  const [headerFontSize, setHeaderFontSize] = useState<number>(32);
   const [setsChartData, setSetsChartData] = useState<any>(null);
   const [repsChartData, setRepsChartData] = useState<any>(null);
 
-  const chartWidthRatio = 0.9;
-  const chartHeight = 264;
+  const chartHeight = 220;
 
   const [tooltipPos, setTooltipPos] = useState({
     x: 0,
@@ -56,24 +54,6 @@ export default function ExerciseId() {
     chartName: '',
     value: 0,
   });
-
-  useEffect(() => {
-    function adjustFontSize() {
-      if (exercise) {
-        let translatedName = t(exercise.name);
-        if (translatedName.length > 16) {
-          let adjustedFontSize = 32 - (translatedName.length - 16);
-
-          if (adjustedFontSize <= 14) {
-            setHeaderFontSize(14);
-          } else {
-            setHeaderFontSize(adjustedFontSize);
-          }
-        }
-      }
-    }
-    adjustFontSize();
-  }, []);
 
   function determineOneRMPercentage(reps: number) {
     let percentage;
@@ -117,12 +97,13 @@ export default function ExerciseId() {
             y={tooltipPos.y + 15}
             width="70"
             height="40"
-            fill="black"
+            rx="8"
+            fill={colors.text}
           />
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 30}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -132,7 +113,7 @@ export default function ExerciseId() {
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 45}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -153,12 +134,13 @@ export default function ExerciseId() {
             y={tooltipPos.y + 15}
             width="70"
             height="40"
-            fill="black"
+            rx="8"
+            fill={colors.text}
           />
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 30}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -168,7 +150,7 @@ export default function ExerciseId() {
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 45}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -188,12 +170,13 @@ export default function ExerciseId() {
             y={tooltipPos.y + 15}
             width="70"
             height="40"
-            fill="black"
+            rx="8"
+            fill={colors.text}
           />
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 30}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -203,7 +186,7 @@ export default function ExerciseId() {
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 45}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -223,12 +206,13 @@ export default function ExerciseId() {
             y={tooltipPos.y + 15}
             width="70"
             height="40"
-            fill="black"
+            rx="8"
+            fill={colors.text}
           />
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 30}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -238,7 +222,7 @@ export default function ExerciseId() {
           <TextSVG
             x={tooltipPos.x + 5}
             y={tooltipPos.y + 45}
-            fill="white"
+            fill={colors.background}
             fontSize="14"
             fontWeight="bold"
             textAnchor="middle"
@@ -489,382 +473,398 @@ export default function ExerciseId() {
     }, [settings.units])
   );
 
+  const chartWidth = screenWidth - Spacing.lg * 2 - Spacing.md * 2;
+  const primaryRgb = hexToRgb(colors.primary);
+  const textRgb = hexToRgb(colors.textMuted);
+  const chartConfig = {
+    decimalPlaces: 0,
+    backgroundGradientFrom: colors.surface,
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: colors.surface,
+    backgroundGradientToOpacity: 0,
+    fillShadowGradientFrom: colors.primary,
+    fillShadowGradientFromOpacity: 0.25,
+    fillShadowGradientTo: colors.primary,
+    fillShadowGradientToOpacity: 0,
+    color: (opacity = 1) => `rgba(${primaryRgb}, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(${textRgb}, ${opacity})`,
+    strokeWidth: 2.5,
+    propsForBackgroundLines: {
+      stroke: colors.border,
+      strokeDasharray: '4 6',
+    },
+    propsForDots: { r: '4', strokeWidth: '2', stroke: colors.surface },
+    propsForLabels: { fontFamily: Fonts.regular, fontSize: 11 },
+    useShadowColorFromDataset: false,
+  };
+
+  const stats = [
+    { label: t('exercises.maxWeight'), value: Math.round(maxWeight) },
+    { label: t('exercises.maxVol'), value: Math.round(maxVolume) },
+    { label: '1RM', value: Math.round(oneRM) },
+  ];
+
   return (
-    <View style={{ flex: 12, justifyContent: 'center', alignItems: 'center' }}>
-      <LinearGradient
-        start={{ x: 0.5, y: 0.5 }}
-        end={{ x: 1, y: 1 }}
-        colors={[colors.mainOne, colors.mainTwo]}
-        style={StyleSheet.absoluteFillObject}
-      />
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <View style={styles.pageHeader}>
-        <BackButton
-          componentStyle={{ position: 'absolute', right: '85%' }}
-          sourceRoute={source}
-        />
+        <BackButton componentStyle={styles.backButton} sourceRoute={source} />
         <CustomText
-          style={{
-            fontSize: headerFontSize,
-            textAlign: 'center',
-            textAlignVertical: 'center',
-            flexWrap: 'wrap',
-            width: '75%',
-          }}
+          style={styles.pageTitle}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+          minimumFontScale={0.7}
         >
           {exercise?.name && t(exercise.name)}
         </CustomText>
+        <View style={styles.headerSpacer} />
       </View>
 
       <ScrollView
-        style={{ width: '100%' }}
-        contentContainerStyle={{ alignItems: 'center' }}
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
       >
         <View
-          style={{
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: '3%',
-          }}
+          style={[
+            styles.factsCard,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+            shadow(colors.shadow, 1),
+          ]}
         >
-          <View style={{ marginTop: '3%' }}>
-            <View style={[styles.factRow, { borderColor: colors.borderColor }]}>
-              <CustomText style={styles.factText}>Region:</CustomText>
-              <CustomText style={styles.factValueText}>
-                {exercise ? t('targets.' + exercise.region) : undefined}
-              </CustomText>
-            </View>
-            {exercise?.primary_target && (
-              <View
-                style={[styles.factRow, { borderColor: colors.borderColor }]}
-              >
-                <CustomText style={styles.factText}>
-                  {t('exercises.primary')}:
-                </CustomText>
-                <CustomText style={styles.factValueText}>
-                  {JSON.parse(exercise?.primary_target).map(
-                    (target: string, index: number) => {
-                      return index ===
-                        JSON.parse(exercise.primary_target).length - 1
-                        ? t('targets.' + target)
-                        : t('targets.' + target) + '\n';
-                    }
-                  )}
-                </CustomText>
-              </View>
-            )}
-            {exercise?.secondary_target && (
-              <View
-                style={[styles.factRow, { borderColor: colors.borderColor }]}
-              >
-                <CustomText style={styles.factText}>
-                  {t('exercises.secondary')}:
-                </CustomText>
-                <CustomText style={styles.factValueText}>
-                  {JSON.parse(exercise?.secondary_target).map(
-                    (target: string, index: number) => {
-                      return index ==
-                        JSON.parse(exercise.secondary_target).length - 1
-                        ? t('targets.' + target)
-                        : t('targets.' + target) + '\n';
-                    }
-                  )}
-                </CustomText>
-              </View>
-            )}
-          </View>
-          <View style={styles.statContainer}>
-            <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-              <CustomText style={styles.statRowText}>
-                {t('exercises.maxWeight')} ({weightUnit}):
-              </CustomText>
-              <CustomText style={styles.statRowText}>
-                {Math.round(maxWeight)}
-              </CustomText>
-            </View>
-            <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-              <CustomText style={styles.statRowText}>
-                {t('exercises.maxVol')} ({weightUnit}):
-              </CustomText>
-              <CustomText style={styles.statRowText}>
-                {Math.round(maxVolume)}
-              </CustomText>
-            </View>
-            <View style={[styles.statRow, { borderColor: colors.borderColor }]}>
-              <CustomText style={styles.statRowText}>
-                1RM ({weightUnit}):
-              </CustomText>
-              <CustomText style={styles.statRowText}>
-                {Math.round(oneRM)}
-              </CustomText>
+          <View style={styles.factRow}>
+            <CustomText style={[styles.factLabel, { color: colors.textMuted }]}>
+              Region
+            </CustomText>
+            <View style={styles.chipRow}>
+              {exercise && (
+                <View
+                  style={[styles.chip, { backgroundColor: colors.primarySoft }]}
+                >
+                  <CustomText style={[styles.chipText, { color: colors.primary }]}>
+                    {t('targets.' + exercise.region)}
+                  </CustomText>
+                </View>
+              )}
             </View>
           </View>
+          {exercise?.primary_target && (
+            <View style={styles.factRow}>
+              <CustomText style={[styles.factLabel, { color: colors.textMuted }]}>
+                {t('exercises.primary')}
+              </CustomText>
+              <View style={styles.chipRow}>
+                {JSON.parse(exercise.primary_target).map((target: string) => (
+                  <View
+                    key={target}
+                    style={[styles.chip, { backgroundColor: colors.surfaceAlt }]}
+                  >
+                    <CustomText style={styles.chipText}>
+                      {t('targets.' + target)}
+                    </CustomText>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+          {exercise?.secondary_target && (
+            <View style={styles.factRow}>
+              <CustomText style={[styles.factLabel, { color: colors.textMuted }]}>
+                {t('exercises.secondary')}
+              </CustomText>
+              <View style={styles.chipRow}>
+                {JSON.parse(exercise.secondary_target).map((target: string) => (
+                  <View
+                    key={target}
+                    style={[styles.chip, { backgroundColor: colors.surfaceAlt }]}
+                  >
+                    <CustomText style={styles.chipText}>
+                      {t('targets.' + target)}
+                    </CustomText>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
         </View>
-        <View style={{ flex: 1, justifyContent: 'flex-start', width: '95%' }}>
-          <View
-            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.chartTitle}>
-              {t('exercises.maxWeight')}
-            </CustomText>
-            {dailyMaxChartData != null && (
-              <LineChart
-                data={dailyMaxChartData}
-                width={screenWidth * chartWidthRatio}
-                height={chartHeight}
-                yAxisSuffix={' ' + weightUnit}
-                fromZero={true}
-                withOuterLines={false}
-                decorator={() => dailyMaxDec()}
-                withVerticalLabels={false}
-                onDataPointClick={(data) => handleClickOnDataPoint(data)}
-                formatXLabel={(xValue) => {
-                  return (
-                    xValue.slice(2, 4) +
-                    '/' +
-                    xValue.slice(4, 6) +
-                    '/' +
-                    xValue.slice(6, 8)
-                  );
-                }}
-                chartConfig={{
-                  decimalPlaces: 0,
-                  backgroundGradientFrom: colors.mainTwo,
-                  backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.mainTwo,
-                  backgroundGradientToOpacity: 0.5,
-                  color: () => colors.text,
-                  useShadowColorFromDataset: false, // optional
-                }}
-              />
-            )}
-            {dailyMaxChartData == null && (
-              <CustomText style={styles.emptyChartText}>
-                {t('exercises.noData')}
-              </CustomText>
-            )}
-          </View>
 
-          <View
-            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.chartTitle}>
-              {t('exercises.volume')}
-            </CustomText>
-            {volumeChartData != null && (
-              <LineChart
-                data={volumeChartData}
-                width={screenWidth * chartWidthRatio}
-                height={chartHeight}
-                fromZero={true}
-                withVerticalLabels={false}
-                onDataPointClick={(data) => handleClickOnDataPoint(data)}
-                decorator={() => volumeDec()}
-                formatXLabel={(xValue) => {
-                  return (
-                    xValue.slice(2, 4) +
-                    '/' +
-                    xValue.slice(4, 6) +
-                    '/' +
-                    xValue.slice(6, 8)
-                  );
-                }}
-                chartConfig={{
-                  decimalPlaces: 0,
-                  backgroundGradientFrom: colors.mainTwo,
-                  backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.mainTwo,
-                  backgroundGradientToOpacity: 0.5,
-                  color: () => colors.text,
-                  strokeWidth: 2,
-                  useShadowColorFromDataset: false, // optional
-                }}
-              />
-            )}
-            {volumeChartData == null && (
-              <CustomText style={styles.emptyChartText}>
-                {t('exercises.noData')}
+        <View style={styles.statRow}>
+          {stats.map((stat) => (
+            <View
+              key={stat.label}
+              style={[
+                styles.statTile,
+                { backgroundColor: colors.surface, borderColor: colors.border },
+                shadow(colors.shadow, 1),
+              ]}
+            >
+              <CustomText style={styles.statValue}>
+                {isFinite(stat.value) ? stat.value : 0}
               </CustomText>
-            )}
-          </View>
+              <CustomText style={[styles.statUnit, { color: colors.textMuted }]}>
+                {weightUnit}
+              </CustomText>
+              <CustomText
+                style={[styles.statLabel, { color: colors.textMuted }]}
+                numberOfLines={2}
+              >
+                {stat.label}
+              </CustomText>
+            </View>
+          ))}
+        </View>
 
-          <View
-            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.chartTitle}>
-              {t('exercises.totalReps')}
-            </CustomText>
-            {repsChartData != null && (
-              <LineChart
-                data={repsChartData}
-                width={screenWidth * chartWidthRatio}
-                height={chartHeight}
-                fromZero={true}
-                withVerticalLabels={false}
-                onDataPointClick={(data) => handleClickOnDataPoint(data)}
-                decorator={() => repsDec()}
-                formatXLabel={(xValue) => {
-                  return (
-                    xValue.slice(2, 4) +
-                    '/' +
-                    xValue.slice(4, 6) +
-                    '/' +
-                    xValue.slice(6, 8)
-                  );
-                }}
-                formatYLabel={(yValue) => {
-                  return yValue.split('.')[0];
-                }}
-                chartConfig={{
-                  backgroundGradientFrom: colors.mainTwo,
-                  backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.mainTwo,
-                  backgroundGradientToOpacity: 0.5,
-                  color: () => colors.text,
-                  strokeWidth: 2,
-                  useShadowColorFromDataset: false, // optional
-                }}
-              />
-            )}
-            {repsChartData == null && (
-              <CustomText style={styles.emptyChartText}>
+        <View
+          style={[
+            styles.chartCard,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+            shadow(colors.shadow, 1),
+          ]}
+        >
+          <CustomText style={styles.chartTitle}>{t('exercises.maxWeight')}</CustomText>
+          {dailyMaxChartData != null && (
+            <LineChart
+              data={dailyMaxChartData}
+              width={chartWidth}
+              height={chartHeight}
+              fromZero={true}
+              withVerticalLabels={false}
+              withOuterLines={false}
+              bezier
+              onDataPointClick={(data) => handleClickOnDataPoint(data)}
+              decorator={() => dailyMaxDec()}
+              yAxisSuffix={' ' + weightUnit}
+              formatXLabel={(xValue) =>
+                xValue.slice(2, 4) +
+                '/' +
+                xValue.slice(4, 6) +
+                '/' +
+                xValue.slice(6, 8)
+              }
+              chartConfig={chartConfig}
+              style={styles.chart}
+            />
+          )}
+          {dailyMaxChartData == null && (
+            <View style={styles.emptyChart}>
+              <CustomText style={[styles.emptyChartText, { color: colors.textMuted }]}>
                 {t('exercises.noData')}
               </CustomText>
-            )}
-          </View>
-
-          <View
-            style={[styles.chartContainer, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.chartTitle}>Sets</CustomText>
-            {setsChartData != null && (
-              <LineChart
-                data={setsChartData}
-                width={screenWidth * chartWidthRatio}
-                height={chartHeight}
-                fromZero={true}
-                segments={Math.max(...setsChartData.datasets[0].data)}
-                withVerticalLabels={false}
-                onDataPointClick={(data) => handleClickOnDataPoint(data)}
-                decorator={() => setsDec()}
-                formatXLabel={(xValue) => {
-                  return (
-                    xValue.slice(2, 4) +
-                    '/' +
-                    xValue.slice(4, 6) +
-                    '/' +
-                    xValue.slice(6, 8)
-                  );
-                }}
-                formatYLabel={(yValue) => {
-                  return yValue.split('.')[0];
-                }}
-                chartConfig={{
-                  backgroundGradientFrom: colors.mainTwo,
-                  backgroundGradientFromOpacity: 0.5,
-                  backgroundGradientTo: colors.mainTwo,
-                  backgroundGradientToOpacity: 0.5,
-                  color: () => colors.text,
-                  strokeWidth: 2,
-                  useShadowColorFromDataset: false, // optional
-                }}
-              />
-            )}
-            {setsChartData == null && (
-              <CustomText style={styles.emptyChartText}>
+            </View>
+          )}
+        </View>
+        <View
+          style={[
+            styles.chartCard,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+            shadow(colors.shadow, 1),
+          ]}
+        >
+          <CustomText style={styles.chartTitle}>{t('exercises.volume')}</CustomText>
+          {volumeChartData != null && (
+            <LineChart
+              data={volumeChartData}
+              width={chartWidth}
+              height={chartHeight}
+              fromZero={true}
+              withVerticalLabels={false}
+              withOuterLines={false}
+              bezier
+              onDataPointClick={(data) => handleClickOnDataPoint(data)}
+              decorator={() => volumeDec()}
+              formatXLabel={(xValue) =>
+                xValue.slice(2, 4) +
+                '/' +
+                xValue.slice(4, 6) +
+                '/' +
+                xValue.slice(6, 8)
+              }
+              chartConfig={chartConfig}
+              style={styles.chart}
+            />
+          )}
+          {volumeChartData == null && (
+            <View style={styles.emptyChart}>
+              <CustomText style={[styles.emptyChartText, { color: colors.textMuted }]}>
                 {t('exercises.noData')}
               </CustomText>
-            )}
-          </View>
+            </View>
+          )}
+        </View>
+        <View
+          style={[
+            styles.chartCard,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+            shadow(colors.shadow, 1),
+          ]}
+        >
+          <CustomText style={styles.chartTitle}>{t('exercises.totalReps')}</CustomText>
+          {repsChartData != null && (
+            <LineChart
+              data={repsChartData}
+              width={chartWidth}
+              height={chartHeight}
+              fromZero={true}
+              withVerticalLabels={false}
+              withOuterLines={false}
+              bezier
+              onDataPointClick={(data) => handleClickOnDataPoint(data)}
+              decorator={() => repsDec()}
+              formatXLabel={(xValue) =>
+                xValue.slice(2, 4) +
+                '/' +
+                xValue.slice(4, 6) +
+                '/' +
+                xValue.slice(6, 8)
+              }
+              formatYLabel={(yValue) => yValue.split('.')[0]}
+              chartConfig={chartConfig}
+              style={styles.chart}
+            />
+          )}
+          {repsChartData == null && (
+            <View style={styles.emptyChart}>
+              <CustomText style={[styles.emptyChartText, { color: colors.textMuted }]}>
+                {t('exercises.noData')}
+              </CustomText>
+            </View>
+          )}
+        </View>
+        <View
+          style={[
+            styles.chartCard,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+            shadow(colors.shadow, 1),
+          ]}
+        >
+          <CustomText style={styles.chartTitle}>Sets</CustomText>
+          {setsChartData != null && (
+            <LineChart
+              data={setsChartData}
+              width={chartWidth}
+              height={chartHeight}
+              fromZero={true}
+              withVerticalLabels={false}
+              withOuterLines={false}
+              bezier
+              onDataPointClick={(data) => handleClickOnDataPoint(data)}
+              decorator={() => setsDec()}
+              segments={Math.max(...setsChartData.datasets[0].data)}
+              formatXLabel={(xValue) =>
+                xValue.slice(2, 4) +
+                '/' +
+                xValue.slice(4, 6) +
+                '/' +
+                xValue.slice(6, 8)
+              }
+              formatYLabel={(yValue) => yValue.split('.')[0]}
+              chartConfig={chartConfig}
+              style={styles.chart}
+            />
+          )}
+          {setsChartData == null && (
+            <View style={styles.emptyChart}>
+              <CustomText style={[styles.emptyChartText, { color: colors.textMuted }]}>
+                {t('exercises.noData')}
+              </CustomText>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>
   );
 }
 
+function hexToRgb(hex: string) {
+  const value = hex.replace('#', '').slice(0, 6);
+  const r = parseInt(value.slice(0, 2), 16);
+  const g = parseInt(value.slice(2, 4), 16);
+  const b = parseInt(value.slice(4, 6), 16);
+  return `${r}, ${g}, ${b}`;
+}
+
 const styles = StyleSheet.create({
+  screen: { flex: 1 },
   pageHeader: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    flexWrap: 'wrap',
-    marginTop: 10,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
+  },
+  backButton: { marginLeft: Spacing.lg },
+  pageTitle: {
+    flex: 1,
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.heading,
+    textAlign: 'center',
+    marginHorizontal: Spacing.sm,
+  },
+  headerSpacer: { width: 40 + Spacing.lg },
+  scrollView: { flex: 1, width: '100%' },
+  scrollContent: {
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
+    gap: Spacing.md,
+  },
+  factsCard: {
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
   },
   factRow: {
     flexDirection: 'row',
-    width: '90%',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    paddingLeft: 3,
-    paddingRight: 3,
-    paddingBottom: 3,
+    paddingVertical: Spacing.sm,
+    gap: Spacing.md,
   },
-  factText: {
-    fontSize: 22,
-    height: '100%',
-    textAlign: 'left',
-    textAlignVertical: 'center',
-  },
-  factValueText: {
-    fontSize: 22,
-    textAlign: 'right',
-    textAlignVertical: 'center',
-  },
-  targetContainer: {},
-  targetColumn: {},
-  statContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '90%',
-    marginBottom: '3%',
-  },
-  statRow: {
+  factLabel: { fontSize: FontSize.small, paddingTop: 4 },
+  chipRow: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    borderBottomWidth: 1,
-    marginTop: 1,
-    marginBottom: 1,
-    paddingLeft: 3,
-    paddingRight: 3,
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    gap: Spacing.xs,
   },
-  statRowText: { fontSize: 22 },
-  imageContainer: { borderWidth: 2, margin: 2, flex: 4, height: 100 },
-  exerciseImage: {
-    width: '25%',
-    resizeMode: 'contain',
-    height: 50,
+  chip: {
+    borderRadius: Radius.pill,
+    paddingHorizontal: Spacing.sm + 2,
+    paddingVertical: 3,
   },
-  scrollContainer: {
-    justifyContent: 'flex-start',
+  chipText: { fontFamily: Fonts.medium, fontSize: FontSize.caption },
+  statRow: { flexDirection: 'row', gap: Spacing.sm },
+  statTile: {
+    flex: 1,
     alignItems: 'center',
-    height: 1320,
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+  },
+  statValue: { fontFamily: Fonts.bold, fontSize: FontSize.heading },
+  statUnit: { fontSize: FontSize.caption },
+  statLabel: {
+    fontSize: FontSize.caption,
+    textAlign: 'center',
+    marginTop: Spacing.xs,
+  },
+  chartCard: {
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    overflow: 'hidden',
   },
   chartTitle: {
-    textAlign: 'left',
-    textAlignVertical: 'center',
-    fontSize: 18,
-    width: '100%',
-    margin: 6,
-    marginBottom: 15,
-    paddingLeft: 6,
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.body,
+    marginBottom: Spacing.sm,
+    marginLeft: Spacing.xs,
   },
-  chartContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    height: 314,
-    width: '100%',
-    borderWidth: 2,
-    borderColor: 'gray',
-    marginBottom: 16,
+  chart: { marginLeft: -Spacing.sm },
+  emptyChart: {
+    height: 160,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  emptyChartText: {
-    fontSize: 30,
-    marginTop: 'auto',
-    marginBottom: 'auto',
-    alignSelf: 'center',
-  },
+  emptyChartText: { fontSize: FontSize.body },
 });

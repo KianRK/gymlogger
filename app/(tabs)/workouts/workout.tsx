@@ -1,8 +1,13 @@
-import { Modal, View, Platform, ScrollView, StyleSheet } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  View,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +17,8 @@ import CalendarButton from '@/components/Buttons/CalendarButton';
 import AddButton from '@/components/Buttons/AddButton';
 import SelectExerciseCard from '@/components/SelectExerciseCard';
 import BackButton from '@/components/Buttons/BackButton';
+import EmptyState from '@/components/EmptyState';
+import { Spacing } from '@/constants/Theme';
 
 import { db } from '@/src/database';
 import { WorkoutExercise } from '@/src/Interfaces/db_interfaces';
@@ -102,133 +109,115 @@ export default function Workouts() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+      <View style={styles.topBar}>
+        <BackButton componentStyle={styles.backButton} />
+        <CalendarButton date={date} gradientStyle={styles.datePill} />
+      </View>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        {...(Platform.OS === 'android'
+          ? { fadingEdgeLength: { start: 0, end: 10 } }
+          : {})}
       >
-        <LinearGradient
-          start={{ x: 0.5, y: 0.5 }}
-          end={{ x: 1, y: 1 }}
-          colors={[colors.mainOne, colors.mainTwo]}
-          style={StyleSheet.absoluteFillObject}
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            height: '12%',
-            width: '100%',
-            marginTop: '5%',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <BackButton />
-          <CalendarButton
-            date={date}
-            gradientStyle={{
-              height: '100%',
-              marginTop: 0,
-              marginRight: '5%',
-            }}
+        {workoutExercises.length === 0 && (
+          <EmptyState
+            icon="add-circle-outline"
+            title={t('buttonLabels.addExercise')}
+            hint={t('workouts.emptyExercises')}
           />
-        </View>
-        <ScrollView
-          style={styles.scrollViewContainer}
-          {...(Platform.OS === 'android'
-            ? { fadingEdgeLength: { start: 0, end: 10 } }
-            : {})}
-        >
-          {workoutExercises.map((exercise) => (
-            <View
-              style={styles.exerciseCardContainer}
-              key={exercise.order_index}
-            >
-              <WorkoutExerciseCard
-                name={exercise.name}
-                exercise_id={exercise.id.toString()}
-                editable={false}
+        )}
+        {workoutExercises.map((exercise) => (
+          <WorkoutExerciseCard
+            key={exercise.order_index}
+            name={exercise.name}
+            exercise_id={exercise.id.toString()}
+            editable={false}
                 workout_id={workout_id}
                 dateName={dateName}
-                refreshTrigger={() => setRefreshKey(refreshKey + 1)}
-              />
-            </View>
-          ))}
-        </ScrollView>
-        <Modal
-          style={{ alignSelf: 'center', overflow: 'visible' }}
-          visible={selectionModalVisible}
-          animationType="fade"
-          transparent={true}
-          onRequestClose={() => {
-            setSelectionModalVisible(!selectionModalVisible);
-          }}
+            refreshTrigger={() => setRefreshKey(refreshKey + 1)}
+          />
+        ))}
+      </ScrollView>
+      <Modal
+        visible={selectionModalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => {
+          setSelectionModalVisible(!selectionModalVisible);
+        }}
+      >
+        <Pressable
+          style={[styles.overlay, { backgroundColor: colors.overlay }]}
+          onPress={() => setSelectionModalVisible(false)}
         >
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              overflow: 'visible',
-            }}
-          >
+          <Pressable style={styles.modalContent}>
             <SelectExerciseCard
               updateExerciseName={setExerciseName}
               onConfirm={handleConfirmExercise}
             />
-          </View>
-        </Modal>
-        <Modal
-          style={{ alignSelf: 'center' }}
-          visible={exerciseModalVisible}
-          animationType="fade"
-          transparent={true}
-          onRequestClose={() => {
-            setExerciseModalVisible(!exerciseModalVisible);
-          }}
-        >
-          <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <WorkoutExerciseCard
-              name={exerciseName}
-              exercise_id={exerciseId}
-              editable={true}
-              workout_id={workout_id}
-              dateName={dateName}
-              onConfirm={() => {
-                setExerciseModalVisible(false);
-                setRefreshKey((prev) => prev + 1);
-              }}
-            />
-          </View>
-        </Modal>
-        <AddButton
-          label={t('buttonLabels.addExercise')}
-          componentStyle={styles.buttonComponent}
-          onPress={handleAddExercise}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+          </Pressable>
+        </Pressable>
+      </Modal>
+      <Modal
+        visible={exerciseModalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => {
+          setExerciseModalVisible(!exerciseModalVisible);
+        }}
+      >
+        <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
+          <WorkoutExerciseCard
+            name={exerciseName}
+            exercise_id={exerciseId}
+            editable={true}
+            workout_id={workout_id}
+            dateName={dateName}
+            onConfirm={() => {
+              setExerciseModalVisible(false);
+              setRefreshKey((prev) => prev + 1);
+            }}
+          />
+        </View>
+      </Modal>
+      <AddButton
+        label={t('buttonLabels.addExercise')}
+        componentStyle={styles.fab}
+        onPress={handleAddExercise}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    width: '100%',
-    margin: 8,
-    marginTop: '10%',
-  },
-  exerciseCardContainer: {
+  screen: { flex: 1 },
+  topBar: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
+    paddingRight: Spacing.lg,
   },
-  buttonComponent: {
-    marginTop: 'auto',
-    marginLeft: 'auto',
-    marginBottom: '10%',
-    marginRight: '10%',
+  backButton: { marginLeft: Spacing.lg },
+  datePill: { alignSelf: 'auto' },
+  scrollView: { flex: 1, width: '100%' },
+  scrollContent: {
+    padding: Spacing.lg,
+    paddingBottom: 120,
+    gap: Spacing.md,
+  },
+  overlay: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: { width: '100%', alignItems: 'center' },
+  fab: {
+    position: 'absolute',
+    right: Spacing.xl,
+    bottom: Spacing.xl,
   },
 });

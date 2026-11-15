@@ -12,10 +12,11 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 import { PieChart } from 'react-native-chart-kit';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 import useThemeColors from '@/hooks/UseThemeColors';
 import CustomText from '@/components/CustomText';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 import { Workout } from '@/src/Interfaces/db_interfaces';
 import { RegionCount } from '@/constants/Interfaces';
 
@@ -63,17 +64,6 @@ export default function Dashboard() {
   const imagePaths: ImageSourcePropType[] = [image1, image2, image3];
   const date = new Date();
 
-  function adjustFontSize(name: string) {
-    let translatedName = t(name);
-    let adjustedFontSize = 32 - (translatedName.length - 16);
-
-    if (adjustedFontSize <= 14) {
-      return 14;
-    } else {
-      return adjustedFontSize;
-    }
-  }
-
   function parseDate(date: string) {
     const year = parseInt(date.substring(0, 4));
     const month = parseInt(date.substring(4, 6)) - 1;
@@ -102,8 +92,8 @@ export default function Dashboard() {
           name: t('targets.' + key),
           freq: Math.round((value / sum) * 10000) / 100,
           color: colors.pieChartColors[index],
-          legendFontColor: colors.text,
-          legendFontSize: 15,
+          legendFontColor: colors.textMuted,
+          legendFontSize: 12,
         });
         index++;
       }
@@ -124,8 +114,8 @@ export default function Dashboard() {
           name: t('targets.' + key),
           freq: Math.round((value / sum) * 10000) / 100,
           color: colors.pieChartColors[index],
-          legendFontColor: colors.text,
-          legendFontSize: 15,
+          legendFontColor: colors.textMuted,
+          legendFontSize: 12,
         });
         index++;
       }
@@ -219,233 +209,193 @@ export default function Dashboard() {
     }, [])
   );
 
+  const chartCardWidth = screenWidth - Spacing.lg * 2;
+  const cardColors = [
+    { backgroundColor: colors.surface, borderColor: colors.border },
+    shadow(colors.shadow, 1),
+  ];
+  const kpis = [
+    { label: t('dashboard.totalWorkouts'), value: totalWorkouts ?? 0 },
+    {
+      label: t('dashboard.trainingSince'),
+      value: weeksTraining ? Math.max(1, Math.round(weeksTraining)) : 0,
+    },
+    {
+      label: t('dashboard.workoutsPerWeek'),
+      value:
+        totalWorkouts && weeksTraining
+          ? Math.round((totalWorkouts / weeksTraining) * 10) / 10
+          : 0,
+    },
+  ];
+
   return (
-    <View
-      style={{
-        flex: 1,
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
-    >
-      <LinearGradient
-        start={{ x: 0.5, y: 0.5 }}
-        end={{ x: 1, y: 1 }}
-        colors={[colors.mainOne, colors.mainTwo]}
-        style={StyleSheet.absoluteFillObject}
-      />
-      <ScrollView
-        style={{ width: '100%' }}
-        contentContainerStyle={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <View style={[styles.statRow, { backgroundColor: colors.mainTwo }]}>
-          <View
-            style={[styles.statContainer, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.statText}>
-              {t('dashboard.totalWorkouts')}
-            </CustomText>
-            <CustomText style={styles.statValue}>{totalWorkouts}</CustomText>
-          </View>
-          <View
-            style={[
-              styles.statContainer,
-              {
-                backgroundColor: colors.mainTwo,
-                borderRightWidth: 1,
-                borderLeftWidth: 1,
-                borderColor: colors.borderColor,
-              },
-            ]}
-          >
-            <CustomText style={styles.statText}>
-              {t('dashboard.trainingSince')}
-            </CustomText>
-            <CustomText style={styles.statValue}>
-              {firstWorkoutDate?.getDate()}
-            </CustomText>
-          </View>
-          <View
-            style={[styles.statContainer, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.statText}>
-              {t('dashboard.workoutsPerWeek')}
-            </CustomText>
-            <CustomText style={styles.statValue}>
-              {totalWorkouts &&
-                weeksTraining &&
-                Math.round((totalWorkouts / weeksTraining) * 10) / 10}
-            </CustomText>
-          </View>
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.kpiRow}>
+          {kpis.map((kpi) => (
+            <View key={kpi.label} style={[styles.card, styles.kpiTile, cardColors]}>
+              <CustomText style={[styles.kpiValue, { color: colors.primary }]}>
+                {kpi.value}
+              </CustomText>
+              <CustomText
+                style={[styles.kpiLabel, { color: colors.textMuted }]}
+                numberOfLines={2}
+              >
+                {kpi.label}
+              </CustomText>
+            </View>
+          ))}
         </View>
-        <View
-          style={{
-            height: 200,
-            marginVertical: '5%',
-            width: '90%',
-          }}
+
+        <ScrollView
+          horizontal
+          snapToInterval={chartCardWidth + Spacing.md}
+          decelerationRate="fast"
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: Spacing.md }}
         >
-          <ScrollView
-            horizontal={true}
-            contentContainerStyle={{
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
             {exRegionsData && (
               <View
-                style={{
-                  backgroundColor: colors.mainTwo,
-                  borderRadius: 4,
-                  marginRight: 5,
-                }}
+                style={[
+                  styles.card,
+                  styles.chartCard,
+                  { width: chartCardWidth },
+                  cardColors,
+                ]}
               >
-                <CustomText style={styles.pieChartHeader}>
+                <CustomText style={styles.cardTitle}>
                   {t('dashboard.regionsAfterExercises')}
                 </CustomText>
                 <PieChart
                   data={exRegionsData}
-                  width={screenWidth * 0.75}
-                  height={160}
+                  width={chartCardWidth - Spacing.lg * 2}
+                  height={170}
                   accessor={'freq'}
                   chartConfig={{
-                    backgroundGradientFrom: '#1E2923',
-                    backgroundGradientFromOpacity: 0,
-                    backgroundGradientTo: '#08130D',
-                    backgroundGradientToOpacity: 0.5,
-                    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                    strokeWidth: 2, // optional, default 3
-                    useShadowColorFromDataset: false, // optional
+                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                   }}
                   backgroundColor={'transparent'}
                   paddingLeft={'0'}
-                  center={[10, 0]}
+                  center={[8, 0]}
                   absolute={false}
                 />
               </View>
             )}
             {setRegionsData && (
               <View
-                style={{ backgroundColor: colors.mainTwo, borderRadius: 4 }}
+                style={[
+                  styles.card,
+                  styles.chartCard,
+                  { width: chartCardWidth },
+                  cardColors,
+                ]}
               >
-                <CustomText style={styles.pieChartHeader}>
+                <CustomText style={styles.cardTitle}>
                   {t('dashboard.regionsAfterSets')}
                 </CustomText>
                 <PieChart
                   data={setRegionsData}
-                  width={screenWidth * 0.75}
-                  height={160}
+                  width={chartCardWidth - Spacing.lg * 2}
+                  height={170}
                   accessor={'freq'}
                   chartConfig={{
-                    backgroundGradientFrom: '#1E2923',
-                    backgroundGradientFromOpacity: 0,
-                    backgroundGradientTo: '#08130D',
-                    backgroundGradientToOpacity: 0.5,
-                    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                    strokeWidth: 2, // optional, default 3
-                    useShadowColorFromDataset: false, // optional
+                    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                   }}
                   backgroundColor={'transparent'}
                   paddingLeft={'0'}
-                  center={[10, 0]}
+                  center={[8, 0]}
                   absolute={false}
                 />
               </View>
             )}
-          </ScrollView>
+        </ScrollView>
+
+        <View style={[styles.card, cardColors]}>
+          <CustomText style={styles.cardTitle}>
+            {t('dashboard.favoriteExerciseFrequency')}
+          </CustomText>
+          {favFreqExercises &&
+            favFreqExercises.map((item: any, index: number) => (
+              <Pressable
+                key={item.id}
+                onPress={() =>
+                  router.push({
+                    pathname: '/exercises/[id]',
+                    params: {
+                      id: item.id,
+                      source: '/dashboard',
+                    },
+                  })
+                }
+                style={({ pressed }) => [
+                  styles.rankRow,
+                  index > 0 && {
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                    borderTopColor: colors.border,
+                  },
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <Image source={imagePaths[index]} style={styles.medal} />
+                <CustomText style={styles.rankName} numberOfLines={1}>
+                  {t(item.name)}
+                </CustomText>
+                <Ionicons
+                  name="chevron-forward"
+                  size={18}
+                  color={colors.textMuted}
+                />
+              </Pressable>
+            ))}
+          {(!favFreqExercises || favFreqExercises.length === 0) && (
+            <CustomText style={[styles.emptyText, { color: colors.textMuted }]}>
+              {t('exercises.noData')}
+            </CustomText>
+          )}
         </View>
-        <View style={styles.favExerciseContainer}>
-          <View style={styles.favExerciseColumn}>
-            <CustomText style={styles.favExerciseHeader}>
-              {t('dashboard.favoriteExerciseFrequency')}
+        <View style={[styles.card, cardColors]}>
+          <CustomText style={styles.cardTitle}>
+            {t('dashboard.favoriteExerciseSets')}
+          </CustomText>
+          {favSetExercises &&
+            favSetExercises.map((item: any, index: number) => (
+              <Pressable
+                key={item.id}
+                onPress={() =>
+                  router.push({
+                    pathname: '/exercises/[id]',
+                    params: {
+                      id: item.id,
+                      source: '/dashboard',
+                    },
+                  })
+                }
+                style={({ pressed }) => [
+                  styles.rankRow,
+                  index > 0 && {
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                    borderTopColor: colors.border,
+                  },
+                  { opacity: pressed ? 0.7 : 1 },
+                ]}
+              >
+                <Image source={imagePaths[index]} style={styles.medal} />
+                <CustomText style={styles.rankName} numberOfLines={1}>
+                  {t(item.name)}
+                </CustomText>
+                <Ionicons
+                  name="chevron-forward"
+                  size={18}
+                  color={colors.textMuted}
+                />
+              </Pressable>
+            ))}
+          {(!favSetExercises || favSetExercises.length === 0) && (
+            <CustomText style={[styles.emptyText, { color: colors.textMuted }]}>
+              {t('exercises.noData')}
             </CustomText>
-            {favFreqExercises &&
-              favFreqExercises.map((item: any, index: number) => {
-                return (
-                  <Pressable
-                    onPress={() =>
-                      router.push({
-                        pathname: '/exercises/[id]',
-                        params: {
-                          id: item.id,
-                          source: '/dashboard',
-                        },
-                      })
-                    }
-                    key={item.id}
-                    style={[
-                      styles.favExercise,
-                      { backgroundColor: colors.mainTwo },
-                    ]}
-                  >
-                    <Image
-                      source={imagePaths[index]}
-                      style={{ width: 40, height: 40 }}
-                    />
-                    <CustomText
-                      style={[
-                        styles.favExerciseText,
-                        {
-                          fontSize:
-                            t(item.name).length > 22
-                              ? adjustFontSize(t(item.name))
-                              : 22,
-                        },
-                      ]}
-                    >
-                      {t(item.name)}
-                    </CustomText>
-                  </Pressable>
-                );
-              })}
-          </View>
-          <View style={styles.favExerciseColumn}>
-            <CustomText style={styles.favExerciseHeader}>
-              {t('dashboard.favoriteExerciseSets')}
-            </CustomText>
-            {favSetExercises &&
-              favSetExercises.map((item: any, index: number) => {
-                return (
-                  <Pressable
-                    key={item.id}
-                    onPress={() =>
-                      router.push({
-                        pathname: '/exercises/[id]',
-                        params: {
-                          id: item.id,
-                          source: '/dashboard',
-                        },
-                      })
-                    }
-                    style={[
-                      styles.favExercise,
-                      { backgroundColor: colors.mainTwo },
-                    ]}
-                  >
-                    <Image
-                      source={imagePaths[index]}
-                      style={{ width: 40, height: 40 }}
-                    />
-                    <CustomText
-                      style={[
-                        styles.favExerciseText,
-                        {
-                          fontSize:
-                            t(item.name).length > 22
-                              ? adjustFontSize(t(item.name))
-                              : 22,
-                        },
-                      ]}
-                    >
-                      {t(item.name)}
-                    </CustomText>
-                  </Pressable>
-                );
-              })}
-          </View>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -453,64 +403,43 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
-  statRow: {
+  screen: { flex: 1 },
+  scrollContent: {
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
+    gap: Spacing.md,
+  },
+  card: {
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: Spacing.lg,
+  },
+  cardTitle: {
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.body,
+    marginBottom: Spacing.sm,
+  },
+  kpiRow: { flexDirection: 'row', gap: Spacing.sm },
+  kpiTile: {
+    flex: 1,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.lg,
+    alignItems: 'center',
+  },
+  kpiValue: { fontFamily: Fonts.bold, fontSize: FontSize.display },
+  kpiLabel: {
+    fontSize: FontSize.caption,
+    textAlign: 'center',
+    marginTop: Spacing.xs,
+  },
+  chartCard: { paddingBottom: Spacing.sm },
+  rankRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 4,
-    width: '90%',
-    marginTop: '5%',
-    paddingHorizontal: 5,
-    paddingVertical: 10,
+    gap: Spacing.md,
+    paddingVertical: Spacing.md,
   },
-  statContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '30%',
-    height: 80,
-  },
-  statText: {
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    height: '60%',
-    fontSize: 14,
-  },
-  statValue: {
-    textAlign: 'center',
-    textAlignVertical: 'top',
-    height: '40%',
-    fontSize: 28,
-  },
-  pieChartHeader: {
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    fontSize: 18,
-    paddingTop: 15,
-  },
-  favExerciseContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-  },
-  favExerciseColumn: { width: '49%' },
-  favExerciseHeader: {
-    fontSize: 18,
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    height: 60,
-  },
-  favExercise: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    width: '100%',
-    height: 112,
-    paddingVertical: 5,
-    marginVertical: 5,
-  },
-  favExerciseText: {
-    fontSize: 22,
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
+  medal: { width: 32, height: 32 },
+  rankName: { flex: 1, fontFamily: Fonts.medium, fontSize: FontSize.body },
+  emptyText: { fontSize: FontSize.small, paddingVertical: Spacing.md },
 });

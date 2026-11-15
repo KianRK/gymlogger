@@ -2,14 +2,14 @@ import { View, ScrollView, StyleSheet, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
 import useThemeColors from '@/hooks/UseThemeColors';
 import AddButton from '@/components/Buttons/AddButton';
 import WorkoutTemplateCard from '@/components/WorkoutTemplateCard';
+import EmptyState from '@/components/EmptyState';
+import { Spacing } from '@/constants/Theme';
 
 import { db } from '@/src/database';
 import { Template } from '@/src/Interfaces/db_interfaces';
@@ -75,65 +75,53 @@ export default function Index() {
   );
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        {...(Platform.OS === 'android' ? { fadingEdgeLength: 10 } : {})}
       >
-        <LinearGradient
-          start={{ x: 0.5, y: 0.5 }}
-          end={{ x: 1, y: 1 }}
-          colors={[colors.mainOne, colors.mainTwo]}
-          style={StyleSheet.absoluteFillObject}
-        />
-
-        <ScrollView
-          style={styles.scrollViewContainer}
-          {...(Platform.OS === 'android' ? { fadingEdgeLength: 10 } : {})}
-        >
-          {templates.map((template, index) => (
-            <View key={template.id} style={styles.workoutTemplateContainer}>
-              <WorkoutTemplateCard
-                template_id={template.id.toString()}
-                template_number={index + 1}
-                name={template.name}
-                pressedDropDownNumber={dropDownNumber}
-                refreshKey={refreshTemplateKey}
-                refreshTrigger={() => setRefreshKey(refreshKey + 1)}
-                onPressEdit={() => goToEditMode(template.id.toString())}
-                onPress={() => registrationHandler(index + 1)}
-              />
-            </View>
-          ))}
-        </ScrollView>
-        <AddButton
-          label={t('buttonLabels.addTemplate')}
-          componentStyle={styles.buttonComponent}
-          onPress={handleAddTemplate}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+        {templates.length === 0 && (
+          <EmptyState
+            icon="clipboard-outline"
+            title={t('templates.empty')}
+            hint={t('templates.emptyHint')}
+          />
+        )}
+        {templates.map((template, index) => (
+          <WorkoutTemplateCard
+            key={template.id}
+            template_id={template.id.toString()}
+            template_number={index + 1}
+            name={template.name}
+            pressedDropDownNumber={dropDownNumber}
+            refreshKey={refreshTemplateKey}
+            refreshTrigger={() => setRefreshKey(refreshKey + 1)}
+            onPressEdit={() => goToEditMode(template.id.toString())}
+            onPress={() => registrationHandler(index + 1)}
+          />
+        ))}
+      </ScrollView>
+      <AddButton
+        label={t('buttonLabels.addTemplate')}
+        componentStyle={styles.fab}
+        onPress={handleAddTemplate}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    marginTop: '10%',
-    width: '100%',
-    margin: 8,
+  screen: { flex: 1 },
+  scrollView: { flex: 1, width: '100%' },
+  scrollContent: {
+    padding: Spacing.lg,
+    paddingBottom: 120,
+    gap: Spacing.md,
   },
-  workoutTemplateContainer: {
-    alignItems: 'center',
-    margin: 6,
-    marginBottom: 6,
-  },
-  buttonComponent: {
-    marginTop: 'auto',
-    marginLeft: 'auto',
-    marginBottom: '10%',
-    marginRight: '10%',
+  fab: {
+    position: 'absolute',
+    right: Spacing.xl,
+    bottom: Spacing.xl,
   },
 });

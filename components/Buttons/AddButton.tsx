@@ -1,15 +1,9 @@
-import {
-  Pressable,
-  Text,
-  View,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { Pressable, View, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import CustomText from '../CustomText';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 type Props = {
   label?: string;
@@ -18,6 +12,7 @@ type Props = {
   buttonStyle?: ViewStyle;
   labelStyle?: TextStyle;
   iconSize?: number;
+  variant?: 'primary' | 'secondary';
 };
 
 export default function AddButton({
@@ -26,55 +21,67 @@ export default function AddButton({
   componentStyle,
   buttonStyle,
   labelStyle,
-  iconSize = 35,
+  iconSize = 22,
+  variant = 'primary',
 }: Props) {
   const colors = useThemeColors();
+  const isPrimary = variant === 'primary';
+  const foreground = isPrimary ? colors.onPrimary : colors.primary;
 
   return (
     <View style={[styles.componentContainer, componentStyle]}>
-      {label && (
-        <CustomText style={[styles.addButtonLabel, labelStyle]}>
-          {label}
-        </CustomText>
-      )}
-      <View
-        style={[
-          styles.addButtonContainer,
+      <Pressable
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        style={({ pressed }) => [
+          label ? styles.pill : styles.circle,
           {
-            borderColor: colors.borderColor,
+            backgroundColor: isPrimary ? colors.primary : colors.primarySoft,
+            opacity: pressed ? 0.85 : 1,
           },
+          isPrimary && shadow(colors.primary, 2),
           buttonStyle,
         ]}
       >
-        <Pressable style={styles.addButton} onPress={onPress}>
-          <Ionicons name="add-sharp" size={iconSize} color={colors.icon} />
-        </Pressable>
-      </View>
+        <Ionicons name="add" size={iconSize} color={foreground} />
+        {label && (
+          <CustomText
+            style={[styles.label, { color: foreground }, labelStyle]}
+            numberOfLines={1}
+          >
+            {label}
+          </CustomText>
+        )}
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   componentContainer: {
-    position: 'relative',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignContent: 'center',
   },
-  addButtonContainer: {
-    width: 50,
-    height: 50,
-    marginTop: 5,
-    borderWidth: 2,
-    borderRadius: 25,
-    alignSelf: 'center',
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    alignContent: 'center',
+    gap: Spacing.xs,
+    height: 48,
+    paddingLeft: Spacing.md,
+    paddingRight: Spacing.lg,
+    borderRadius: Radius.pill,
   },
-
-  addButton: { alignItems: 'center' },
-  addButtonLabel: {
-    width: 140,
-    textAlign: 'center',
-    fontSize: 18,
+  circle: {
+    width: 48,
+    height: 48,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  label: {
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.body,
   },
 });

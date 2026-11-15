@@ -1,9 +1,10 @@
-import { Pressable, View, ViewStyle, StyleSheet } from 'react-native';
-
+import { View, ViewStyle, StyleSheet } from 'react-native';
 import { RelativePathString, useRouter } from 'expo-router';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Ionicons } from '@expo/vector-icons';
 
+import IconButton from '../IconButton';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Spacing } from '@/constants/Theme';
 
 type Props = {
   componentStyle?: ViewStyle;
@@ -16,31 +17,19 @@ export default function BackButton({ componentStyle, sourceRoute }: Props) {
 
   return (
     <View style={[styles.componentContainer, componentStyle]}>
-      <Pressable
-        style={styles.backButton}
+      <IconButton
+        variant="soft"
+        accessibilityLabel="Back"
         onPress={() => {
           sourceRoute ? router.push({ pathname: sourceRoute }) : router.back();
         }}
       >
-        <MaterialCommunityIcons
-          name="arrow-left"
-          size={30}
-          color={colors.icon}
-        />
-      </Pressable>
+        <Ionicons name="chevron-back" size={22} color={colors.icon} />
+      </IconButton>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  componentContainer: {
-    width: 45,
-    height: 45,
-    position: 'relative',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-  },
-  backButton: { alignItems: 'center' },
+  componentContainer: { marginLeft: Spacing.lg },
 });

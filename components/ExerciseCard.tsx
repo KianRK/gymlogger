@@ -1,12 +1,13 @@
 import { View, Pressable, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
 import CustomText from './CustomText';
+import IconButton from './IconButton';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 type Props = {
   name: string;
@@ -29,106 +30,95 @@ export default function ExerciseCard({
 }: Props) {
   const colors = useThemeColors();
   const { t } = useTranslation();
-  const translatedName = t(name);
-  const primaryText = primary ? primary[0] : '';
-  const secondaryText = secondary ? secondary[0] : '';
-  const [fontSize, setFontSize] = useState<number>(18);
-
-  useEffect(() => {
-    function adjustFontSize() {
-      if (translatedName.length > 21) {
-        let adjustedFontSize = 18 - (translatedName.length - 20) / 2;
-
-        if (adjustedFontSize <= 10) {
-          setFontSize(10);
-        } else {
-          setFontSize(adjustedFontSize);
-        }
-      }
-    }
-    adjustFontSize();
-  }, []);
+  const primaryText = primary && primary[0] ? t('targets.' + primary[0]) : '';
+  const secondaryText =
+    secondary && secondary[0] ? t('targets.' + secondary[0]) : '';
+  const targets = [primaryText, secondaryText].filter(Boolean).join(' · ');
 
   return (
-    <LinearGradient
-      start={{ x: 0.375, y: 0.375 }}
-      end={{ x: 0.75, y: 0.75 }}
-      colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
-      style={{
-        borderRadius: 8,
-        width: '95%',
-        alignSelf: 'center',
-        marginTop: 3,
-        marginBottom: 3,
-      }}
+    <Pressable
+      onPress={onPressInfo}
+      style={({ pressed }) => [
+        styles.card,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          opacity: pressed ? 0.85 : 1,
+        },
+        shadow(colors.shadow, 1),
+      ]}
     >
-      <View style={styles.exerciseCardContainer}>
-        <Pressable style={styles.favoritesButton} onPress={onPressFav}>
-          <MaterialCommunityIcons
-            name={is_favorite ? 'heart' : 'heart-outline'}
-            size={30}
-            color={colors.icon}
-          />
-        </Pressable>
-        <View style={styles.mainTextContainer}>
-          <CustomText style={[styles.exerciseName, { fontSize: fontSize }]}>
-            {translatedName}
-          </CustomText>
-          <CustomText style={styles.regionText}>
-            {t('targets.' + region)}
-          </CustomText>
-        </View>
-        <Pressable style={styles.infoButton} onPress={onPressInfo}>
-          <MaterialCommunityIcons
-            name="information"
-            size={30}
-            color={colors.icon}
-          />
-        </Pressable>
-        <View style={styles.targetsContainer}>
-          <CustomText style={styles.primaryTarget}>
-            {t('targets.' + primaryText)}
-          </CustomText>
-          <CustomText style={styles.secondaryTarget}>
-            {t('targets.' + secondaryText)}
-          </CustomText>
+      <IconButton
+        onPress={onPressFav}
+        variant={is_favorite ? 'active' : 'soft'}
+        size={38}
+        accessibilityLabel="Favorite"
+      >
+        <MaterialCommunityIcons
+          name={is_favorite ? 'heart' : 'heart-outline'}
+          size={20}
+          color={is_favorite ? colors.primary : colors.textMuted}
+        />
+      </IconButton>
+      <View style={styles.textContainer}>
+        <CustomText
+          style={styles.name}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.75}
+        >
+          {t(name)}
+        </CustomText>
+        <View style={styles.metaRow}>
+          {region && (
+            <View
+              style={[styles.regionTag, { backgroundColor: colors.primarySoft }]}
+            >
+              <CustomText style={[styles.regionText, { color: colors.primary }]}>
+                {t('targets.' + region)}
+              </CustomText>
+            </View>
+          )}
+          {targets.length > 0 && (
+            <CustomText
+              style={[styles.targets, { color: colors.textMuted }]}
+              numberOfLines={1}
+            >
+              {targets}
+            </CustomText>
+          )}
         </View>
       </View>
-    </LinearGradient>
+      <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  exerciseCardContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 54,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    borderRadius: 8,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 8,
-  },
-  favoritesButton: {},
-  mainTextContainer: {
-    width: '55%',
-    flexWrap: 'nowrap',
-    alignItems: 'flex-start',
-  },
-  exerciseName: {
-    width: '100%',
-    textAlign: 'left',
-    height: 25,
-    fontSize: 18,
-  },
-  regionText: { height: 12, textAlign: 'center', fontSize: 12 },
-  infoButton: {
+  card: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    gap: Spacing.md,
+    marginHorizontal: Spacing.lg,
+    marginVertical: Spacing.xs,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
   },
-  targetsContainer: { width: '20%' },
-  primaryTarget: { textAlign: 'center', fontSize: 11 },
-  secondaryTarget: { textAlign: 'center', fontSize: 11 },
+  textContainer: { flex: 1 },
+  name: { fontFamily: Fonts.semiBold, fontSize: FontSize.body },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+  },
+  regionTag: {
+    borderRadius: Radius.pill,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 1,
+  },
+  regionText: { fontFamily: Fonts.medium, fontSize: FontSize.caption },
+  targets: { flexShrink: 1, fontSize: FontSize.caption },
 });

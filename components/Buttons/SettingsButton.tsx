@@ -1,38 +1,22 @@
-import { Pressable, View, StyleSheet } from 'react-native';
-
+import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
+import IconButton from '../IconButton';
 import useThemeColors from '@/hooks/UseThemeColors';
 
 export default function SettingsButton() {
   const router = useRouter();
   const colors = useThemeColors();
 
-  const goToSettings = () => {
-    router.push({
-      pathname: '/settings',
-    });
-  };
-
   return (
-    <View style={styles.componentContainer}>
-      <Pressable style={styles.settingsButton} onPress={goToSettings}>
-        <Ionicons name="settings-sharp" size={30} color={colors.icon} />
-      </Pressable>
+    <View>
+      <IconButton
+        accessibilityLabel="Settings"
+        onPress={() => router.push({ pathname: '/settings' })}
+      >
+        <Ionicons name="settings-outline" size={22} color={colors.icon} />
+      </IconButton>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  componentContainer: {
-    width: 45,
-    height: 45,
-    position: 'relative',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-  },
-  settingsButton: { alignItems: 'center' },
-});

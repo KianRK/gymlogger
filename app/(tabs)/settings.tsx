@@ -1,13 +1,12 @@
-import { View, useColorScheme, StyleSheet, Pressable } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { useState, useEffect } from 'react';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
-import { LinearGradient } from 'expo-linear-gradient';
-
 import { useSettings } from '@/src/providers/SettingsProvider';
 import useThemeColors from '@/hooks/UseThemeColors';
-import CustomText from '@/components/CustomText';
+import { SettingsRow, SettingsSection } from '@/components/SettingsSection';
+import { Spacing } from '@/constants/Theme';
 import DropDownButton from '@/components/Buttons/DropDownButton';
 
 export default function SettingsScreen() {
@@ -99,23 +98,18 @@ export default function SettingsScreen() {
   }, [currentUnitSetting]);
 
   return (
-    <LinearGradient
-      start={{ x: 0.5, y: 0.5 }}
-      end={{ x: 1, y: 1 }}
-      colors={[colors.mainOne, colors.mainTwo]}
-      style={[StyleSheet.absoluteFillObject, { alignItems: 'center' }]}
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.content}
     >
-      <View style={styles.settingsContainer}>
-        <View style={styles.generalSection}>
-          <CustomText style={styles.settingSectionHeader}>
-            {t('settings.sections.general')}
-          </CustomText>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.settings }]}
-          >
-            <CustomText style={styles.settingText}>
-              {t('settings.language.language')}
-            </CustomText>
+      <SettingsSection
+        title={t('settings.sections.general')}
+        style={{ zIndex: 3 }}
+      >
+        <SettingsRow
+          icon="language-outline"
+          label={t('settings.language.language')}
+          right={
             <DropDownButton
               currentSelection={currentLanguage}
               options={languageOptions}
@@ -125,11 +119,12 @@ export default function SettingsScreen() {
               selectionSetter={setCurrentLanguage}
               visibilitySetter={setLanguageSettingVisible}
             />
-          </View>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.settingText}>Dark mode</CustomText>
+          }
+        />
+        <SettingsRow
+          icon="moon-outline"
+          label="Dark mode"
+          right={
             <DropDownButton
               currentSelection={currentDarkModeSetting}
               options={darkModeOptions}
@@ -139,27 +134,15 @@ export default function SettingsScreen() {
               visibilitySetter={setDarkModeSettingVisible}
               selectionSetter={setCurrentDarkModeSetting}
             />
-          </View>
-        </View>
-        <View style={styles.trainingSection}>
-          <CustomText style={styles.settingSectionHeader}>Training</CustomText>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
-          >
-            <Pressable>
-              <CustomText style={styles.settingText}>
-                {t('settings.resetEx')}
-              </CustomText>
-            </Pressable>
-          </View>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.settings }]}
-          >
-            <CustomText style={styles.settingText}>
-              {t('settings.units.units')}
-            </CustomText>
+          }
+        />
+      </SettingsSection>
+      <SettingsSection title="Training" style={{ zIndex: 2 }}>
+        <SettingsRow
+          icon="speedometer-outline"
+          label={t('settings.units.units')}
+          right={
             <DropDownButton
-              componentStyle={{ width: '40%' }}
               currentSelection={currentUnitSetting}
               options={unitOptions}
               settingName="units"
@@ -168,62 +151,36 @@ export default function SettingsScreen() {
               selectionSetter={setCurrentUnitSetting}
               visibilitySetter={setUnitSettingVisible}
             />
-          </View>
-        </View>
-        <View style={styles.contactSection}>
-          <CustomText style={styles.settingSectionHeader}>
-            {t('settings.sections.contact')}
-          </CustomText>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
-          >
-            <Pressable>
-              <CustomText style={styles.settingText}>Feedback</CustomText>
-            </Pressable>
-          </View>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.settings }]}
-          >
-            <Pressable>
-              <CustomText style={styles.settingText}>
-                {t('settings.help')}
-              </CustomText>
-            </Pressable>
-          </View>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
-          >
-            <Pressable>
-              <CustomText style={styles.settingText}>
-                {t('settings.rate')}
-              </CustomText>
-            </Pressable>
-          </View>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.settings }]}
-          >
-            <Pressable>
-              <CustomText style={styles.settingText}>Social</CustomText>
-            </Pressable>
-          </View>
-        </View>
-      </View>
-    </LinearGradient>
+          }
+        />
+        <SettingsRow
+          icon="refresh-outline"
+          label={t('settings.resetEx')}
+          showChevron
+        />
+      </SettingsSection>
+      <SettingsSection
+        title={t('settings.sections.contact')}
+        style={{ zIndex: 1 }}
+      >
+        <SettingsRow icon="chatbubble-outline" label="Feedback" showChevron />
+        <SettingsRow
+          icon="help-circle-outline"
+          label={t('settings.help')}
+          showChevron
+        />
+        <SettingsRow icon="star-outline" label={t('settings.rate')} showChevron />
+        <SettingsRow icon="people-outline" label="Social" showChevron />
+      </SettingsSection>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  settingsContainer: { justifyContent: 'center', width: '80%' },
-  generalSection: { width: '100%', marginTop: '20%' },
-  trainingSection: { width: '100%', marginTop: '10%' },
-  contactSection: { width: '100%', marginTop: '10%' },
-  settingSectionHeader: { textAlign: 'left', fontSize: 26 },
-  settingRow: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderRadius: 4,
-    padding: 4,
+  content: {
+    padding: Spacing.lg,
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.xxl,
+    gap: Spacing.xl,
   },
-  settingText: { fontSize: 18, textAlign: 'right' },
 });

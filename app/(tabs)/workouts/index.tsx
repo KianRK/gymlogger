@@ -9,8 +9,6 @@ import {
 import { useRouter } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import '../../../src/i18n/i18n';
@@ -26,6 +24,10 @@ import AddButton from '@/components/Buttons/AddButton';
 import WorkoutCard from '@/components/WorkoutCard';
 import TemplateOverviewCard from '@/components/TemplateOverviewCard';
 import CustomText from '@/components/CustomText';
+import ActionDialog from '@/components/ActionDialog';
+import EmptyState from '@/components/EmptyState';
+import IconButton from '@/components/IconButton';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 import { db } from '@/src/database';
 import {
@@ -222,219 +224,137 @@ export default function Index() {
   );
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <LinearGradient
-          start={{ x: 0.5, y: 0.5 }}
-          end={{ x: 1, y: 1 }}
-          colors={[colors.mainOne, colors.mainTwo]}
-          style={StyleSheet.absoluteFillObject}
-        />
+    <View style={[styles.screen, { backgroundColor: colors.background }]}>
+      <View style={styles.dateBar}>
         <CalendarButton
           date={isCurrentDateToday() ? t('today') : dateString}
           onPress={() => {
             setShow(!show);
           }}
         />
-        {show && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            onChange={onChange}
-            display="inline"
+      </View>
+      {show && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          onChange={onChange}
+          display="inline"
+          accentColor={colors.primary}
+        />
+      )}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        {...(Platform.OS === 'android'
+          ? { fadingEdgeLength: { start: 0, end: 10 } }
+          : {})}
+      >
+        {workouts.length === 0 && (
+          <EmptyState
+            icon="barbell-outline"
+            title={t('workouts.empty')}
+            hint={t('workouts.emptyHint')}
           />
         )}
-        <ScrollView
-          style={styles.scrollViewContainer}
-          {...(Platform.OS === 'android'
-            ? { fadingEdgeLength: { start: 0, end: 10 } }
-            : {})}
-        >
-          {workouts.map((workout, index) => (
-            <View key={workout.id} style={styles.workoutContainer}>
-              <WorkoutCard
-                workout_id={workout.id.toString()}
-                workout_number={index + 1}
-                pressedDropDownNumber={dropDownNumber}
-                refreshKey={refreshWorkoutKey}
-                onPressMenu={() => registrationHandler(index + 1)}
-                onPressEdit={() => goToEditMode(workout.id.toString())}
-                onPressDelete={() => {
-                  setActiveWorkoutId(workout.id.toString());
-                  setDeleteConfirmationVisible(true);
-                }}
-              />
-            </View>
-          ))}
-        </ScrollView>
-        {/* RENDERS ALL WORKOUTCARDS IN ID ORDER AND PASSES WORKOUT ID TO WORKOUTCARD*/}
-        <Modal transparent={true} visible={deleteConfirmationVisible}>
+        {workouts.map((workout, index) => (
+          <WorkoutCard
+            key={workout.id}
+            workout_id={workout.id.toString()}
+            workout_number={index + 1}
+            pressedDropDownNumber={dropDownNumber}
+            refreshKey={refreshWorkoutKey}
+            onPressMenu={() => registrationHandler(index + 1)}
+            onPressEdit={() => goToEditMode(workout.id.toString())}
+            onPressDelete={() => {
+              setActiveWorkoutId(workout.id.toString());
+              setDeleteConfirmationVisible(true);
+            }}
+          />
+        ))}
+      </ScrollView>
+      <ActionDialog
+        visible={deleteConfirmationVisible}
+        title={t('workouts.deleteWorkout')}
+        onRequestClose={() => setDeleteConfirmationVisible(false)}
+        actions={[
+          {
+            label: t('buttonLabels.cancel'),
+            onPress: () => setDeleteConfirmationVisible(false),
+          },
+          {
+            label: t('buttonLabels.delete'),
+            variant: 'danger',
+            onPress: () => {
+              deleteWorkout(activeWorkoutId);
+              setDeleteConfirmationVisible(false);
+            },
+          },
+        ]}
+      />
+      <ActionDialog
+        visible={workoutSelectionVisible}
+        title={t('workouts.addWorkoutFrom')}
+        onRequestClose={() => setWorkoutSelectionVisible(false)}
+        actions={[
+          {
+            label: t('buttonLabels.custom'),
+            variant: 'primary',
+            onPress: () => {
+              handleAddWorkout();
+              setWorkoutSelectionVisible(false);
+            },
+          },
+          {
+            label: t('buttonLabels.template'),
+            onPress: () => {
+              setWorkoutSelectionVisible(false);
+              setTemplateSelectModalVisible(true);
+            },
+          },
+          {
+            label: t('buttonLabels.cancel'),
+            onPress: () => setWorkoutSelectionVisible(false),
+          },
+        ]}
+      />
+      <Modal
+        onRequestClose={() => setTemplateSelectModalVisible(false)}
+        visible={templateSelectModalVisible}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={[styles.overlay, { backgroundColor: colors.overlay }]}>
           <View
             style={[
-              styles.confirmationContainer,
+              styles.sheet,
               { backgroundColor: colors.background },
+              shadow(colors.shadow, 3),
             ]}
           >
-            <CustomText
-              style={{
-                height: '50%',
-                width: '100%',
-                alignSelf: 'center',
-                borderBottomWidth: 1,
-                textAlign: 'center',
-                textAlignVertical: 'center',
-                fontSize: 24,
-              }}
-            >
-              {t('workouts.deleteWorkout')}
-            </CustomText>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                width: '100%',
-                flex: 1,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  deleteWorkout(activeWorkoutId),
-                    setDeleteConfirmationVisible(false);
-                }}
-                style={[
-                  styles.deleteConfirmationButton,
-                  { borderRightWidth: 1 },
-                ]}
+            <View style={styles.sheetHeader}>
+              <CustomText style={styles.sheetTitle}>
+                {t('workouts.chooseTemplate')}
+              </CustomText>
+              <IconButton
+                variant="soft"
+                accessibilityLabel={t('buttonLabels.cancel')}
+                onPress={() => setTemplateSelectModalVisible(false)}
               >
-                <CustomText
-                  style={{
-                    fontSize: 20,
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                  }}
-                >
-                  {t('buttonLabels.delete')}
-                </CustomText>
-              </Pressable>
-              <Pressable
-                onPress={() => setDeleteConfirmationVisible(false)}
-                style={styles.deleteConfirmationButton}
-              >
-                <CustomText
-                  style={{
-                    fontSize: 20,
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                  }}
-                >
-                  {t('buttonLabels.cancel')}
-                </CustomText>
-              </Pressable>
+                <Ionicons name="close" size={22} color={colors.icon} />
+              </IconButton>
             </View>
-          </View>
-        </Modal>
-        <Modal transparent={true} visible={workoutSelectionVisible}>
-          <View
-            style={[
-              styles.workoutSelectionContainer,
-              { backgroundColor: colors.background },
-            ]}
-          >
-            <CustomText
-              style={{
-                height: '50%',
-                width: '100%',
-                alignSelf: 'center',
-                borderBottomWidth: 1,
-                textAlign: 'center',
-                textAlignVertical: 'center',
-                fontSize: 24,
-              }}
-            >
-              {t('workouts.addWorkoutFrom')}
-            </CustomText>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-                width: '100%',
-                flex: 1,
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  handleAddWorkout();
-                  setWorkoutSelectionVisible(false);
-                }}
-                style={[styles.workoutSourceButton, { borderRightWidth: 1 }]}
-              >
+            <ScrollView contentContainerStyle={styles.sheetContent}>
+              {templates.length === 0 && (
                 <CustomText
-                  style={{
-                    fontSize: 20,
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                  }}
+                  style={[styles.sheetEmpty, { color: colors.textMuted }]}
                 >
-                  {t('buttonLabels.custom')}
+                  {t('workouts.noTemplates')}
                 </CustomText>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setWorkoutSelectionVisible(false);
-                  setTemplateSelectModalVisible(true);
-                }}
-                style={[styles.workoutSourceButton, { borderRightWidth: 1 }]}
-              >
-                <CustomText
-                  style={{
-                    fontSize: 20,
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                  }}
-                >
-                  {t('buttonLabels.template')}
-                </CustomText>
-              </Pressable>
-              <Pressable
-                onPress={() => setWorkoutSelectionVisible(false)}
-                style={styles.workoutSourceButton}
-              >
-                <CustomText
-                  style={{
-                    fontSize: 20,
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                  }}
-                >
-                  {t('buttonLabels.cancel')}
-                </CustomText>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-        <Modal
-          onRequestClose={() => setTemplateSelectModalVisible(false)}
-          visible={templateSelectModalVisible}
-          allowSwipeDismissal={true}
-          backdropColor={'#f9f9f922'}
-          animationType="fade"
-          style={{ justifyContent: 'center', flex: 1 }}
-        >
-          <View style={styles.templateContainer}>
-            <ScrollView
-              contentContainerStyle={{
-                justifyContent: 'center',
-              }}
-            >
+              )}
               {templates.map((template, index) => (
                 <Pressable
                   key={index}
+                  style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
                   onPress={() => {
                     createWorkoutFromTemplate(template.id.toString());
                     setTemplateSelectModalVisible(false);
@@ -448,72 +368,59 @@ export default function Index() {
                 </Pressable>
               ))}
             </ScrollView>
-            <Pressable
-              style={{}}
-              onPress={() => setTemplateSelectModalVisible(false)}
-            >
-              <Ionicons name="close-outline" size={60} color={colors.icon} />
-            </Pressable>
           </View>
-        </Modal>
-        <AddButton
-          label={t('buttonLabels.addWorkout')}
-          componentStyle={styles.buttonComponent}
-          onPress={() => setWorkoutSelectionVisible(true)}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </View>
+      </Modal>
+      <AddButton
+        label={t('buttonLabels.addWorkout')}
+        componentStyle={styles.fab}
+        onPress={() => setWorkoutSelectionVisible(true)}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    marginTop: '10%',
-    width: '100%',
-    margin: 8,
-  },
-  workoutContainer: {
+  screen: { flex: 1 },
+  dateBar: {
     alignItems: 'center',
-    margin: 6,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
   },
-  buttonComponent: {
-    marginTop: 'auto',
-    marginLeft: 'auto',
-    marginBottom: '10%',
-    marginRight: '10%',
+  scrollView: { flex: 1, width: '100%' },
+  scrollContent: {
+    padding: Spacing.lg,
+    paddingBottom: 120,
+    gap: Spacing.md,
   },
-  confirmationContainer: {
-    justifyContent: 'center',
+  fab: {
+    position: 'absolute',
+    right: Spacing.xl,
+    bottom: Spacing.xl,
+  },
+  overlay: { flex: 1, justifyContent: 'flex-end' },
+  sheet: {
+    maxHeight: '80%',
+    borderTopLeftRadius: Radius.xl,
+    borderTopRightRadius: Radius.xl,
+    paddingTop: Spacing.xl,
+  },
+  sheetHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    position: 'static',
-    borderWidth: 1,
-    borderRadius: 3,
-    width: '60%',
-    height: '10%',
-    margin: 'auto',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.xl,
+    marginBottom: Spacing.sm,
   },
-  workoutSelectionContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'static',
-    borderWidth: 1,
-    borderRadius: 3,
-    width: '80%',
-    height: '10%',
-    margin: 'auto',
+  sheetTitle: { fontFamily: Fonts.semiBold, fontSize: FontSize.heading },
+  sheetContent: {
+    padding: Spacing.lg,
+    paddingBottom: Spacing.xxl,
+    gap: Spacing.md,
   },
-  workoutSourceButton: {
-    justifyContent: 'center',
-    width: '33%',
-  },
-  deleteConfirmationButton: {
-    justifyContent: 'center',
-    width: '50%',
-  },
-  templateContainer: {
-    top: '20%',
-    height: 500,
-    justifyContent: 'center',
-    alignItems: 'center',
+  sheetEmpty: {
+    textAlign: 'center',
+    fontSize: FontSize.body,
+    paddingVertical: Spacing.xl,
   },
 });

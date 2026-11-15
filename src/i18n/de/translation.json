@@ -57,14 +57,21 @@
     "maxVol": "Maximales Volumen",
     "volume": "Volumen",
     "totalReps": "Wiederholungen",
-    "noData": "KEINE DATEN !"
+    "noData": "Noch keine Daten"
   },
   "workouts": {
-    "addWorkoutFrom": "Welches Workout ?",
-    "deleteWorkout": "Workout Löschen ?"
+    "addWorkoutFrom": "Workout starten aus",
+    "deleteWorkout": "Dieses Workout löschen?",
+    "empty": "Keine Workouts an diesem Tag",
+    "emptyHint": "Tippe auf „Neues Workout“, um dein Training zu erfassen.",
+    "chooseTemplate": "Vorlage auswählen",
+    "noTemplates": "Du hast noch keine Vorlagen.",
+    "emptyExercises": "Füge deine erste Übung hinzu."
   },
   "templates": {
-    "deleteTemplate": "Vorlage löschen ?"
+    "deleteTemplate": "Diese Vorlage löschen?",
+    "empty": "Noch keine Vorlagen",
+    "emptyHint": "Speichere wiederkehrende Routinen als Vorlage."
   },
   "dashboard": {
     "totalWorkouts": "Workouts insgesamt",

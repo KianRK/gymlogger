@@ -1,7 +1,6 @@
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-
-import { LinearGradient } from 'expo-linear-gradient';
 
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +9,8 @@ import CustomText from '@/components/CustomText';
 import { useSettings } from '@/src/providers/SettingsProvider';
 import ProfileButton from '@/components/Buttons/ProfileButton';
 import MeasurementsModal from '@/components/ MeasurementsModal';
+import { SettingsRow, SettingsSection } from '@/components/SettingsSection';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 export default function ProfileScreen() {
   const { settings, updateSetting } = useSettings();
@@ -18,149 +19,111 @@ export default function ProfileScreen() {
   const [measureModalVisible, setMeasureModalVisible] = useState(false);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={styles.content}
     >
-      <LinearGradient
-        start={{ x: 0.5, y: 0.5 }}
-        end={{ x: 1, y: 1 }}
-        colors={[colors.mainOne, colors.mainTwo]}
-        style={StyleSheet.absoluteFillObject}
-      />
-      <View style={styles.profileOverview}>
+      <View
+        style={[
+          styles.profileCard,
+          { backgroundColor: colors.surface, borderColor: colors.border },
+          shadow(colors.shadow, 1),
+        ]}
+      >
         <ProfileButton
-          componentStyle={styles.profileImage}
-          imageStyle={styles.profileImage}
+          componentStyle={styles.avatarContainer}
+          imageStyle={styles.avatar}
         />
-        <View style={styles.membershipContainer}>
-          <CustomText
-            style={{
-              fontFamily: 'Outfit-SemiBold',
-              fontSize: 26,
-              textAlign: 'center',
-              textAlignVertical: 'center',
-              textShadowColor: 'black',
-              textShadowRadius: 1,
-              letterSpacing: 3,
-            }}
-          >
-            {t('profile.membership')}
+        <View style={styles.profileText}>
+          <CustomText style={styles.email} numberOfLines={1}>
+            {settings.email}
           </CustomText>
-          <Pressable style={styles.membershipButton}>
-            <CustomText style={styles.membershipButtonText}>Premium</CustomText>
-          </Pressable>
-        </View>
-      </View>
-      <View style={styles.profileSettings}>
-        <CustomText style={styles.settingSectionHeader}>
-          {t('profile.profileSettings')}
-        </CustomText>
-        <View style={[styles.settingRow, { backgroundColor: colors.settings }]}>
-          <CustomText style={styles.settingText}>Email</CustomText>
-          <CustomText style={styles.settingText}>{settings.email}</CustomText>
-        </View>
-        <Pressable onPress={() => setMeasureModalVisible(true)}>
-          <View
-            style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}
-          >
-            <CustomText style={styles.settingText}>
-              {t('profile.measurements')}
+          <View style={styles.membershipRow}>
+            <CustomText
+              style={[styles.membershipLabel, { color: colors.textMuted }]}
+            >
+              {t('profile.membership')}
             </CustomText>
+            <View style={styles.premiumBadge}>
+              <Ionicons name="star" size={12} color="#8A5A00" />
+              <CustomText style={styles.premiumText}>Premium</CustomText>
+            </View>
           </View>
-        </Pressable>
-      </View>
-      <View style={styles.accountSettings}>
-        <CustomText style={styles.settingSectionHeader}>
-          {t('profile.account')}
-        </CustomText>
-        <View style={[styles.settingRow, { backgroundColor: colors.settings }]}>
-          <CustomText style={styles.settingText}>
-            {t('profile.signOut')}
-          </CustomText>
-        </View>
-        <View style={[styles.settingRow, { backgroundColor: colors.mainTwo }]}>
-          <CustomText style={styles.settingText}>
-            {t('profile.deleteAccount')}
-          </CustomText>
         </View>
       </View>
+
+      <SettingsSection title={t('profile.profileSettings')}>
+        <SettingsRow icon="mail-outline" label="Email" value={settings.email} />
+        <SettingsRow
+          icon="body-outline"
+          label={t('profile.measurements')}
+          onPress={() => setMeasureModalVisible(true)}
+        />
+      </SettingsSection>
+
+      <SettingsSection title={t('profile.account')}>
+        <SettingsRow
+          icon="log-out-outline"
+          label={t('profile.signOut')}
+          showChevron={false}
+        />
+        <SettingsRow
+          icon="trash-outline"
+          label={t('profile.deleteAccount')}
+          destructive
+          showChevron={false}
+        />
+      </SettingsSection>
+
       <MeasurementsModal
         visible={measureModalVisible}
         onRequestClose={() => setMeasureModalVisible(false)}
         setMeasureModalVisible={setMeasureModalVisible}
         animationType="fade"
         transparent={true}
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-        }}
-        viewStyle={{
-          top: '4%',
-          height: '90%',
-          width: '100%',
-          position: 'absolute',
-          borderRadius: 64,
-          backgroundColor: '#b4b4b4ee',
-        }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  profileOverview: {
+  content: {
+    padding: Spacing.lg,
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.xxl,
+    gap: Spacing.xl,
+  },
+  profileCard: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
-    marginTop: '15%',
+    gap: Spacing.lg,
+    padding: Spacing.lg,
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
   },
-  profileImage: {
-    width: 84,
-    height: 84,
-    marginLeft: '10%',
-    borderRadius: 48,
-  },
-  membershipContainer: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginRight: '15%',
-  },
-  membershipButton: {
-    backgroundColor: 'gold',
-    borderWidth: 1,
-    borderRadius: 30,
-    paddingTop: 3,
-    paddingBottom: 3,
-    paddingLeft: 24,
-    paddingRight: 24,
-  },
-  membershipButtonText: {
-    fontFamily: 'Outfit-SemiBold',
-    fontSize: 24,
-    color: '#222222',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    letterSpacing: 1,
-  },
-  profileSettings: { width: '80%', marginTop: '20%' },
-  accountSettings: { width: '80%', marginTop: 'auto', marginBottom: '10%' },
-  settingSectionHeader: { textAlign: 'left', fontSize: 26 },
-  settingRow: {
-    width: '100%',
+  avatarContainer: { marginLeft: 0, marginRight: 0 },
+  avatar: { width: 72, height: 72 },
+  profileText: { flex: 1 },
+  email: { fontFamily: Fonts.semiBold, fontSize: FontSize.bodyLarge },
+  membershipRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderRadius: 4,
-    padding: 4,
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
   },
-  settingText: {
-    fontSize: 18,
-    textAlign: 'right',
-    textAlignVertical: 'center',
+  membershipLabel: { fontSize: FontSize.small },
+  premiumBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FDE8B0',
+    borderRadius: Radius.pill,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+  },
+  premiumText: {
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.caption,
+    color: '#8A5A00',
   },
 });

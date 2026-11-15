@@ -1,14 +1,10 @@
-import {
-  Pressable,
-  Text,
-  View,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { View, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import CustomText from '../CustomText';
+import IconButton from '../IconButton';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { FontSize, Spacing } from '@/constants/Theme';
 
 type Props = {
   label?: string;
@@ -25,55 +21,31 @@ export default function MenuButton({
   componentStyle,
   buttonStyle,
   labelStyle,
-  iconSize = 35,
+  iconSize = 22,
 }: Props) {
   const colors = useThemeColors();
 
   return (
     <View style={[styles.componentContainer, componentStyle]}>
-      {label && (
-        <Text style={[styles.menuButtonLabel, labelStyle]}>{label}</Text>
-      )}
-      <View
-        style={[
-          styles.menuButtonContainer,
-          {
-            borderColor: colors.borderColor,
-          },
-          buttonStyle,
-        ]}
+      <IconButton
+        onPress={onPress}
+        style={buttonStyle}
+        accessibilityLabel={label ?? 'More options'}
       >
-        <Pressable style={styles.menuButton} onPress={onPress}>
-          <Ionicons name="menu-outline" size={iconSize} color={colors.icon} />
-        </Pressable>
-      </View>
+        <Ionicons
+          name="ellipsis-horizontal"
+          size={Math.min(iconSize, 24)}
+          color={colors.textMuted}
+        />
+      </IconButton>
+      {label && (
+        <CustomText style={[styles.label, labelStyle]}>{label}</CustomText>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  componentContainer: {
-    alignSelf: 'center',
-    position: 'relative',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuButtonContainer: {
-    width: 50,
-    height: 50,
-    borderWidth: 2,
-    borderRadius: 25,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-  },
-
-  menuButton: { alignSelf: 'center' },
-  menuButtonLabel: {
-    width: 140,
-    textAlign: 'center',
-    color: 'black',
-    fontSize: 18,
-  },
+  componentContainer: { alignItems: 'center', justifyContent: 'center' },
+  label: { fontSize: FontSize.small, marginTop: Spacing.xs },
 });

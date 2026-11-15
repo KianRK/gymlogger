@@ -1,7 +1,7 @@
-import { useState, useCallback, useTransition } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import { useState, useCallback } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +9,8 @@ import { db } from '@/src/database';
 import { TemplateExercise } from '@/src/Interfaces/db_interfaces';
 import CustomText from './CustomText';
 import useThemeColors from '@/hooks/UseThemeColors';
+import Card from './Card';
+import { Fonts, FontSize, Radius, Spacing } from '@/constants/Theme';
 
 type Props = {
   template_id: string;
@@ -59,94 +61,52 @@ export default function TemplateOverviewCard({
   }
 
   return (
-    <View
-      style={[
-        styles.TemplateCardContainer,
-        { borderColor: colors.borderColor },
-      ]}
-    >
-      <LinearGradient
-        start={{ x: 0.375, y: 0.375 }}
-        end={{ x: 0.75, y: 0.75 }}
-        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
-        style={[
-          StyleSheet.absoluteFill,
-          { borderColor: colors.borderColor },
-          styles.gradientStyle,
-        ]}
-      />
-      <View style={styles.templateCardHeaderContainer}>
-        {name && (
-          <CustomText style={styles.templateCardLabel}>{name}</CustomText>
-        )}
-        {!name && (
-          <CustomText style={styles.templateCardLabel}>
-            {t('buttonLabels.template')} {template_number}
-          </CustomText>
-        )}
+    <Card style={styles.card}>
+      <View style={styles.header}>
+        <View
+          style={[styles.iconBadge, { backgroundColor: colors.primarySoft }]}
+        >
+          <Ionicons name="clipboard-outline" size={18} color={colors.primary} />
+        </View>
+        <CustomText style={styles.title} numberOfLines={1}>
+          {name ? name : `${t('buttonLabels.template')} ${template_number}`}
+        </CustomText>
+        <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
       </View>
+      {templateExercises.length > 0 && (
+        <View style={[styles.divider, { backgroundColor: colors.border }]} />
+      )}
       {templateExercises.map((exercise) => (
-        <View key={exercise.id} style={styles.templateCardExerciseContainer}>
-          <CustomText style={styles.templateCardExerciseName}>
-            {exercise.name}
+        <View key={exercise.id} style={styles.exerciseRow}>
+          <CustomText style={styles.exerciseName} numberOfLines={1}>
+            {t(exercise.name)}
           </CustomText>
-          <CustomText style={styles.templateCardExerciseSets}>
-            Sets: {countSets(exercise.id)}
+          <CustomText style={[styles.sets, { color: colors.textMuted }]}>
+            {countSets(exercise.id)} Sets
           </CustomText>
         </View>
       ))}
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  TemplateCardContainer: {
-    width: '95%',
-    justifyContent: 'center',
+  card: { width: '100%', paddingVertical: Spacing.md },
+  header: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  iconBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: Radius.sm,
     alignItems: 'center',
-    borderRadius: 8,
-    overflow: 'visible',
-    margin: 8,
-    padding: 5,
-  },
-  gradientStyle: {
     justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
   },
-  templateCardHeaderContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    height: 20,
-    width: '100%',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    padding: 4,
-    zIndex: 7,
-    overflow: 'visible',
-  },
-  templateCardLabel: {
-    position: 'absolute',
-    marginRight: 'auto',
-    alignSelf: 'center',
-    textAlign: 'center',
-    fontSize: 18,
-  },
-  templateCardExerciseContainer: {
-    width: '100%',
+  title: { flex: 1, fontFamily: Fonts.semiBold, fontSize: FontSize.bodyLarge },
+  divider: { height: StyleSheet.hairlineWidth, marginVertical: Spacing.sm },
+  exerciseRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignContent: 'space-between',
-    padding: 2,
-    zIndex: Platform.OS === 'ios' ? 0 : undefined,
+    paddingVertical: Spacing.xs,
   },
-  templateCardExerciseName: {
-    fontWeight: 600,
-    marginLeft: 3,
-    fontSize: 14,
-  },
-  templateCardExerciseSets: {
-    marginRight: 3,
-    fontSize: 14,
-  },
+  exerciseName: { flex: 1, fontSize: FontSize.small, marginRight: Spacing.md },
+  sets: { fontSize: FontSize.small },
 });

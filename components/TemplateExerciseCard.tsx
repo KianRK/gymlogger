@@ -1,12 +1,15 @@
-import { View, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import '@/src/i18n/i18n';
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useRef } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import AddButton from './Buttons/AddButton';
 import ConfirmButton from './Buttons/ConfirmButton';
 import DeleteButton from './Buttons/DeleteButton';
 import CustomText from './CustomText';
+import CustomTextInput from './CustomTextInput';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 import { useSettings } from '@/src/providers/SettingsProvider';
 
 import { db } from '@/src/database';
@@ -30,13 +33,14 @@ export default function TemplateExerciseCard({
   refreshTrigger,
 }: Props) {
   const colors = useThemeColors();
+  const muted = { color: colors.textMuted };
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const [sets, setSets] = useState<Set[]>([]);
   const [editedSet, setEditedSet] = useState(['0', '0']);
   const { settings } = useSettings();
   const [orderIndex, setOrderIndex] = useState(0);
   const [setList, setSetList] = useState<string[][]>([]);
-  const [fontSize, setFontSize] = useState<number>(26);
   const setListRef = useRef<string[]>(['0', '0']);
 
   function deleteExercise(exercise_id: string) {
@@ -129,246 +133,173 @@ export default function TemplateExerciseCard({
   }, []);
 
   useEffect(() => {
-    function adjustFontSize() {
-      if (name.length > 18) {
-        let adjustedFontSize = 28 - (name.length - 18);
-
-        if (adjustedFontSize <= 18) {
-          setFontSize(18);
-        } else {
-          setFontSize(adjustedFontSize);
-        }
-      }
-    }
-    adjustFontSize();
     refreshTrigger?.();
   }, []);
+  const weightUnit = settings.units == 'metric' ? 'kg' : 'lb';
+
+  const headerRow = (
+    <View style={[styles.row, styles.headerRow]}>
+      <CustomText style={[styles.colSet, styles.headerText, muted]}>SET</CustomText>
+      <CustomText style={[styles.col, styles.headerText, muted]}>REPS</CustomText>
+      <CustomText style={[styles.col, styles.headerText, muted]}>
+        {weightUnit.toUpperCase()}
+      </CustomText>
+      {editable && <View style={styles.colAction} />}
+    </View>
+  );
+
+  const setNumber = (n: number) => (
+    <View style={styles.colSet}>
+      <View style={[styles.setBadge, { backgroundColor: colors.surfaceAlt }]}>
+        <CustomText style={styles.setBadgeText}>{n}</CustomText>
+      </View>
+    </View>
+  );
+
+  const inputStyle = [
+    styles.col,
+    styles.input,
+    { backgroundColor: colors.surfaceAlt, borderColor: colors.border },
+  ];
+
   return (
     <View
       style={[
-        styles.exerciseCardContainer,
-        { borderColor: colors.borderColor },
+        styles.card,
+        {
+          width: editable ? '88%' : '100%',
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+        },
+        shadow(colors.shadow, editable ? 3 : 1),
       ]}
     >
-      <LinearGradient
-        start={{ x: 0.375, y: 0.375 }}
-        end={{ x: 0.75, y: 0.75 }}
-        colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
-      >
-        {editable && (
-          <View>
-            <CustomText style={styles.exerciseCardHeader}>{name}</CustomText>
-            <View style={styles.setContainer}>
-              <CustomText
-                style={[
-                  styles.setTextEditable,
-                  { borderColor: colors.borderColor },
-                ]}
-              >
-                Set
-              </CustomText>
-              <CustomText
-                style={[
-                  styles.setTextEditable,
-                  { borderColor: colors.borderColor },
-                ]}
-              >
-                Reps
-              </CustomText>
-              <CustomText
-                style={[
-                  styles.setTextEditable,
-                  { borderColor: colors.borderColor },
-                ]}
-              >
-                Weight
-              </CustomText>
-              <CustomText style={{ flex: 1 }}></CustomText>
-            </View>
-          </View>
-        )}
+      <View style={styles.titleRow}>
+        <CustomText style={styles.title} numberOfLines={2}>
+          {t(name)}
+        </CustomText>
         {!editable && (
-          <View>
-            <View style={styles.exerciseCardHeaderContainer}>
-              <CustomText
-                style={[styles.exerciseCardHeader, { fontSize: fontSize }]}
-              >
-                {name}
-              </CustomText>
-              <DeleteButton
-                componentStyle={styles.deleteButtonComponent}
-                onPress={() => deleteExercise(exercise_id)}
-                iconSize={23}
-              />
-            </View>
-            <View style={styles.setContainer}>
-              <CustomText
-                style={[styles.setText, { borderColor: colors.borderColor }]}
-              >
-                Set
-              </CustomText>
-              <CustomText
-                style={[styles.setText, { borderColor: colors.borderColor }]}
-              >
-                Reps
-              </CustomText>
-              <CustomText
-                style={[styles.setText, { borderColor: colors.borderColor }]}
-              >
-                Weight
-              </CustomText>
-            </View>
-          </View>
+          <DeleteButton onPress={() => deleteExercise(exercise_id)} />
         )}
-        <ScrollView>
-          {editable &&
-            setList.map((set, index) => (
-              <View key={index} style={styles.setContainer}>
-                <CustomText
-                  style={[
-                    styles.setTextEditable,
-                    { borderColor: colors.borderColor },
-                  ]}
-                >
-                  {index + 1}
-                </CustomText>
-                <CustomText
-                  style={[
-                    styles.setTextEditable,
-                    { borderColor: colors.borderColor },
-                  ]}
-                >
-                  {set[0]}
-                </CustomText>
-                <CustomText
-                  style={[
-                    styles.setTextEditable,
-                    { borderColor: colors.borderColor },
-                  ]}
-                >
-                  {set[1]}
-                </CustomText>
+      </View>
+      {headerRow}
+      <ScrollView style={{ maxHeight: editable ? 280 : undefined }}>
+        {editable &&
+          setList.map((set, index) => (
+            <View key={index} style={styles.row}>
+              {setNumber(index + 1)}
+              <CustomText style={[styles.col, styles.value]}>{set[0]}</CustomText>
+              <CustomText style={[styles.col, styles.value]}>{set[1]}</CustomText>
+              <View style={styles.colAction}>
                 <DeleteButton
-                  componentStyle={{ marginLeft: 'auto', marginRight: 'auto' }}
                   onPress={() => setSetList(setList.toSpliced(index, 1))}
-                  iconSize={23}
                 />
               </View>
-            ))}
-          {!editable &&
-            sets.map((set, index) => (
-              <View key={set.id} style={styles.setContainer}>
-                <CustomText
-                  style={[styles.setText, { borderColor: colors.borderColor }]}
-                >
-                  {index + 1}
-                </CustomText>
-                <CustomText
-                  style={[styles.setText, { borderColor: colors.borderColor }]}
-                >
-                  {set.reps}
-                </CustomText>
-                <CustomText
-                  style={[styles.setText, { borderColor: colors.borderColor }]}
-                >
-                  {settings.units == 'metric'
-                    ? Math.round(set.weight)
-                    : Math.round(set.weight * 2.20462)}
-                </CustomText>
-              </View>
-            ))}
-          {editing && (
-            <View style={styles.setContainer}>
-              <CustomText
-                style={[
-                  styles.setTextEditable,
-                  { borderColor: colors.borderColor },
-                ]}
-              >
-                {setList.length + 1}
-              </CustomText>
-              <TextInput
-                onChangeText={(text) => handleChangeText(text, 0)}
-                inputMode="numeric"
-                style={[
-                  styles.setTextEditable,
-                  { borderColor: colors.borderColor },
-                ]}
-              ></TextInput>
-              <TextInput
-                onChangeText={(text) => handleChangeText(text, 1)}
-                inputMode="numeric"
-                style={[
-                  styles.setTextEditable,
-                  { borderColor: colors.borderColor },
-                ]}
-              ></TextInput>
             </View>
-          )}
-        </ScrollView>
-        {editable && (
-          <View style={styles.buttonContainer}>
-            <ConfirmButton
-              label="Confirm"
-              componentStyle={styles.buttonComponent}
-              onPress={handleConfirmSet}
+          ))}
+        {!editable &&
+          sets.map((set, index) => (
+            <View key={set.id} style={styles.row}>
+              {setNumber(index + 1)}
+              <CustomText style={[styles.col, styles.value]}>{set.reps}</CustomText>
+              <CustomText style={[styles.col, styles.value]}>
+                {settings.units == 'metric'
+                  ? Math.round(set.weight)
+                  : Math.round(set.weight * 2.20462)}
+              </CustomText>
+            </View>
+          ))}
+        {editing && (
+          <View style={styles.row}>
+            {setNumber(setList.length + 1)}
+            <CustomTextInput
+              onChangeText={(text) => handleChangeText(text, 0)}
+              inputMode="numeric"
+              placeholder="0"
+              placeholderTextColor={colors.textMuted}
+              style={inputStyle}
             />
-            <AddButton
-              label="Add set"
-              componentStyle={styles.buttonComponent}
-              onPress={handleAddSet}
+            <CustomTextInput
+              onChangeText={(text) => handleChangeText(text, 1)}
+              inputMode="numeric"
+              placeholder="0"
+              placeholderTextColor={colors.textMuted}
+              style={inputStyle}
             />
+            <View style={styles.colAction} />
           </View>
         )}
-      </LinearGradient>
+      </ScrollView>
+      {editable && (
+        <View style={styles.buttonContainer}>
+          <AddButton
+            label={t('buttonLabels.addSet')}
+            variant="secondary"
+            onPress={handleAddSet}
+          />
+          <ConfirmButton
+            label={t('buttonLabels.confirm')}
+            onPress={handleConfirmSet}
+          />
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  exerciseCardContainer: {
-    width: '75%',
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 5,
-    margin: 3,
+  card: {
+    borderRadius: Radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    padding: Spacing.lg,
   },
-  setContainer: {
-    borderWidth: 1,
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.sm,
   },
-  exerciseCardHeader: {
-    alignSelf: 'center',
-    fontSize: 28,
+  title: {
+    flex: 1,
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.bodyLarge,
+    marginRight: Spacing.sm,
   },
-  exerciseCardHeaderContainer: { flexDirection: 'row' },
-  deleteButtonComponent: { marginLeft: 'auto', marginRight: '3%' },
-  setText: {
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 44,
+    gap: Spacing.sm,
+  },
+  headerRow: { minHeight: 28 },
+  headerText: {
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.caption,
+    letterSpacing: 0.8,
     textAlign: 'center',
-    minHeight: 35,
-    borderWidth: 1,
-    fontSize: 22,
-    width: '33.3%',
   },
-  setTextEditable: {
-    fontFamily: 'Outfit-Regular',
-    textAlign: 'center',
-    minHeight: 35,
-    borderWidth: 1,
-    fontSize: 22,
-    width: '25%',
+  colSet: { width: 44, alignItems: 'center' },
+  col: { flex: 1, textAlign: 'center' },
+  colAction: { width: 36, alignItems: 'center' },
+  setBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: Radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  buttonComponent: {
-    marginTop: 'auto',
-    marginLeft: 'auto',
-    marginBottom: '10%',
-    marginRight: '10%',
+  setBadgeText: { fontFamily: Fonts.semiBold, fontSize: FontSize.small },
+  value: { fontFamily: Fonts.medium, fontSize: FontSize.bodyLarge },
+  input: {
+    height: 40,
+    borderRadius: Radius.sm,
+    borderWidth: 1,
+    fontSize: FontSize.bodyLarge,
+    paddingVertical: 0,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    marginTop: Spacing.lg,
   },
 });

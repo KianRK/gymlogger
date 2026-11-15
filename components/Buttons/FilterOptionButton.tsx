@@ -7,12 +7,13 @@ import {
   TextStyle,
 } from 'react-native';
 import { useEffect } from 'react';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Ionicons } from '@expo/vector-icons';
 import '@/src/i18n/i18n';
 import { useTranslation } from 'react-i18next';
 
 import CustomText from '../CustomText';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 type Props = {
   label?: string;
@@ -35,7 +36,7 @@ export default function FilterOptionButton({
   componentStyle,
   buttonStyle,
   labelStyle,
-  iconSize = 25,
+  iconSize = 16,
   data,
   activeFilters,
   setActiveFilter,
@@ -45,6 +46,7 @@ export default function FilterOptionButton({
 }: Props) {
   const colors = useThemeColors();
   const { t } = useTranslation();
+  const hasActive = activeFilters.length > 0;
 
   const filteredData = () => {
     let filtered = data.filter((item) => {
@@ -70,63 +72,66 @@ export default function FilterOptionButton({
   return (
     <View style={[styles.componentContainer, componentStyle]}>
       {label && (
-        <CustomText style={[styles.optionButtonLabel, labelStyle]}>
-          {label}
-        </CustomText>
+        <CustomText style={[styles.label, labelStyle]}>{label}</CustomText>
       )}
-      <View style={[styles.optionButtonContainer, buttonStyle]}>
-        <Pressable
-          style={styles.optionButton}
-          onPress={() => {
-            registrationHandler();
-            visibilitySetter(!dropDownVisible);
-          }}
+      <Pressable
+        style={({ pressed }) => [
+          styles.chip,
+          {
+            backgroundColor:
+              hasActive || dropDownVisible
+                ? colors.primarySoft
+                : colors.surfaceAlt,
+            borderColor: dropDownVisible ? colors.primary : 'transparent',
+            opacity: pressed ? 0.8 : 1,
+          },
+          buttonStyle,
+        ]}
+        onPress={() => {
+          registrationHandler();
+          visibilitySetter(!dropDownVisible);
+        }}
+      >
+        <CustomText
+          style={[
+            styles.chipText,
+            { color: hasActive ? colors.primary : colors.text },
+          ]}
         >
-          <CustomText>{buttonText}</CustomText>
-          <MaterialCommunityIcons
-            name="arrow-down-right"
-            size={iconSize}
-            color={colors.icon}
-          />
-        </Pressable>
-      </View>
+          {buttonText}
+          {hasActive ? ` · ${activeFilters.length}` : ''}
+        </CustomText>
+        <Ionicons
+          name={dropDownVisible ? 'chevron-up' : 'chevron-down'}
+          size={iconSize}
+          color={hasActive ? colors.primary : colors.textMuted}
+        />
+      </Pressable>
       {dropDownVisible && (
         <View
-          style={{
-            position: 'absolute',
-            justifyContent: 'center',
-            maxHeight: 80,
-            flexWrap: 'nowrap',
-            top: 30,
-            zIndex: 999,
-            backgroundColor: colors.background,
-            overflow: 'visible',
-          }}
+          style={[
+            styles.dropDown,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+            shadow(colors.shadow, 2),
+          ]}
         >
           <FlatList
             data={filteredData()}
-            contentContainerStyle={{ alignItems: 'stretch', flexGrow: 1 }}
-            renderItem={({ item }) => (
+            keyExtractor={(item) => item}
+            nestedScrollEnabled
+            renderItem={({ item, index }) => (
               <Pressable
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignSelf: 'stretch',
-                  minWidth: '100%',
-                }}
+                style={({ pressed }) => [
+                  styles.option,
+                  index > 0 && {
+                    borderTopWidth: StyleSheet.hairlineWidth,
+                    borderTopColor: colors.border,
+                  },
+                  pressed && { backgroundColor: colors.surfaceAlt },
+                ]}
                 onPress={() => updateActiveFilters(item)}
               >
-                <CustomText
-                  numberOfLines={1}
-                  style={{
-                    alignSelf: 'center',
-                    textAlign: 'center',
-                    flexWrap: 'nowrap',
-                    flexShrink: 0,
-                    flexGrow: 0,
-                    minWidth: '100%',
-                  }}
-                >
+                <CustomText numberOfLines={1} style={styles.optionText}>
                   {t('targets.' + item)}
                 </CustomText>
               </Pressable>
@@ -141,26 +146,33 @@ export default function FilterOptionButton({
 const styles = StyleSheet.create({
   componentContainer: {
     position: 'relative',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  label: { fontSize: FontSize.small, marginBottom: Spacing.xs },
+  chip: {
+    flexDirection: 'row',
     alignItems: 'center',
-    alignContent: 'center',
+    gap: Spacing.xs,
+    height: 36,
+    paddingHorizontal: Spacing.md,
+    borderRadius: Radius.pill,
+    borderWidth: 1,
   },
-  optionButtonContainer: {
-    position: 'relative',
-    borderWidth: 2,
-    borderRadius: 25,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-    paddingLeft: 5,
-    paddingRight: 5,
+  chipText: { fontFamily: Fonts.medium, fontSize: FontSize.small },
+  dropDown: {
+    position: 'absolute',
+    top: 42,
+    left: 0,
+    minWidth: 160,
+    maxHeight: 220,
+    borderRadius: Radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+    zIndex: 999,
   },
-  optionButton: { alignItems: 'center', flexDirection: 'row' },
-  optionButtonLabel: {
-    width: 140,
-    textAlign: 'center',
-    color: 'black',
-    fontSize: 18,
+  option: {
+    paddingVertical: Spacing.sm + 2,
+    paddingHorizontal: Spacing.md,
   },
+  optionText: { fontSize: FontSize.small },
 });

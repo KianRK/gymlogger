@@ -1,11 +1,13 @@
-import { StyleSheet, Pressable, View, ViewStyle } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, Pressable, ViewStyle } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import CustomText from '../CustomText';
 import useThemeColors from '@/hooks/UseThemeColors';
+import { Fonts, FontSize, Radius, Spacing, shadow } from '@/constants/Theme';
 
 type Props = {
   date: string;
+  /** Extra style for the outer pill (name kept for backwards compatibility). */
   gradientStyle?: ViewStyle;
   onPress?: () => void;
 };
@@ -16,56 +18,46 @@ export default function CalendarButton({
   onPress,
 }: Props) {
   const colors = useThemeColors();
-  const colorOne = '#b3cbe4ff';
-  const colorOneAlpha = '#b3cbe490';
-  const colorTwo = '#ddeaf6ff';
+  const interactive = Boolean(onPress);
 
   return (
-    <LinearGradient
-      start={{ x: 0.375, y: 0.375 }}
-      end={{ x: 0.75, y: 0.75 }}
-      colors={[colors.alpha, colors.mainOne, colors.mainTwo]}
-      style={[
+    <Pressable
+      onPress={onPress}
+      disabled={!interactive}
+      accessibilityRole={interactive ? 'button' : 'text'}
+      style={({ pressed }) => [
+        styles.pill,
         {
-          height: '12%',
-          borderRadius: 8,
-          marginTop: '5%',
-          marginRight: '5%',
-          marginLeft: 'auto',
-          marginBottom: 'auto',
-          justifyContent: 'center',
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          opacity: pressed ? 0.8 : 1,
         },
+        shadow(colors.shadow, 1),
         gradientStyle,
       ]}
     >
-      <View style={styles.calendarButtonContainer}>
-        <Pressable style={styles.calendarButton} onPress={onPress}>
-          <CustomText style={styles.calendarButtonLabel}>{date}</CustomText>
-        </Pressable>
-      </View>
-    </LinearGradient>
+      <Ionicons name="calendar-outline" size={18} color={colors.primary} />
+      <CustomText style={styles.label}>{date}</CustomText>
+      {interactive && (
+        <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
+      )}
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  calendarButtonContainer: {
-    width: '100%',
-    height: '100%',
-    minWidth: 180,
-    borderRadius: 8,
-    justifyContent: 'center',
-  },
-  calendarButton: {
-    padding: 10,
-    borderRadius: 10,
+  pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    alignSelf: 'center',
+    gap: Spacing.sm,
+    height: 44,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: Radius.pill,
+    borderWidth: StyleSheet.hairlineWidth,
   },
-  calendarButtonLabel: {
-    flex: 1,
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    fontSize: 24,
+  label: {
+    fontFamily: Fonts.semiBold,
+    fontSize: FontSize.body,
   },
 });
