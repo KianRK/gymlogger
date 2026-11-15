@@ -118,7 +118,9 @@ export default function ExercisesScreen() {
   useEffect(() => {
     function setup() {
       try {
-        const result = db.getAllSync<Exercise>('SELECT * FROM exercises');
+        const result = db.getAllSync<Exercise>(
+          'SELECT *, is_favorite AS favorite FROM exercises'
+        );
         const parsed_result = result.map((exercise) => {
           let parsed_primary = [];
           let parsed_secondary = [];
