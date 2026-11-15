@@ -2,6 +2,38 @@
 
 A mobile app for logging gym workouts, managing reusable workout templates, and tracking progress per exercise. All data is stored locally on the device.
 
+<p align="center">
+  <img src="docs/screenshots/tour.gif" alt="A tour through GymLogger: workouts, exercises, exercise progress charts, templates and the dashboard" width="300">
+</p>
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/workouts.png" alt="Workouts for the selected day" width="220"><br><sub>Workouts</sub></td>
+    <td align="center"><img src="docs/screenshots/exercises.png" alt="Searchable exercise library" width="220"><br><sub>Exercise library</sub></td>
+    <td align="center"><img src="docs/screenshots/exercise-detail.png" alt="Exercise details with progress charts" width="220"><br><sub>Exercise progress</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/templates.png" alt="Workout templates" width="220"><br><sub>Templates</sub></td>
+    <td align="center"><img src="docs/screenshots/dashboard.png" alt="Dashboard with training statistics" width="220"><br><sub>Dashboard</sub></td>
+    <td align="center"><img src="docs/screenshots/settings.png" alt="Settings" width="220"><br><sub>Settings</sub></td>
+  </tr>
+</table>
+
+<details>
+<summary>Dark mode</summary>
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/workouts-dark.png" alt="Workouts in dark mode" width="220"><br><sub>Workouts</sub></td>
+    <td align="center"><img src="docs/screenshots/exercise-detail-dark.png" alt="Exercise progress in dark mode" width="220"><br><sub>Exercise progress</sub></td>
+    <td align="center"><img src="docs/screenshots/dashboard-dark.png" alt="Dashboard in dark mode" width="220"><br><sub>Dashboard</sub></td>
+  </tr>
+</table>
+
+</details>
+
 ## Technologies
 
 - **[Expo](https://expo.dev) / React Native** (TypeScript): cross-platform app for Android, iOS and web
